@@ -328,3 +328,35 @@ Abmeldung anderer Geräte nicht bestätigt werden konnte; lokal wird abgemeldet.
 
 Die Funktion bleibt deaktiviert, bis alle vier Migrationen und die echte
 Supabase-Abnahme einschließlich Recovery-Sitzungen abgeschlossen sind.
+
+## 10. Kontolöschung und verzögerte Antworten [Codex, 2026-10-17]
+
+Die vorbereitete Adminoberfläche enthält einen eigenen Löschbereich. Vor dem
+Absenden muss das Kürzel des gewählten Kontos eingegeben werden. Abbrechen und
+falsche Eingabe erzeugen keinen Löschaufruf. Der Server verlangt aktuelle
+Sitzung und Adminrolle, gültige Ziel-ID, das passende Kürzel und ein Zielkonto
+ohne Adminrolle. Eigenes Konto und alle Administratorkonten sind auf diesem
+Weg nicht löschbar. Ein zielbezogenes Limit begrenzt Wiederholungsversuche.
+
+Vor dem Auth-Hard-Delete wird der Auftrag im Audit gespeichert. Schlägt das
+fehl, wird nicht gelöscht. Nach erfolgreicher Löschung werden die vorhandenen
+Fremdschlüssel genutzt: Profil und Sitzungen entfallen; Auditbezüge zum
+Zielkonto werden null. Ein Abschlussereignis enthält keine Kopie von Namen,
+E-Mail oder Kürzel. Kann die Löschung wegen eines Dienstausfalls nicht bestätigt
+werden, meldet der Server diesen unklaren Zustand und wiederholt nicht
+automatisch. Schlägt nur das Abschlussprotokoll fehl, bestätigt die Antwort die
+tatsächliche Löschung samt Hinweis auf den fehlenden Abschlussnachweis.
+
+Keine echten Konten wurden angelegt oder gelöscht. Einrichtungs- und
+Abnahmevoraussetzungen bleiben bestehen. Die Funktion ersetzt keine geregelte
+Löschfrist, keinen Backup-Löschprozess und keine Datenbereinigung in später
+hinzukommenden Diensten. Storage-Eigentum kann die Auth-Löschung blockieren;
+solche Dateien werden nicht automatisch entfernt.
+
+Zusätzlich ordnet die Oberfläche asynchrone Antworten ihrer ursprünglichen
+Kontoansicht zu. Antworten auf bereits geschlossene oder ersetzte Dialoge
+ändern die aktuelle Ansicht nicht. Eine verspätete 401 einer alten Sitzung
+verwirft keine inzwischen neu angemeldete Sitzung. Parallel gestartete
+Ladevorgänge erzeugen keine doppelten Zeilen in der Kontenliste. Der gezielte
+Browserprüfstand `tools/account-races.cjs` verwendet dafür kontrolliert
+verzögerte simulierte Antworten.

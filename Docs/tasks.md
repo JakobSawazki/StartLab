@@ -55,7 +55,10 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
 - [ ] 14. Kontosperre, Einladung/Freigabe, MFA, Kontolöschung, Auditansicht und
   ggf. Klassen-/Schuljahresverwaltung ausbauen. [Claude, 2026-10-17] Adminliste lädt jetzt
   seitenweise je 100 Konten; Auditansicht (letzte 100 Vorgänge) ergänzt. Beides gegen echtes
-  Supabase ungeprüft. Kontosperre ergänzt (ungeprüft gegen echtes Supabase). Offen: Einladung/Freigabe, MFA, Kontolöschung.
+  Supabase ungeprüft. Kontosperre ergänzt (ungeprüft gegen echtes Supabase).
+  [Codex, 2026-10-17] Kontolöschung mit Kürzelbestätigung, serverseitigem Schutz
+  von Admin-/eigenen Konten und Audit ergänzt; lokale Abnahme bestanden, echte
+  Supabase-Abnahme offen. Weiterhin offen: Einladung/Freigabe, MFA.
 - [ ] 15. OneNote-Anhänge exportieren, lokal prüfen, Inhalte und Veröffentlichungsrechte sichten.
   [Claude, 2026-10-17] „Persönliche Vorstellung“ und „Vertrag“ liegen in `resources/` (jetzt
   Git-ignoriert) und sind gesichtet; Analyse lokal in `private/`. Bingo und Leistungsbewertung fehlen.
@@ -82,3 +85,11 @@ Repository und Live-Veröffentlichung: siehe [VERIFICATION.md](VERIFICATION.md).
   mehr als bestätigte Abmeldung aller Geräte ausgegeben.
 - [ ] 25. Migration 0004 und die neuen Sitzungsfälle im echten Supabase abnehmen;
   Kontofunktionen bis zur Einrichtung und Abnahme weiter deaktiviert lassen.
+- [x] 26. Kontolöschung für Nicht-Administratoren vorbereitet: Zielkonto prüfen,
+  Kürzel eingeben, Auftrag protokollieren, Auth-Konto samt Profil/Sitzungen löschen;
+  unbestätigte Löschung und Protokollfehler ausdrücklich behandeln.
+- [x] 27. Verzögerte Kontoantworten nach Dialogwechsel/Schließen oder neuer
+  Anmeldung werden verworfen; paralleles Laden derselben Kontenliste verhindert.
+- [ ] 28. Kontolöschung gegen das eingerichtete Supabase prüfen: Zielkonto,
+  Profil, Sitzungen und anonymisierte Auditbezüge; blockierende Storage-Eigentümer
+  und unbestätigte Antworten gesondert untersuchen. Keine automatische Löschfrist festgelegt.

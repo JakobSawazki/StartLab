@@ -133,6 +133,16 @@ Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
 13. [Claude, 2026-10-17] Kontosperre: Admin sperrt Testkonto B; B kann sich nicht anmelden und
     keine geschützte Aktion mehr ausführen; Audit `account_locked`; Entsperren stellt den Zugang her.
     Ein Admin kann das eigene Konto nicht sperren.
+14. [Codex, 2026-10-17] Ausschließlich mit einem eigens angelegten Testkonto:
+    Kontolöschung abbrechen, falsches Kürzel eingeben, dann korrekt bestätigen.
+    Nur die richtige Bestätigung darf das gewählte Konto löschen. Profil und
+    Sitzungen müssen fehlen, zugehörige alte Auditbezüge müssen null sein.
+    Neue Anmeldung und vorhandenes altes Token dürfen keinen Zugriff erlauben.
+15. Eigene und fremde Administratorkonten sind über `admin-delete` geschützt.
+    Ein fehlgeschlagenes Vorabprotokoll verhindert den Löschaufruf. Bei Timeout
+    wird die Löschung nicht automatisch wiederholt: erst den tatsächlichen
+    Auth-/Profilzustand im Dashboard prüfen. Storage-Eigentum kann die Löschung
+    verhindern; gespeicherte Dateien nicht ungeprüft entfernen.
 
 ### Sitzungsprüfung [Codex, 2026-10-17]
 
@@ -183,6 +193,7 @@ Passwörter oder personenbezogenen Request-Bodies in eigene Logs schreiben.
 - [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 - [Edge Function Secrets](https://supabase.com/docs/guides/functions/secrets)
 - [Sitzungen und Prüfung nach Abmeldung](https://supabase.com/docs/guides/auth/sessions)
+- [Konten serverseitig löschen](https://supabase.com/docs/reference/javascript/auth-admin-deleteuser)
 
 Diese Quellen wurden für den Architekturentwurf geprüft. Ein produktiver
 E-Mail-Versand, eine rechtliche Freigabe oder eine reale Datenbankabnahme ist

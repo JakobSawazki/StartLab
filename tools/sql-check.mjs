@@ -52,6 +52,16 @@ await check('Gelöschte Sitzung sperrt API-Prüfung und direkten Profilzugriff',
  assert.equal((await as('service_role','',()=>one('select public.startlab_session_active($1,$2) as ok',[ids[0],sessionId]))).ok,false);
  assert.equal((await as('authenticated',ids[0],()=>sql('select id from public.profiles'))).rows.length,0);
 });
-await check('Kontolöschung entfernt Profil und Adminrolle',async()=>{await sql('insert into public.administrators values($1)',[ids[2]]);await sql('delete from auth.users where id=$1',[ids[2]]);assert.equal((await one('select count(*)::int as n from public.profiles where id=$1',[ids[2]])).n,0);assert.equal((await one('select count(*)::int as n from public.administrators')).n,0);});
+await check('Kontolöschung entfernt Profil, Rolle und Sitzungen; Audit bleibt anonymisiert',async()=>{
+ await sql('insert into public.administrators values($1)',[ids[2]]);
+ await sql('insert into auth.sessions(id,user_id) values($1,$2)',[sessionId,ids[2]]);
+ await sql("insert into public.admin_audit(actor,target,action) values($1,$2,'account_deletion_requested')",[ids[0],ids[2]]);
+ await sql('delete from auth.users where id=$1',[ids[2]]);
+ assert.equal((await one('select count(*)::int as n from public.profiles where id=$1',[ids[2]])).n,0);
+ assert.equal((await one('select count(*)::int as n from public.administrators')).n,0);
+ assert.equal((await one('select count(*)::int as n from auth.sessions where user_id=$1',[ids[2]])).n,0);
+ const audit=await one("select actor,target from public.admin_audit where action='account_deletion_requested'");
+ assert.equal(audit.target,null);assert.equal(audit.actor,ids[0]);
+});
 await db.close();
 console.log(`SQL-Prüfung bestanden (${checks.length}): ${checks.join('; ')}. Parallele Registrierungen sind mit einer PGlite-Verbindung nicht prüfbar.`);

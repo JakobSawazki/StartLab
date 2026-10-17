@@ -2,8 +2,8 @@
 
 Gemeinsam ankommen, kennenlernen und das Schuljahr gestalten.
 
-Version **0.1.0**, 17. Oktober 2026 · Jakob Sawazki / Codex · seither unveröffentlichte
-Weiterentwicklung durch Claude (siehe [CHANGELOG](CHANGELOG.md)).
+Version **0.1.0**, 17. Oktober 2026 · Jakob Sawazki / Codex / Claude.
+Veröffentlichte Erweiterungen und vorbereitete Änderungen: siehe [CHANGELOG](CHANGELOG.md).
 
 StartLab ergänzt Excel-Lab und WorkbenchLab um einen übersichtlichen Einstieg
 für die organisatorischen Themen zum Schuljahresbeginn.
@@ -14,7 +14,7 @@ für die organisatorischen Themen zum Schuljahresbeginn.
 - Materialsuche über Titel und Inhalte, Bingo, druckbare Dialoge, lokale Checkliste,
   „Als Nächstes“ mit den kommenden Terminen.
 - Supabase-Vorbereitung: Registrierung, Kürzel-Anmeldung, Reset-Links, Adminliste,
-  Audit-Ansicht, Kontosperre.
+  Audit-Ansicht, Kontosperre, bestätigte Kontolöschung und aktive Sitzungsprüfung.
 
 **Konten sind noch deaktiviert.** Ohne Supabase-Projekt und dessen Konfiguration
 werden keine Registrierungsangaben erfasst oder versendet. Die Website ist
@@ -28,7 +28,7 @@ Website nach erfolgreichem Pages-Deployment: https://jakobsawazki.github.io/Star
 
 ## Entwicklung
 
-Node.js ab 22. Keine Paketinstallation für die Website erforderlich.
+Node.js ab 22; für die vollständigen Prüfwerkzeuge Node.js 24 verwenden. Keine Paketinstallation für die Website erforderlich.
 
 ```sh
 npm test

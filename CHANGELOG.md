@@ -8,6 +8,11 @@ Direkte Profilabfragen erhalten dieselbe Prüfung über RLS. Fehler bei der
 globalen Abmeldung nach Passwortwechsel werden ausdrücklich gemeldet.
 Kontofunktionen bleiben bis zur Supabase-Einrichtung und Abnahme deaktiviert.
 
+Admin-Kontolöschung mit Kürzelbestätigung, Schutz eigener und fremder
+Administratorkonten, Zielkonto-Limit und Audit vorbereitet. Verzögerte Antworten
+auf geschlossene oder ersetzte Kontoansichten werden verworfen; eine alte 401
+verwirft keine neue Sitzung. Eigener Browserprüfstand für diese Antwortfolgen.
+
 ## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
 
 Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob). Pages-Workflow auf node24-Actions

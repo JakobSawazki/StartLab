@@ -37,3 +37,23 @@ Die Konten bleiben deaktiviert. Reale Testkonten müssen Abmeldung,
 Passwortwechsel/Recovery, Kontosperre und direkte Profil-RLS abdecken.
 Supabase-Zugang, SMTP und Jakobs offene organisatorische Entscheidungen fehlen
 weiterhin. Keine OneNote- oder Computeraktion im Rahmen dieses Arbeitsblocks.
+
+## Autonome Weiterarbeit: Kontolöschung [Codex, 2026-10-17]
+
+`admin-delete` und die Bestätigung in der Kontenübersicht sind ergänzt. Der
+Server prüft Kürzel und Zielkonto, verhindert Selbst-/Adminlöschung, begrenzt
+Versuche und protokolliert den Auftrag vor dem Auth-Hard-Delete. Ein Fehler des
+Vorabprotokolls verhindert den Löschaufruf. Unbestätigte Löschung und nicht
+bestätigtes Abschlussprotokoll werden getrennt behandelt. Die bestehende
+Datenbank-Kaskade entfernt Profil und Sitzungen; Auditbezüge werden anonymisiert.
+Keine weitere Migration erforderlich. Keine echten Konten gelöscht.
+
+Die Oberfläche verwirft außerdem Antworten auf alte Kontoansichten und schützt
+eine neue Sitzung vor verspäteten 401-Antworten alter Sitzungen. Listenanfragen
+werden serialisiert; nach Löschung wird die Liste ab Seite 0 neu geladen.
+
+Aktuell: 57 Node-Tests, Syntax-/TypeScript-/Build-Prüfung, 11 PGlite-Prüfgruppen
+und Browserprüfung inklusive bestätigter Löschung bestanden. Neu:
+`tools/account-races.cjs` für vier kontrolliert verzögerte Antwortfolgen. Das
+Löschformular wurde mit axe ohne Verstöße im automatischen Prüfumfang getestet.
+Reale Supabase-Abnahme bleibt offen (SUPABASE_SETUP.md Punkte 14–15).

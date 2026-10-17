@@ -9,7 +9,7 @@ const fail=status=>new Response(JSON.stringify({msg:'upstream'}),{status});
 const sent=call=>JSON.parse(call.options.body);
 
 test('Widerrufene Sitzung verweigert alle geschützten Aktionen vor Rollen-/Datenzugriff [Codex]',async()=>{
- for(const action of ['profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock']){
+ for(const action of ['profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock','admin-delete']){
   const {handler,calls}=await setup(true,{respond:url=>url.endsWith('/rpc/startlab_session_active')?new Response('false'):undefined});
   const r=await handler(req({action,password:'neues-passwort-lang',id:'22222222-2222-2222-2222-222222222222'},true));
   assert.equal(r.status,401,action);
@@ -74,3 +74,53 @@ test('Kontosperre setzt Bann, locked_at und Audit; Entsperren hebt beides auf [C
 test('Gesperrtes Konto wird bei jeder geschützten Aktion abgewiesen [Claude]',async()=>{const {handler}=await setup(false,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:'test-user',email_confirmed_at:'2026-10-17',banned_until:'2126-01-01T00:00:00Z'})):undefined});assert.equal((await handler(req({action:'profile'},true))).status,401);});
 test('Abgelaufener Bann sperrt nicht mehr [Claude]',async()=>{const {handler}=await setup(false,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:'test-user',email_confirmed_at:'2026-10-17',banned_until:'2020-01-01T00:00:00Z'})):undefined});assert.equal((await handler(req({action:'profile'},true))).status,200);});
 test('Kontosperre ist pro Zielkonto begrenzt [Claude]',async()=>{const {handler,calls}=await setup(true,{respond:(url,o)=>url.includes('/rpc/startlab_limit')&&JSON.parse(o.body).key.startsWith('admin-lock:')?new Response('false'):undefined});const r=await handler(req({action:'admin-lock',id:target},true));assert.equal(r.status,429);assert.ok(!calls.some(c=>c.url.includes('/auth/v1/admin/users/')&&c.options.method==='PUT'));});
+
+// All deletion cases use simulated Auth responses. No real account is involved.
+const deleteBody={action:'admin-delete',id:target,confirm_username:'tesper'};
+async function deleteSetup(respond=()=>undefined){return setup(true,{respond:async(url,options)=>{
+ const custom=await respond(url,options);if(custom)return custom;
+ if(url.includes('/administrators?')&&url.endsWith('user_id=eq.'+target))return new Response('[]');
+ if(url.includes('/profiles?select=id,username&id='))return new Response(JSON.stringify([{id:target,username:'tesper'}]));
+}});}
+const deletions=calls=>calls.filter(c=>c.options.method==='DELETE');
+test('Kontolöschung ohne Adminrolle bzw. Anmeldung bleibt gesperrt [Codex]',async()=>{
+ for(const auth of [false,true]){const {handler,calls}=await setup();assert.equal((await handler(req(deleteBody,auth))).status,auth?403:401);assert.equal(deletions(calls).length,0);}
+});
+test('Kontolöschung schützt eigenes Konto, falsche UUID und fehlende Kürzelbestätigung [Codex]',async()=>{
+ for(const body of [{...deleteBody,id:'falsch'},{...deleteBody,confirm_username:'anderes'},{action:'admin-delete',id:target}]){
+  const {handler,calls}=await deleteSetup();assert.equal((await handler(req(body,true))).status,400);assert.equal(deletions(calls).length,0);
+ }
+ const {handler,calls}=await setup(true,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:target,email_confirmed_at:'2026-10-17'})):undefined});
+ assert.equal((await handler(req(deleteBody,true))).status,400);assert.equal(deletions(calls).length,0);
+});
+test('Kontolöschung verweigert Administratorkonten und verschwundene Profile [Codex]',async()=>{
+ for(const [part,response,status] of [['/administrators?','[{"user_id":"'+target+'"}]',403],['/profiles?','[]',404]]){
+  const {handler,calls}=await deleteSetup(url=>url.includes(part)&&url.includes(target)?new Response(response):undefined);
+  assert.equal((await handler(req(deleteBody,true))).status,status);assert.equal(deletions(calls).length,0);
+ }
+});
+test('Kontolöschung beachtet Zielkonto-Limit [Codex]',async()=>{
+ const {handler,calls}=await deleteSetup((url,options)=>url.includes('/rpc/startlab_limit')&&sent({options}).key==='admin-delete:'+target?new Response('false'):undefined);
+ assert.equal((await handler(req(deleteBody,true))).status,429);assert.equal(deletions(calls).length,0);
+});
+test('Kontolöschung stoppt vor dem Auth-Aufruf, wenn Vorabprotokoll nicht gespeichert wird [Codex]',async()=>{
+ const {handler,calls}=await deleteSetup(url=>url.endsWith('/admin_audit')?fail(503):undefined);
+ assert.equal((await handler(req(deleteBody,true))).status,502);assert.equal(deletions(calls).length,0);
+});
+test('Kontolöschung verwendet Auth-Hard-Delete und anonymes Abschlussprotokoll [Codex]',async()=>{
+ const {handler,calls,logs}=await deleteSetup();const r=await handler(req(deleteBody,true));assert.equal(r.status,200);
+ const data=await r.json();assert.equal(data.deleted,true);assert.equal(data.audit_complete,true);
+ const removal=deletions(calls)[0];assert.ok(removal.url.endsWith('/auth/v1/admin/users/'+target));assert.deepEqual(sent(removal),{should_soft_delete:false});
+ const audit=calls.filter(c=>c.url.endsWith('/admin_audit'));assert.equal(audit.length,2);assert.equal(sent(audit[0]).target,target);assert.equal(sent(audit[0]).action,'account_deletion_requested');
+ assert.ok(calls.indexOf(audit[0])<calls.indexOf(removal));assert.equal(sent(audit[1]).target,null);assert.equal(sent(audit[1]).action,'account_deleted');
+ assert.ok(logs.every(l=>!l.includes(target)&&!l.includes('tesper')));
+});
+test('Unbestätigte Kontolöschung wird nicht als Erfolg ausgegeben oder automatisch wiederholt [Codex]',async()=>{
+ const {handler,calls}=await deleteSetup((url,options)=>options.method==='DELETE'?fail(503):undefined);
+ const r=await handler(req(deleteBody,true));assert.equal(r.status,502);assert.match((await r.json()).message,/nicht bestätigt/);assert.equal(deletions(calls).length,1);
+ assert.equal(sent(calls.filter(c=>c.url.endsWith('/admin_audit')).at(-1)).action,'account_deletion_unconfirmed');
+});
+test('Nach erfolgreicher Löschung meldet ausfallendes Abschlussprotokoll den tatsächlichen Zustand [Codex]',async()=>{
+ let auditCount=0;const {handler,calls}=await deleteSetup(url=>url.endsWith('/admin_audit')&&++auditCount===2?fail(503):undefined);
+ const r=await handler(req(deleteBody,true));assert.equal(r.status,200);const data=await r.json();assert.equal(data.deleted,true);assert.equal(data.audit_complete,false);assert.match(data.message,/Protokolleintrag konnte nicht bestätigt/);assert.equal(deletions(calls).length,1);
+});

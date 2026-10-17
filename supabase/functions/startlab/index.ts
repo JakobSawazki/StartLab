@@ -55,7 +55,7 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  let body;try{body=JSON.parse(raw);}catch{throw new Failure(400,'Ungültige Anfrage.');}
  if(!body||typeof body!=='object'||Array.isArray(body))throw new Failure(400,'Ungültige Anfrage.');
  const action=text(body.action,30);
- if(!['register','login','reset','profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
+ if(!['register','login','reset','profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock','admin-delete'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
  await limit('global:'+action,action==='register'?100:1000);
  if(['register','login','reset'].includes(action)){
  const identifier=text(body.identifier,254).toLowerCase();await limit(action+':'+await digest(identifier),action==='reset'?3:10);
@@ -92,6 +92,29 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  const audit=(result:string)=>request('/rest/v1/admin_audit','POST',{actor:user.id,target:id,action:result});
  try{await request('/auth/v1/recover?redirect_to='+encodeURIComponent(site),'POST',{email:address},anon);}catch(error){await audit('password_reset_failed').catch(()=>null);throw new Failure(error instanceof Failure&&error.status===429?429:502,'Der Reset-Link konnte nicht versendet werden. Prüfe den Mailversand (SMTP) und versuche es später erneut.');}
  await audit('password_reset_requested');return reply({message:'Der Reset-Link wurde angefordert. Das neue Passwort wählt die Person selbst.'});}
+ // [Codex, 2026-10-17] Explicit hard deletion for non-admin accounts only.
+ // Record intent before deleting; existing audit rows anonymize the removed target via FK.
+ if(action==='admin-delete'){
+  const id=text(body.id,36);
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))throw new Failure(400,'Ungültiges Konto.');
+  if(id===user.id)throw new Failure(400,'Das eigene Konto kann hier nicht gelöscht werden.');
+  await limit('admin-delete:'+id,3);
+  const targets=await request('/rest/v1/profiles?select=id,username&id=eq.'+encodeURIComponent(id));
+  if(!targets.length)throw new Failure(404,'Konto nicht gefunden. Lade die Kontenliste neu.');
+  const confirmation=text(body.confirm_username,30);
+  if(confirmation!==targets[0].username)throw new Failure(400,'Das eingegebene Kürzel stimmt nicht mit dem Zielkonto überein.');
+  const targetAdmins=await request('/rest/v1/administrators?select=user_id&user_id=eq.'+encodeURIComponent(id));
+  if(targetAdmins.length)throw new Failure(403,'Administratorkonten können hier nicht gelöscht werden.');
+  await request('/rest/v1/admin_audit','POST',{actor:user.id,target:id,action:'account_deletion_requested'});
+  try{await request('/auth/v1/admin/users/'+encodeURIComponent(id),'DELETE',{should_soft_delete:false});}
+  catch(error){
+   await request('/rest/v1/admin_audit','POST',{actor:user.id,target:null,action:'account_deletion_unconfirmed'}).catch(()=>null);
+   throw new Failure(error instanceof Failure&&error.status===429?429:502,'Die Löschung konnte nicht bestätigt werden. Lade die Kontenliste neu und prüfe den Kontodienst, bevor du es erneut versuchst.');
+  }
+  let auditComplete=true;
+  try{await request('/rest/v1/admin_audit','POST',{actor:user.id,target:null,action:'account_deleted'});}catch{auditComplete=false;}
+  return reply({deleted:true,audit_complete:auditComplete,message:auditComplete?'Das Konto und sein Profil wurden endgültig gelöscht.':'Das Konto wurde gelöscht. Der abschließende Protokolleintrag konnte nicht bestätigt werden; der Löschauftrag ist protokolliert.'});
+ }
  // [Claude, 2026-10-17] Lock = Supabase Auth ban (no sign-in, no token refresh; identity() also rejects banned users).
  // locked_at mirrors the state for the list. No self-lock, so the last admin cannot lock themselves out.
  if(action==='admin-lock'||action==='admin-unlock'){const id=text(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))throw new Failure(400,'Ungültiges Konto.');if(id===user.id)throw new Failure(400,'Das eigene Konto kann nicht gesperrt werden.');await limit('admin-lock:'+id,10);const target=await request('/rest/v1/profiles?select=id&id=eq.'+encodeURIComponent(id));if(!target.length)throw new Failure(404,'Konto nicht gefunden.');const lock=action==='admin-lock';

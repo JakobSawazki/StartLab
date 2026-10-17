@@ -271,3 +271,21 @@ Die neue Migration ist noch nicht auf einem echten Supabase-Projekt angewandt.
 Insbesondere das Löschen der Sitzungsdatensätze beim tatsächlichen Logout,
 Passwortwechsel und die Recovery-Sitzungen müssen dort getestet werden. Lokale
 Prüfungen sind kein Nachweis für diese externe Integration.
+
+### Kontolöschung und Antwortreihenfolge [Codex, 2026-10-17]
+
+- `npm test`: **57 Tests bestanden**. Acht neue Backendfälle prüfen
+  Löschberechtigung, eigene/Admin-Konten, UUID und Kürzelbestätigung,
+  verschwundene Konten, Rate-Limits, Vorab-Audit, Hard-Delete,
+  unbestätigte Löschung und Fehler des Abschlussprotokolls.
+- `npm run check`, Build und strikte TypeScript-Prüfung bestanden.
+- 11 lokale PGlite-Prüfgruppen bestanden. Löschprüfung erweitert um die
+  Sitzungs-Kaskade sowie das Erhalten/Anonymisieren alter Auditbezüge.
+- Edge-Browserprüfung inklusive Löschbestätigung, Abbrechen und falschem
+  Kürzel bestanden. Das Löschformular ist zusätzlich im automatischen axe-
+  Prüfumfang ohne Verstöße. Keine echten Konten oder E-Mails beteiligt.
+- `tools/account-races.cjs`: kontrolliert verzögerte Antworten bei geschlossenem
+  Login, ersetzter Profilansicht, alter Adminliste und alter 401 nach neuer
+  Anmeldung bestanden; keine fremde Datenübernahme oder JavaScript-Fehler.
+
+Weiterhin offen: reale Supabase-Abnahme und schulische Betriebsentscheidungen.
