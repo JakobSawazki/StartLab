@@ -2,7 +2,7 @@
 // in memory; errors deliberately exclude response bodies and request data.
 import {randomUUID} from 'node:crypto';
 
-export async function runIntegration({api,mail,anon,service}){
+export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
  for(const endpoint of [api,mail]){const u=new URL(endpoint);if(u.protocol!=='http:'||!['127.0.0.1','localhost','[::1]'].includes(u.hostname))throw Error('Integration darf nur Loopback-Systeme kontaktieren.');}
  const origin='http://127.0.0.1:4173',created=new Set(),readMessages=new Set(),checks=[];
  const password='StartLab-Test-'+randomUUID(),newPassword='StartLab-Neu-'+randomUUID();
@@ -73,6 +73,18 @@ export async function runIntegration({api,mail,anon,service}){
    await http('/auth/v1/admin/users/'+a.id,{method:'PUT',token:service,body:{email:a.email,email_confirm:true},expected:200});
    const {data}=await http('/rest/v1/profiles?select=email&id=eq.'+a.id,{token:service,expected:200});ensure(data[0]?.email===a.email,'Profil folgt der bestätigten Auth-Adresse nicht.');
    await edge('login',{identifier:previous,password},anon,401);await login(a,password,a.username);
+  });
+  await check('Sicherung und Wiederherstellung von Auth-/Anwendungsdaten',async()=>{
+   ensure(typeof restoreSnapshot==='function','Kein isolierter Wiederherstellungstest verfügbar.');
+   await http('/rest/v1/admin_audit',{method:'POST',token:service,body:{actor:admin.id,target:a.id,action:'backup_round_trip_test'},expected:201});
+   const paths=['/rest/v1/profiles?select=*&order=id','/rest/v1/administrators?select=*&order=user_id','/rest/v1/admin_audit?select=*&order=id'];
+   const before=[];for(const path of paths)before.push((await http(path,{token:service,expected:200})).data);
+   await restoreSnapshot();
+   for(let i=0;i<paths.length;i++){const after=(await http(paths[i],{token:service,expected:200})).data;ensure(JSON.stringify(after)===JSON.stringify(before[i]),'Wiederhergestellte Anwendungsdaten stimmen nicht mit der Sicherung überein.');}
+   ensure((await edge('profile',{},admin.token)).data.is_admin===true,'Adminrolle nach Wiederherstellung fehlt.');
+   ensure((await edge('profile',{},a.token)).data.username===a.username,'Schülersitzung nach Wiederherstellung nicht korrekt.');
+   await login(a,password,a.username);await login(b,password,b.username);await login(admin);
+   const {data:other}=await http('/rest/v1/profiles?select=id&id=eq.'+b.id,{token:a.token,expected:200});ensure(other.length===0,'Profil-RLS nach Wiederherstellung verletzt.');
   });
   await check('Recovery-Mail, Passwortwechsel und alte Sitzungen',async()=>{
    const oldToken=a.token;await edge('admin-reset',{id:a.id},admin.token);

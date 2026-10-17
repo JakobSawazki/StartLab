@@ -5,6 +5,7 @@ import {resolve,join} from 'node:path';
 import {execFileSync,spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {runIntegration} from './integration-test.mjs';
+import {roundTripBackup} from './integration-backup.mjs';
 export const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const workdir=join(root,'.local','integration-stack'),marker=join(workdir,'.startlab-integration-owned');
 export const testConfig=`project_id = "startlab-integration"
@@ -84,7 +85,7 @@ async function test(){
    await new Promise(r=>setTimeout(r,1000));
   }
   if(!ready)throw Error('Lokale Edge Function wurde nicht rechtzeitig bereit.');
-  await runIntegration({api,mail,anon:status.ANON_KEY,service:status.SERVICE_ROLE_KEY});
+  await runIntegration({api,mail,anon:status.ANON_KEY,service:status.SERVICE_ROLE_KEY,restoreSnapshot:async()=>{await owned();await roundTripBackup();}});
  }finally{child.kill('SIGTERM');}
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
