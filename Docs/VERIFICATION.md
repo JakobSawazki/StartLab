@@ -164,5 +164,11 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Druck (Edge headless): Bewertungsdialog mit aufgeklappten Abschnitten; Spalten korrekt.
 - Repository-Suche: keine Namen von Kolleginnen und Kollegen außerhalb von `private/`/`resources/`.
 
+### „Als Nächstes“ auf der Startseite [Claude, 2026-10-17]
+
+- 38 Tests bestanden (neu: nächste Termine ab festem Datum, leere Liste am Schuljahresende).
+- Browser-Prüfstand mit axe bestanden: Bereich „Als Nächstes“ mit höchstens drei Terminen,
+  Link öffnet den Kalenderdialog.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

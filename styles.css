@@ -17,3 +17,8 @@ td.num{white-space:nowrap}table.wide{min-width:640px}th[scope=row]{font-weight:6
 .section-title{font-size:25px;letter-spacing:-.6px;margin:40px 0 4px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}
 .link-list{list-style:none;padding:0}.link-list li{margin:8px 0}.link-list a{color:var(--green);font-weight:600}
 @media print{td,th{padding:4px 8px}details{border:0;padding:0}summary{color:#000;padding:8px 0 4px}table.wide{min-width:0}.table-wrap{overflow:visible}.signature span{border-color:#000}}
+/* [Claude, 2026-10-17] Upcoming dates on the overview. */
+.next-panel{display:grid;grid-template-columns:200px 1fr auto;gap:24px;align-items:center;margin:28px 0 0}.next-panel h2{margin:6px 0 0}
+.next-dates{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.next-dates li{display:flex;flex-direction:column;gap:4px;border-left:3px solid var(--mint);padding-left:12px}
+.next-dates time{font-size:13px;font-weight:700;color:var(--green)}.next-dates span{font-size:14px}.next-dates small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+@media(max-width:850px){.next-panel{grid-template-columns:1fr}.next-dates{grid-template-columns:1fr}}

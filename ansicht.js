@@ -89,3 +89,10 @@ export function kalenderHTML() {
  return `<p>${esc(termine.hinweis)}</p><div class="filters" role="group" aria-label="Termine filtern">${Object.keys(gruppen).map((g, i) => `<button type="button" data-termine="${g}" aria-pressed="${i === 0}">${g === 'Alle' ? 'Alle Termine' : g}</button>`).join('')}</div><p id="termine-status" class="sr-only" role="status"></p><div id="termine-liste">${termineListe()}</div>${quelle(termine.quelle)}`;
 }
 export const termineGruppen = Object.keys(gruppen);
+// [Claude, 2026-10-17] Next dates for the overview; `heute` as YYYY-MM-DD (Europe/Berlin), injectable for tests.
+export const heuteBerlin = () => new Intl.DateTimeFormat('en-CA', {timeZone: 'Europe/Berlin'}).format(new Date());
+export function naechsteTermine(heute = heuteBerlin(), anzahl = 3) { return termine.eintraege.filter(([d]) => d >= heute).slice(0, anzahl); }
+export function naechsteTermineHTML(heute = heuteBerlin()) {
+ const liste = naechsteTermine(heute);
+ return liste.length ? `<ul class="next-dates">${liste.map(([d, g, t]) => `<li><time datetime="${d}">${esc(datum.format(new Date(d + 'T12:00:00Z')))}</time><span>${esc(t)}<small>${esc(g === 'Alle' ? 'Alle Klassen' : g)}</small></span></li>`).join('')}</ul>` : '<p>Für dieses Schuljahr sind keine weiteren Termine eingetragen.</p>';
+}

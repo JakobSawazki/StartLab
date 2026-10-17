@@ -271,3 +271,9 @@ nicht die Dateien. Daten stehen in `inhalte.js`, die Darstellung in `ansicht.js`
   Anrede nur „Herr Sawazki“ und verbietet E-Mail-Adressen und Telefonnummern in den Inhalten.
 - Barrierefreiheit: Tabellenbereiche sind fokussierbar und eindeutig benannt (axe fand sonst
   auf dem Handy nicht per Tastatur scrollbare Bereiche), Kalenderfilter mit Statusmeldung.
+
+### 8.11 Startseite: „Als Nächstes“ [Claude, 2026-10-17]
+
+Die Übersicht zeigt die nächsten drei Termine aus dem Kalender 2026/27 (ab dem heutigen Datum
+in Europe/Berlin) und verlinkt den vollständigen, filterbaren Kalender. Nach dem letzten Termin
+erscheint ein Hinweis statt einer leeren Liste; für 2027/28 braucht es neue Kalenderdaten.

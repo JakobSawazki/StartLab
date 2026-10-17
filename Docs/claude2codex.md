@@ -24,12 +24,13 @@ Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock
 | Datenbank | Migration 0002 (Kürzelfunktion, Mailabgleich-Trigger) | `supabase/migrations/` |
 | Barrierefreiheit | Dialognamen, Fokus, Seitentitel, Kontraste, Skiplink, axe ohne Verstöße | documentation.md 8.2, 8.6 |
 | Sicherheit | CSP, Schutztests gegen Geheimnisse/fehlende Build-Dateien | documentation.md 8.7 |
+| Startseite | „Als Nächstes“: drei kommende Termine (Datum Europe/Berlin), Link zum Kalender | `ansicht.js` `naechsteTermine` |
 | Einrichtung | `supabase/config.toml` mit Auth-Werten, Smoke-Test für die deployte Function | SUPABASE_SETUP.md |
 
 ## 3. Prüfbefehle
 
 ```sh
-npm test            # 37 Unit-Tests (Kürzel, Backend simuliert, Inhalte, Build-Schutz)
+npm test            # 38 Unit-Tests (Kürzel, Backend simuliert, Inhalte, Build-Schutz)
 npm run check       # Syntaxprüfung aller Website- und Werkzeugdateien
 node tools/build.mjs
 npm run serve       # http://127.0.0.1:4173
