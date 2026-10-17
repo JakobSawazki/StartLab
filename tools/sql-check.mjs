@@ -2,7 +2,7 @@
 // PGlite is not a project dependency: install it outside the project and pass its folder, e.g.
 // STARTLAB_PGLITE=/path/node_modules/@electric-sql/pglite node tools/sql-check.mjs
 // Checks Kürzel rule parity, collisions, e-mail sync, grants/RLS and limits. Not a substitute for the real Supabase acceptance.
-import {createRequire} from 'node:module';import {readFile} from 'node:fs/promises';import assert from 'node:assert/strict';import {usernameBase} from '../content.js';
+import {createRequire} from 'node:module';import {readFile,readdir} from 'node:fs/promises';import assert from 'node:assert/strict';import {usernameBase} from '../content.js';
 const {PGlite}=createRequire(import.meta.url)(process.env.STARTLAB_PGLITE||'@electric-sql/pglite');
 const db=new PGlite();const sql=(q,p)=>db.query(q,p);const one=async(q,p)=>(await sql(q,p)).rows[0];
 const fails=async(q,pattern,p)=>{await assert.rejects(sql(q,p),pattern,q);};
@@ -14,7 +14,8 @@ grant execute on function auth.uid() to anon,authenticated,service_role;
 -- Supabase grants new public objects to these roles by default; the migrations must revoke them.
 alter default privileges in schema public grant all on tables to anon,authenticated,service_role;
 alter default privileges in schema public grant all on functions to anon,authenticated,service_role;`);
-for(const file of ['202610170001_startlab.sql','202610170002_startlab_accounts.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+const migrations=(await readdir(new URL('../supabase/migrations/',import.meta.url))).filter(f=>f.endsWith('.sql')).sort();
+for(const file of migrations)await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
 const checks=[];const check=async(name,fn)=>{await fn();checks.push(name);};
 await check('Kürzel: SQL = Website',async()=>{for(const [f,l] of [['Jakob','Sawazki'],['Max','Müller'],['Éva','Öztürk'],['Li','Wu'],['ÄNNE','Groß'],['Mäx'.normalize('NFD'),'Wu'],['Šimon','Øster'],['Łukasz','Żak'],['Anna-Lena',"O'Neill"],['Æsa','Œdipus'],['Иван','Петров'],['A','Иванов'],[' Zoë ','Ðoković']]){assert.equal((await one('select public.startlab_username_base($1,$2) as k',[f,l])).k,usernameBase(f,l),f+' '+l);}});
 const add=async(first,last,email)=>(await one(`insert into auth.users(email,raw_user_meta_data) values($1,jsonb_build_object('first_name',$2::text,'last_name',$3::text)) returning id`,[email,first,last])).id;
