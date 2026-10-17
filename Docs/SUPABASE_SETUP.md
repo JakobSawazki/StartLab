@@ -107,6 +107,12 @@ Adminaktionen in der StartLab-Anwendung ist noch ein Ausbaupunkt.
 
 ## 6. Verbindliche Funktionsabnahme
 
+[Codex, 2026-10-17] Die grundlegenden Kontoabläufe lassen sich inzwischen mit
+echten lokalen Supabase-Komponenten im temporären GitHub-Testsystem prüfen:
+[Integrationstest](INTEGRATION_TEST.md). Das reduziert die Lücke gegenüber den
+simulierten Tests, ersetzt aber nicht die folgende Abnahme des tatsächlichen
+gehosteten Projekts und seines SMTP-Dienstes.
+
 Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
 
 1. Registrierung, Bestätigung, Login über E-Mail und eigenes Kürzel.

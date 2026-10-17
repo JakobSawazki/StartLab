@@ -13,6 +13,12 @@ Administratorkonten, Zielkonto-Limit und Audit vorbereitet. Verzögerte Antworte
 auf geschlossene oder ersetzte Kontoansichten werden verworfen; eine alte 401
 verwirft keine neue Sitzung. Eigener Browserprüfstand für diese Antwortfolgen.
 
+Vollständige Integration mit echten lokalen Supabase-Komponenten und Mailpit
+auf einem temporären GitHub-Runner: zehn Prüfgruppen bestanden, einschließlich
+paralleler Registrierung, Mailbestätigung, Rollen-/RLS-Schutz, Auth-Mailänderung,
+Recovery, Passwortwechsel, Sitzungswiderruf, Sperren und Löschung. Keine produktive
+Registrierung aktiviert. Erforderliche lokale CLI-Projektkennung ergänzt.
+
 ## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
 
 Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob). Pages-Workflow auf node24-Actions

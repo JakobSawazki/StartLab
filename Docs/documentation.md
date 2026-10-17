@@ -8,7 +8,7 @@ Aufgabenliste von Excel-Lab; keine Übernahme historischer Protokolle.
 
 Repository: https://github.com/JakobSawazki/StartLab
 
-Vorgesehene Live-Adresse: https://jakobsawazki.github.io/StartLab/
+Live-Adresse: https://jakobsawazki.github.io/StartLab/
 
 ## Wegweiser und aktueller Stand
 
@@ -18,10 +18,11 @@ Vorgesehene Live-Adresse: https://jakobsawazki.github.io/StartLab/
 | Oberfläche | Responsive Website, ohne Framework und externe Schriftarten |
 | Einstieg | Kennenlernen → Zusammenarbeit → Orientierung |
 | Materialien | Suche, Filter, Status je Material; Neufassungen direkt druckbar |
-| Originale aus OneNote | Inventar begonnen, Anhänge noch nicht exportiert oder geprüft |
+| Originale aus OneNote | Mehrere Bereiche aus lokalen Exporten integriert; Originaldateien bleiben ignoriert; Inhaltsrückfragen und fehlende Bingo-/Tipps-Originale offen |
 | Startfortschritt | Vier lokale Häkchen, ohne Namen; kein Cloud-Lernstand |
-| Konten | Code vorbereitet und von Claude geprüft/nachgebessert (Abschnitt 8), noch kein produktiver Supabase-Dienst |
-| Administration | Servergeprüfte Rolle, Kontenübersicht, Reset-Link und Audit vorbereitet |
+| Konten | In echter lokaler Supabase-Integration geprüft; gehosteter Dienst und produktive Registrierung weiterhin nicht eingerichtet |
+| Administration | Kontenübersicht, Reset, Sperren, Löschung und Audit vorbereitet und im lokalen Supabase-Teststack geprüft |
+| Integration | [Temporärer Supabase-Stack mit Testpostfach](INTEGRATION_TEST.md), Prüfergebnisse in VERIFICATION.md |
 | Offene Aufgaben / Antworten | [tasks.md](tasks.md) |
 | Einrichtung | [SUPABASE_SETUP.md](SUPABASE_SETUP.md) |
 | Materialienübernahme | [ONENOTE_INVENTAR.md](ONENOTE_INVENTAR.md) |
@@ -34,15 +35,16 @@ lädt zum Ankommen ein; Kennenlernen erfordert keine persönlichen Offenbarungen
 Ein Bingo fördert Gespräche, ein Steckbrief und eine Lernvereinbarung lassen
 sich drucken. Vereinbarungen werden mit der Klasse und Lehrkraft besprochen.
 
-Die Website behauptet keine unbekannten Bewertungsregeln und bindet noch keine
-unzugeordneten Bildungspläne ein. Neue Vorlagen ersetzen nicht stillschweigend
-die Originale. Termine, Praktikums- und GFS-Vorgaben bleiben bis zur Sichtung offen.
+Die Website verwendet die bereits gesichteten organisatorischen Inhalte,
+Bewertungsinformationen, Termine, Praktikums-/GFS-Vorgaben und Bildungsplanlinks.
+Unklare Zuordnungen, Quellenabweichungen und der teilweise ältere Praktikumsstand
+sind als Rückfragen dokumentiert. Neufassungen ersetzen Originale nicht stillschweigend.
 
 ## 2. Technische Architektur [Codex, 2026-10-17]
 
 Öffentlicher Quellcode und die statische Website liegen auf GitHub / Pages.
 Die Veröffentlichung verwendet ausschließlich die Dateiliste in `tools/build.mjs`.
-Die Backendvorbereitung besteht aus einer PostgreSQL-Migration und einer
+Die Backendvorbereitung besteht aus vier geordneten PostgreSQL-Migrationen und einer
 Supabase Edge Function; keine zusätzlichen JavaScript-Laufzeitpakete nötig.
 
 Browser → Edge Function → Supabase Auth / PostgreSQL. Die Kürzelauflösung findet
@@ -104,8 +106,8 @@ Dokumente benötigen privaten Storage und servergeprüften Zugriff.
 Backups, Wiederherstellungstest, Kontolöschung zum festgelegten Zeitpunkt und
 protokollierte Adminvorgänge gehören zum Betrieb. Beim Löschen eines Auth-Kontos
 entfernt die Datenbank zugehöriges Profil und Adminrolle per Fremdschlüssel.
-Ein eigener Löschdialog, Klassenfreigaben, Kontosperren und MFA-Oberfläche stehen
-noch auf der Aufgabenliste.
+Kontosperren und ein bestätigter Löschdialog sind implementiert. Klassenfreigaben,
+MFA-Oberfläche, automatische Löschfristen und Betriebs-Backups sind noch offen.
 
 ## 6. Prüfung und Grenzen [Codex, 2026-10-17]
 
@@ -360,3 +362,25 @@ verwirft keine inzwischen neu angemeldete Sitzung. Parallel gestartete
 Ladevorgänge erzeugen keine doppelten Zeilen in der Kontenliste. Der gezielte
 Browserprüfstand `tools/account-races.cjs` verwendet dafür kontrolliert
 verzögerte simulierte Antworten.
+
+## 11. Echte lokale Supabase-Integration [Codex, 2026-10-17]
+
+Der Workflow `Supabase integration` prüft die Kontoabläufe mit echten lokalen
+Supabase-Komponenten auf einem temporären GitHub-Runner. Alle vier Migrationen
+werden auf dessen PostgreSQL-Datenbank angewandt; die Edge Function läuft im
+Supabase-Runtime-Container. Auth-Mails landen ausschließlich im lokalen Mailpit.
+Es werden keine gehosteten Projekte, echten Personen oder externen SMTP-Dienste
+verwendet. Die Testwerkzeuge verweigern gehostete Ziele.
+
+Nach dem ersten erfolgreichen Lauf wurde die Prüfung um gleichzeitige
+Registrierungen identischer Namen und eine administrativ bestätigte
+Auth-Mailänderung ergänzt. Lauf 39033467128 (Commit `0477baa`) hat zehn
+Prüfgruppen bestanden, einschließlich direkter RLS-/Rechteprüfungen, Recovery,
+Widerruf offener Sitzungen, Sperren und Kontolöschung. Der Stack wurde anschließend
+beendet. Einzelheiten und Grenzen: VERIFICATION.md und INTEGRATION_TEST.md.
+
+Die Kontoabläufe sind damit über die vorherigen simulierten Prüfungen hinaus
+integriert geprüft. Die spätere gehostete Umgebung mit ihren eigenen Einstellungen,
+SMTP-Zustellung, Berechtigungen und schulischen Vorgaben muss weiterhin abgenommen
+werden. Die produktive Registrierung bleibt geschlossen. Die Projektkonfiguration
+enthält jetzt auch die von der CLI verlangte lokale `project_id`.

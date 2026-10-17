@@ -52,6 +52,9 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
   [Codex, 2026-10-17] Zusätzlich vorhandene Tokens nach Abmeldung/Passwortwechsel
   sowie Auth-Bann und Profil-Sperre getrennt prüfen; Migration 0004 ergänzt die
   aktive Sitzungsprüfung für Edge-Aktionen und direkte Profilabfragen.
+  Inzwischen auch mit echten lokalen Supabase-Komponenten einschließlich paralleler
+  Registrierung und Mailpit bestanden (Aufgabe 29). Offen ist die Abnahme des
+  gehosteten Projekts samt dessen SMTP-Dienst.
 - [ ] 14. Kontosperre, Einladung/Freigabe, MFA, Kontolöschung, Auditansicht und
   ggf. Klassen-/Schuljahresverwaltung ausbauen. [Claude, 2026-10-17] Adminliste lädt jetzt
   seitenweise je 100 Konten; Auditansicht (letzte 100 Vorgänge) ergänzt. Beides gegen echtes
@@ -61,7 +64,11 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
   Supabase-Abnahme offen. Weiterhin offen: Einladung/Freigabe, MFA.
 - [ ] 15. OneNote-Anhänge exportieren, lokal prüfen, Inhalte und Veröffentlichungsrechte sichten.
   [Claude, 2026-10-17] „Persönliche Vorstellung“ und „Vertrag“ liegen in `resources/` (jetzt
-  Git-ignoriert) und sind gesichtet; Analyse lokal in `private/`. Bingo und Leistungsbewertung fehlen.
+  Git-ignoriert) und sind gesichtet; Analyse lokal in `private/`.
+  [Codex, 2026-10-17] Bestandsabgleich: Auch Leistungsbewertung, Bildungspläne,
+  Praktikum, GFS und Kalender liegen vor und wurden bereits teilweise integriert.
+  Offen sind insbesondere die Bingo-, Tipps- und Hotkey-Originale sowie die
+  dokumentierten Inhaltsrückfragen; siehe ONENOTE_INVENTAR.md.
 - [ ] 16. Bildungspläne zuordnen, bestehende Regeln und Bewertungsunterlagen übernehmen.
   [Claude, 2026-10-17] Regeln (Vertrag), Leistungsbewertung, Notenschlüssel BG/BK/IHK, Praktikum,
   GFS, Kalender 2026/27 und Bildungsplan-Links übernommen. Offen: Rückfragen in claude2codex.md.
@@ -90,6 +97,12 @@ Repository und Live-Veröffentlichung: siehe [VERIFICATION.md](VERIFICATION.md).
   unbestätigte Löschung und Protokollfehler ausdrücklich behandeln.
 - [x] 27. Verzögerte Kontoantworten nach Dialogwechsel/Schließen oder neuer
   Anmeldung werden verworfen; paralleles Laden derselben Kontenliste verhindert.
-- [ ] 28. Kontolöschung gegen das eingerichtete Supabase prüfen: Zielkonto,
+- [ ] 28. Kontolöschung gegen das gehostete Supabase-Projekt prüfen: Zielkonto,
   Profil, Sitzungen und anonymisierte Auditbezüge; blockierende Storage-Eigentümer
   und unbestätigte Antworten gesondert untersuchen. Keine automatische Löschfrist festgelegt.
+- [x] 29. Vollständigen Supabase-Teststack auf temporärem GitHub-Runner eingerichtet
+  und ausgeführt: zehn Prüfgruppen für parallele Registrierung, Bestätigungsmail,
+  Kürzel, Rollen-/RLS-Trennung, Auth-Mailänderung, Recovery, Passwortwechsel,
+  Abmeldung, Sperren und Löschung bestanden. Nur synthetische lokale Testdaten.
+- [ ] 30. Ergebnisse der lokalen Integration nach Einrichtung des gehosteten
+  Projekts dort reproduzieren; realen SMTP-Dienst und betriebliche Freigaben prüfen.

@@ -57,3 +57,20 @@ und Browserprüfung inklusive bestätigter Löschung bestanden. Neu:
 `tools/account-races.cjs` für vier kontrolliert verzögerte Antwortfolgen. Das
 Löschformular wurde mit axe ohne Verstöße im automatischen Prüfumfang getestet.
 Reale Supabase-Abnahme bleibt offen (SUPABASE_SETUP.md Punkte 14–15).
+
+## Vollständiger lokaler Supabase-Stack [Codex, 2026-10-17]
+
+Die vorherige Lücke zwischen simulierten Tests und echten Backendkomponenten
+wurde für die grundlegenden Abläufe geschlossen: Workflow `Supabase integration`
+startet einen temporären lokalen Stack auf GitHub (CLI 2.121.0, Ubuntu 24.04).
+Alle vier Migrationen, Auth, PostgREST und die Edge Function werden ausgeführt;
+Bestätigungs-/Recovery-Mails verbleiben in Mailpit. Keine gehosteten Ziele oder
+echten Schülerdaten. Lauf 39033467128, Codecommit `0477baa`, ist erfolgreich:
+zehn Prüfgruppen einschließlich paralleler Namenskollisionen, Mailänderung,
+RLS-Rechten, Recovery, Sperre und Löschung. Stack danach beendet.
+
+Werkzeuge: `tools/integration-stack.mjs` und `tools/integration-test.mjs`;
+Anleitung: `Docs/INTEGRATION_TEST.md`. 59 Node-Tests und Syntaxprüfung bestanden.
+`supabase/config.toml` enthält jetzt die erforderliche lokale `project_id`.
+Registrierung dort weiter geschlossen. Noch keine Aussage über den späteren
+gehosteten Dienst, reale SMTP-Zustellung oder schulische Freigabe möglich.

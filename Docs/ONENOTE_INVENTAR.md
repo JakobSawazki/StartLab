@@ -41,5 +41,8 @@ Nicht übernommen: Namen von Kolleginnen und Kollegen (nur Funktionen), leere Ko
 Namenslisten, Anmeldeformular mit persönlichen Feldern, Logos/Bilder, interne Termine,
 Archivdokumente, Projektkompetenz-Abstimmung, eingescannte E-Commerce-Information (unlesbar).
 
-Nächster Schritt: Originale in `private/` ablegen (Git-ignoriert), Inhalt und
-Rechte prüfen, erst dann bereinigte und freigegebene Materialien veröffentlichen.
+Nächster Schritt [Codex, 2026-10-17]: Vorhandene Originale bleiben im ignorierten
+Ordner `resources/`, lokale Auszüge in `private/`. Noch fehlende Originale und
+die Inhaltsrückfragen aus `claude2codex.md` ergänzen; erst nach inhaltlicher
+Prüfung weitere freigegebene Inhalte veröffentlichen. Keine Originaldateien
+automatisch verschieben oder in Git aufnehmen.

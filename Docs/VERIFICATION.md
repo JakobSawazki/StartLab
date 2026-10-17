@@ -289,3 +289,28 @@ Prüfungen sind kein Nachweis für diese externe Integration.
   Anmeldung bestanden; keine fremde Datenübernahme oder JavaScript-Fehler.
 
 Weiterhin offen: reale Supabase-Abnahme und schulische Betriebsentscheidungen.
+
+### Vollständiger lokaler Supabase-Teststack [Codex, 2026-10-17]
+
+- GitHub-Workflow [39033294662](https://github.com/JakobSawazki/StartLab/actions/runs/39033294662)
+  für Commit `09e0242`: neun Prüfgruppen mit echten Supabase-Komponenten bestanden.
+- Erweiterter Workflow [39033467128](https://github.com/JakobSawazki/StartLab/actions/runs/39033467128)
+  für Commit `0477baa`: **zehn Prüfgruppen bestanden**, einschließlich gleichzeitiger
+  Registrierungen gleicher Namen und administrativ bestätigter Auth-Mailänderung.
+- Supabase-CLI 2.121.0 auf Ubuntu 24.04; echte PostgreSQL-/Auth-/PostgREST-/Edge-
+  Komponenten und lokales Mailpit. Alle vier Migrationen wurden angewandt.
+- Belegt: Bestätigungsmails und Recovery-Links, Login erst nach Bestätigung,
+  eindeutige Kürzel bei parallelen Anfragen, Kürzel-Anmeldung, Trennung der Profile,
+  verweigerte direkte Rollen-/Profiländerung, Adminliste, aktuelle Auth-Mail als
+  Reset-/Anmeldeziel, Passwortwechsel, Widerruf vorheriger Sitzungen, direkte
+  Profil-RLS nach Abmeldung/Sperre, Entsperren, bestätigte Löschung und anonymes Audit.
+- Beide Teststacks nach erfolgreicher Prüfung beendet. Keine realen Personen,
+  kein externes SMTP, keine gehosteten Supabase-Projekte. Workflow-Ausgabe des
+  ersten Laufs auf JWT-/Secret-Key-Muster geprüft: keine Treffer (begrenzter
+  Mustercheck, keine allgemeine Geheimnisfreiheit zugesichert).
+- Lokale Node-Prüfung: **59 Tests bestanden**, darunter zwei Prüfungen zu
+  Zielbegrenzung und isolierter Testkonfiguration; Syntaxprüfung bestanden.
+
+Diese Ergebnisse ersetzen die frühere Beschränkung auf simulierte Antworten
+für die genannten Kontoabläufe. Die Abnahme des späteren gehosteten Projekts,
+seiner Betriebsparameter und seines SMTP-Versands bleibt ausdrücklich offen.
