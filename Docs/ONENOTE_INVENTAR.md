@@ -21,5 +21,17 @@ Diese werden zunächst als Ideenbestand erfasst; StartLab führt noch keine
 NAGOLD-, Anwesenheits- oder Notenverwaltung ein. Personenbezogene Einträge oder
 ausgefüllte Tabellen werden nicht in ein öffentliches Material übernommen.
 
+## Exportstand [Claude, 2026-10-17]
+
+| Original | Stand |
+| --- | --- |
+| Persönliche Vorstellung (Word) | Lokal in `resources/` vorhanden (Git-ignoriert), gelesen, nicht veröffentlicht |
+| Vertrag (Word) | Lokal in `resources/` vorhanden (Git-ignoriert), gelesen, nicht veröffentlicht; enthält Regeln mit Bewertungsbezug |
+| Kennenlern-Bingo | Noch nicht exportiert |
+| Leistungsbewertung inkl. Informationsblatt | Noch nicht exportiert; vom Vertrag referenziert |
+
+Eine Übernahmeanalyse liegt nur lokal in `private/`. Veröffentlichung erst nach Antwort auf
+Frage 6 in tasks.md. StartLab-Inhalte und Statusanzeigen bleiben bis dahin unverändert.
+
 Nächster Schritt: Originale in `private/` ablegen (Git-ignoriert), Inhalt und
 Rechte prüfen, erst dann bereinigte und freigegebene Materialien veröffentlichen.

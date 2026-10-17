@@ -8,3 +8,5 @@ private/
 supabase/.temp/
 test-results/
 dist/
+# [Claude, 2026-10-17] Exported OneNote originals; publication needs Jakob's release (tasks.md question 6).
+resources/

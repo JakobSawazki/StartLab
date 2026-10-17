@@ -66,6 +66,10 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 
 - `tests/build.test.mjs`: Build-Liste vollständig, keine Geheimnisse in öffentlichen Dateien, `apiUrl` passend zur CSP. Neue Website-Dateien immer in `tools/build.mjs` eintragen.
 
+## Neunter Block [Claude, 2026-10-17]
+
+- Neuer Ordner `resources/` mit zwei Word-Originalen (nicht von mir angelegt) in `.gitignore` aufgenommen, damit sie nicht versehentlich öffentlich werden. Gesichtet; Analyse nur in `private/UEBERNAHME_ANALYSE.md`. Keine Inhalte auf die Website übernommen (Frage 6).
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12
