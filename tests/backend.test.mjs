@@ -1,10 +1,50 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import vm from 'node:vm';import {stripTypeScriptTypes} from 'node:module';
 const source=await readFile(new URL('../supabase/functions/startlab/index.ts',import.meta.url),'utf8');
 // [Claude, 2026-10-17] `respond` lets a test replace single simulated Supabase answers; `logs` captures console.error.
-async function setup(isAdmin=false,{registration='false',respond=()=>undefined}={}){let handler;const calls=[];const logs=[];const secrets={SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fake-service',SUPABASE_ANON_KEY:'fake-anon',SITE_ORIGIN:'https://school.example',SITE_URL:'https://school.example/StartLab/',REGISTRATION_ENABLED:registration};const context={Deno:{env:{get:k=>secrets[k]},serve:fn=>handler=fn},console:{error:m=>logs.push(String(m))},URL,Response,Request,TextEncoder,crypto,AbortSignal,fetch:async(url,options)=>{calls.push({url,options});const custom=await respond(url,options);if(custom)return custom;let data=true;if(url.endsWith('/auth/v1/user'))data={id:'test-user',email_confirmed_at:'2026-10-17'};else if(url.includes('/auth/v1/admin/users/'))data={id:'11111111-1111-1111-1111-111111111111',email:'current@example.test'};else if(url.includes('/administrators?'))data=isAdmin?[{user_id:'test-user'}]:[];else if(url.includes('/profiles?'))data=[{id:'11111111-1111-1111-1111-111111111111',username:'jaksaw',first_name:'Jakob',last_name:'Sawazki',email:'private@example.test'}];else if(url.includes('/auth/v1/token'))data={access_token:'new-token',expires_in:3600};return new Response(JSON.stringify(data),{status:200});}};vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'}),context);return {handler,calls,logs};}
-function req(body,auth=false,origin='https://school.example'){return new Request('https://test.supabase.co/functions/v1/startlab',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',...(auth?{Authorization:'Bearer test-token'}:{})},body:typeof body==='string'?body:JSON.stringify(body)});}
+async function setup(isAdmin=false,{registration='false',respond=()=>undefined}={}){let handler;const calls=[];const logs=[];const secrets={SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fake-service',SUPABASE_ANON_KEY:'fake-anon',SITE_ORIGIN:'https://school.example',SITE_URL:'https://school.example/StartLab/',REGISTRATION_ENABLED:registration};const context={Deno:{env:{get:k=>secrets[k]},serve:fn=>handler=fn},console:{error:m=>logs.push(String(m))},URL,Response,Request,TextEncoder,crypto,AbortSignal,atob,fetch:async(url,options)=>{calls.push({url,options});const custom=await respond(url,options);if(custom)return custom;let data=true;if(url.endsWith('/auth/v1/user'))data={id:'test-user',email_confirmed_at:'2026-10-17'};else if(url.includes('/auth/v1/admin/users/'))data={id:'11111111-1111-1111-1111-111111111111',email:'current@example.test'};else if(url.includes('/administrators?'))data=isAdmin?[{user_id:'test-user'}]:[];else if(url.includes('/profiles?'))data=[{id:'11111111-1111-1111-1111-111111111111',username:'jaksaw',first_name:'Jakob',last_name:'Sawazki',email:'private@example.test'}];else if(url.includes('/auth/v1/token'))data={access_token:'new-token',expires_in:3600};return new Response(JSON.stringify(data),{status:200});}};vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'}),context);return {handler,calls,logs};}
+const sessionId='33333333-3333-3333-3333-333333333333';
+const validToken='test.'+Buffer.from(JSON.stringify({session_id:sessionId})).toString('base64url')+'.signature';
+function req(body,auth=false,origin='https://school.example'){return new Request('https://test.supabase.co/functions/v1/startlab',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',...(auth?{Authorization:'Bearer '+validToken}:{})},body:typeof body==='string'?body:JSON.stringify(body)});}
 const fail=status=>new Response(JSON.stringify({msg:'upstream'}),{status});
 const sent=call=>JSON.parse(call.options.body);
+
+test('Widerrufene Sitzung verweigert alle geschützten Aktionen vor Rollen-/Datenzugriff [Codex]',async()=>{
+ for(const action of ['profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock']){
+  const {handler,calls}=await setup(true,{respond:url=>url.endsWith('/rpc/startlab_session_active')?new Response('false'):undefined});
+  const r=await handler(req({action,password:'neues-passwort-lang',id:'22222222-2222-2222-2222-222222222222'},true));
+  assert.equal(r.status,401,action);
+  assert.ok(!calls.some(c=>c.url.includes('/administrators?')||c.url.includes('/profiles?')||c.options.method==='PUT'),action);
+ }
+});
+
+test('Aktive Sitzung wird an die von Auth bestätigte Person gebunden [Codex]',async()=>{
+ const {handler,calls}=await setup();assert.equal((await handler(req({action:'profile'},true))).status,200);
+ const check=calls.find(c=>c.url.endsWith('/rpc/startlab_session_active'));
+ assert.deepEqual(sent(check),{account_id:'test-user',session_id:sessionId});
+ assert.ok(calls.findIndex(c=>c.url.endsWith('/auth/v1/user'))<calls.indexOf(check));
+});
+
+test('Token ohne gültige Sitzungs-ID wird auch bei bestätigter Auth-Antwort abgewiesen [Codex]',async()=>{
+ for(const token of ['not-a-jwt','test.'+Buffer.from('{}').toString('base64url')+'.sig','test.'+Buffer.from('{"session_id":"bad"}').toString('base64url')+'.sig']){
+  const {handler,calls}=await setup();const request=req({action:'profile'},true);request.headers.set('Authorization','Bearer '+token);
+  assert.equal((await handler(request)).status,401);
+  assert.ok(!calls.some(c=>c.url.endsWith('/rpc/startlab_session_active')||c.url.includes('/profiles?')));
+ }
+});
+
+test('Sitzungsdienst-Ausfall bleibt 502 statt einer irreführenden Abmeldung [Codex]',async()=>{
+ for(const part of ['/auth/v1/user','/rpc/startlab_session_active']){
+  const {handler}=await setup(false,{respond:url=>url.endsWith(part)?fail(503):undefined});
+  assert.equal((await handler(req({action:'profile'},true))).status,502,part);
+ }
+});
+
+test('Fehlgeschlagener globaler Logout nach Passwortwechsel wird ausdrücklich gemeldet [Codex]',async()=>{
+ const {handler}=await setup(false,{respond:url=>url.includes('/logout?scope=global')?fail(503):undefined});
+ const r=await handler(req({action:'password',password:'ein-neues-langes-passwort'},true));
+ assert.equal(r.status,200);const data=await r.json();assert.equal(data.signed_out,true);assert.equal(data.sessions_revoked,false);
+ assert.match(data.message,/anderen Geräten konnte nicht bestätigt/);
+});
 test('Adminliste ohne Anmeldung verweigert',async()=>{const {handler,calls}=await setup();const r=await handler(req({action:'admin-list'}));assert.equal(r.status,401);assert.ok(!calls.some(c=>c.url.includes('/profiles?')));});
 test('Schüler erhält keine Adminliste oder privaten Profildaten',async()=>{const {handler,calls}=await setup();const r=await handler(req({action:'admin-list'},true));assert.equal(r.status,403);assert.ok(!calls.some(c=>c.url.includes('/profiles?')));});
 test('Falsche Herkunft wird vor Backendzugriff abgewiesen',async()=>{const {handler,calls}=await setup();assert.equal((await handler(req({action:'login'},false,'https://evil.example'))).status,403);assert.equal(calls.length,0);});

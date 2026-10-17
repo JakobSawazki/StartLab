@@ -23,7 +23,28 @@ const kuerzelFrom='áàâãåāăąéèêëēėęěíìîïīįıóòôõøōő�
 function usernameBase(first:string,last:string){const norm=(s:string)=>{let v=s.normalize('NFC').trim().toLowerCase();for(const [a,b] of kuerzelPairs)v=v.replaceAll(a,b);return [...v].map(c=>{const i=kuerzelFrom.indexOf(c);return i<0?c:kuerzelTo[i];}).join('').replace(/[^a-z]/g,'');};return norm(first).slice(0,3)+norm(last).slice(0,3);}
 // The confirmed Auth e-mail is authoritative; the profile copy is only for listing.
 async function authEmail(id:string){const user=await request('/auth/v1/admin/users/'+encodeURIComponent(id));if(!user?.email)throw new Failure(404,'Konto nicht gefunden.');return user.email as string;}
-async function identity(req:Request){const token=req.headers.get('Authorization')?.replace(/^Bearer /,'');if(!token)throw new Failure(401,'Bitte melde dich an.');try{const user=await request('/auth/v1/user','GET',undefined,token);if(!user.email_confirmed_at)throw Error();if(user.banned_until&&new Date(user.banned_until).getTime()>Date.now())throw Error();return {user,token};}catch{throw new Failure(401,'Die Anmeldung ist abgelaufen. Bitte melde dich erneut an.');}}
+// [Codex, 2026-10-17] Decode only after Auth has validated the JWT. The database
+// binds session_id to this user and checks the current ban/profile-lock state.
+async function identity(req:Request){
+ const token=req.headers.get('Authorization')?.replace(/^Bearer /,'');
+ const denied=()=>new Failure(401,'Die Anmeldung ist abgelaufen oder das Konto ist gesperrt. Bitte melde dich erneut an.');
+ if(!token)throw new Failure(401,'Bitte melde dich an.');
+ let user;
+ try{user=await request('/auth/v1/user','GET',undefined,token);}
+ catch(error){if(error instanceof Failure&&error.status!==400)throw error;throw denied();}
+ if(!user?.id||!user.email_confirmed_at)throw denied();
+ let sessionId;
+ try{
+  const parts=token.split('.');if(parts.length!==3)throw Error();
+  const encoded=parts[1].replace(/-/g,'+').replace(/_/g,'/');
+  sessionId=JSON.parse(atob(encoded.padEnd(Math.ceil(encoded.length/4)*4,'='))).session_id;
+  if(typeof sessionId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sessionId))throw Error();
+ }catch{throw denied();}
+ if(user.banned_until&&new Date(user.banned_until).getTime()>Date.now())throw denied();
+ const active=await request('/rest/v1/rpc/startlab_session_active','POST',{account_id:user.id,session_id:sessionId});
+ if(active!==true)throw denied();
+ return {user,token};
+}
 Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Cache-Control':'no-store','Vary':'Origin'};const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers});try{
  if(!origin||!site||new URL(site).origin!==origin)throw new Failure(503,'Der Kontodienst wird noch eingerichtet.');
  if(req.headers.get('Origin')!==origin)throw new Failure(403,'Diese Herkunft ist nicht zugelassen.');
@@ -54,7 +75,12 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  const {user,token}=await identity(req);
  if(action==='logout'){await request('/auth/v1/logout','POST',{},token);return reply({message:'Abgemeldet.'});}
  // [Claude, 2026-10-17] After a password change all sessions are revoked (e.g. a login left open on a shared school PC).
- if(action==='password'){await request('/auth/v1/user','PUT',{password:password(body.password)},token);await request('/auth/v1/logout?scope=global','POST',{},token).catch(()=>null);return reply({message:'Dein neues Passwort ist gespeichert. Aus Sicherheitsgründen wurdest du auf allen Geräten abgemeldet. Melde dich mit dem neuen Passwort an.',signed_out:true});}
+ if(action==='password'){
+ await request('/auth/v1/user','PUT',{password:password(body.password)},token);
+ let revoked=true;
+ try{await request('/auth/v1/logout?scope=global','POST',{},token);}catch{revoked=false;}
+ return reply({message:revoked?'Dein neues Passwort ist gespeichert. Aus Sicherheitsgründen wurdest du auf allen Geräten abgemeldet. Melde dich mit dem neuen Passwort an.':'Dein neues Passwort ist gespeichert und du wurdest hier abgemeldet. Die Abmeldung auf anderen Geräten konnte nicht bestätigt werden. Bitte wende dich an deine Lehrkraft.',signed_out:true,sessions_revoked:revoked});
+ }
  const roles=await request('/rest/v1/administrators?select=user_id&user_id=eq.'+encodeURIComponent(user.id));const isAdmin=roles.length===1;
  if(action==='profile'){const profiles=await request('/rest/v1/profiles?select=username,first_name,last_name&id=eq.'+encodeURIComponent(user.id));if(!profiles.length)throw new Failure(404,'Kein Profil gefunden.');return reply({...profiles[0],is_admin:isAdmin});}
  if(!isAdmin)throw new Failure(403,'Nur für Administratoren.');

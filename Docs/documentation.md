@@ -304,3 +304,27 @@ README auf den aktuellen Stand gebracht.
 Die Liste steht jetzt als Daten in `inhalte.js` (`tastenkuerzel`) und deckt die Themen der
 OneNote-Seite „Hotkeys“ ab (Kopieren, Ausschneiden, Einfügen, Screenshot, Desktop, Zoom). Es
 bleibt eine StartLab-Neufassung mit Windows-Standardkürzeln, bis das Original vorliegt.
+
+## 9. Nachprüfung und Sitzungsabsicherung [Codex, 2026-10-17]
+
+Claudes Stand einschließlich der neuen Inhalte und Kontoverwaltung übernommen.
+Die bestehende Auth-Abfrage wurde um einen expliziten Sitzungsabgleich ergänzt:
+Nach Prüfung des Tokens durch Auth werden dessen Sitzungs-ID und die bestätigte
+Benutzer-ID gemeinsam in der Datenbank geprüft. Migration 0004 berücksichtigt
+`auth.sessions`, die E-Mail-Bestätigung, den Auth-Bann und `profiles.locked_at`.
+Die RLS-Regel für eigene Profile nutzt denselben Abgleich auch bei direktem
+PostgREST-Zugriff. Es entstehen keine öffentlich lesbaren Sitzungstabellen.
+
+Damit hängt die Wirkung von Abmeldung und Sperren nicht nur vom Ablauf eines
+bereits ausgestellten Tokens oder von `banned_until` in der User-API-Antwort ab.
+Die Grundlage ist Supabases dokumentierte Empfehlung zum Abgleich mit
+[`auth.sessions`](https://supabase.com/docs/guides/auth/sessions).
+
+Ein Dienstausfall bei der Identitäts-/Sitzungsprüfung bleibt als solcher erkennbar
+(502/429), statt als falsche Anmeldung dargestellt zu werden. Beim Passwortwechsel
+wird ein Fehler der globalen Abmeldung nicht mehr verschluckt: Die Person erhält
+die Bestätigung des Passwortwechsels und einen ausdrücklichen Hinweis, dass die
+Abmeldung anderer Geräte nicht bestätigt werden konnte; lokal wird abgemeldet.
+
+Die Funktion bleibt deaktiviert, bis alle vier Migrationen und die echte
+Supabase-Abnahme einschließlich Recovery-Sitzungen abgeschlossen sind.

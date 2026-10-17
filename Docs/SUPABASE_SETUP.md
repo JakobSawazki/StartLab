@@ -13,7 +13,8 @@ oder in das Repository schreiben. Kosten und gewählten Tarif im Dashboard prüf
 
 `supabase/migrations/202610170001_startlab.sql` und danach
 `supabase/migrations/202610170002_startlab_accounts.sql` sowie
-`supabase/migrations/202610170003_startlab_lock.sql` (Spalte `locked_at`) in einem neuen Projekt über den
+`supabase/migrations/202610170003_startlab_lock.sql` (Spalte `locked_at`) und
+`supabase/migrations/202610170004_startlab_sessions.sql` (aktive Sitzungen) in einem neuen Projekt über den
 SQL-Editor anwenden (oder per `supabase db push`). [Claude, 2026-10-17] Die zweite Migration
 vereinheitlicht die Kürzelbildung mit Website und Edge Function und hält `profiles.email`
 per Trigger mit der bestätigten Auth-Adresse synchron. Sie erstellt Profile, Adminrollen, temporäre Anfragelimits,
@@ -123,11 +124,37 @@ Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
 11. SMTP absichtlich falsch konfigurieren: „Passwort vergessen“ bleibt neutral, die
     Function-Logs zeigen `recover_failed`; Admin-Reset meldet den Fehler, Audit enthält
     `password_reset_failed`. Logs enthalten keine Adressen.
-12. Passwortwechsel meldet auf einem zweiten Gerät angemeldete Sitzungen ab (spätestens
-    nach Ablauf des Access-Tokens).
+12. [Codex, 2026-10-17] Nach Abmeldung bzw. erfolgreicher globaler Abmeldung beim
+    Passwortwechsel eine zuvor gespeicherte Test-Sitzung auf einem zweiten Gerät
+    erneut verwenden: geschützte Edge-Aktionen müssen sofort 401 liefern, direkte
+    Profilabfragen dürfen keine Zeile liefern (auch vor Ablauf des Access-Tokens).
+    Passwortwechsel mit absichtlich gestörtem globalem Logout: Passwort ist geändert,
+    die Oberfläche meldet die nicht bestätigte Abmeldung anderer Geräte ausdrücklich.
 13. [Claude, 2026-10-17] Kontosperre: Admin sperrt Testkonto B; B kann sich nicht anmelden und
     keine geschützte Aktion mehr ausführen; Audit `account_locked`; Entsperren stellt den Zugang her.
     Ein Admin kann das eigene Konto nicht sperren.
+
+### Sitzungsprüfung [Codex, 2026-10-17]
+
+Ein gültiges Access-Token allein genügt nicht für geschützte StartLab-Anfragen.
+Nach der Auth-Prüfung wird dessen `session_id` mit einer aktiven Sitzung derselben
+Person in `auth.sessions` abgeglichen. Bestätigte E-Mail, aktueller Auth-Bann und
+`profiles.locked_at` werden in derselben Datenbankabfrage geprüft. Eine fehlende
+oder unzulässige Sitzung wird abgewiesen. Bei Datenbankausfall wird kein Zugriff
+gewährt; die API meldet den Dienstausfall, statt ein falsches Passwort zu behaupten.
+
+Die neue RLS-Regel bindet auch direkte Profilabfragen an die aktive eigene Sitzung.
+Der Browser erhält weder Zugriff auf `auth.sessions` noch die Möglichkeit, fremde
+Sitzungen abzufragen. Die allgemeine Prüffunktion darf nur die Service-Rolle
+aufrufen; angemeldete Personen erhalten lediglich eine parameterlose Prüfung
+ihrer eigenen signierten JWT-Sitzung.
+
+Das ist lokal mit PostgreSQL/PGlite und simulierten Auth-Antworten geprüft. Vor
+Produktivbetrieb müssen die Existenz von `auth.sessions`, das tatsächliche
+Entfernen der Sitzungen beim Logout und das Verhalten von Recovery-Sitzungen
+gegen das eingerichtete Supabase-Projekt abgenommen werden. Bei teilweise
+fehlgeschlagener Kontosperre können Auth-Bann und Profilstatus voneinander
+abweichen; beide Sperrsignale verweigern Zugriff bis zur erfolgreichen Entsperrung.
 
 Erst danach Registrierung für den Unterricht aktivieren. Ohne Klassen-Einladungen
 ist die Registrierung nach Freischaltung grundsätzlich öffentlich. Das Auth-Dashboard
@@ -155,6 +182,7 @@ Passwörter oder personenbezogenen Request-Bodies in eigene Logs schreiben.
 - [Benutzerprofile](https://supabase.com/docs/guides/auth/managing-user-data)
 - [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 - [Edge Function Secrets](https://supabase.com/docs/guides/functions/secrets)
+- [Sitzungen und Prüfung nach Abmeldung](https://supabase.com/docs/guides/auth/sessions)
 
 Diese Quellen wurden für den Architekturentwurf geprüft. Ein produktiver
 E-Mail-Versand, eine rechtliche Freigabe oder eine reale Datenbankabnahme ist

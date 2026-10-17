@@ -247,3 +247,27 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
+
+### Sitzungsabsicherung nach der Claude-Übergabe [Codex, 2026-10-17]
+
+- `npm test`: **49 Tests bestanden**, davon fünf neue Fälle zu widerrufenen
+  Sitzungen, Bindung an den bestätigten Benutzer, fehlenden/manipulierten
+  Sitzungs-IDs, Dienstausfällen und fehlgeschlagener globaler Abmeldung.
+- `npm run check`: bestanden.
+- TypeScript 5.6.3 mit `--noEmit --strict`, ES2022/ES2023+DOM und lokaler
+  Deno-Deklaration: Edge Function ohne Typfehler.
+- `tools/sql-check.mjs` gegen PGlite 0.2.17: **11 Prüfgruppen bestanden**;
+  alle vier Migrationen wurden in Reihenfolge auf die lokale Testdatenbank
+  mit Supabase-Auth-Schemastubs angewandt. Neue Prüfungen: aktive Sitzung,
+  fremde Benutzerzuordnung, Kontobann, Profilsperre, E-Mail-Bestätigung,
+  entzogene Sitzung sowie RPC-Rechte und direktes Profil-RLS.
+- Edge-Browserprüfung mit axe-core: Navigation, Materialien, Druck, mobile
+  Ansichten und simulierte Kontoabläufe bestanden; keine JavaScript-/CSP-Fehler,
+  keine Verstöße im automatischen axe-Prüfumfang.
+- `node tools/build.mjs`: bestanden. `config.js` weiterhin ohne API-Adresse;
+  keine Kontofunktion freigeschaltet und keine echten Konten oder Mails erzeugt.
+
+Die neue Migration ist noch nicht auf einem echten Supabase-Projekt angewandt.
+Insbesondere das Löschen der Sitzungsdatensätze beim tatsächlichen Logout,
+Passwortwechsel und die Recovery-Sitzungen müssen dort getestet werden. Lokale
+Prüfungen sind kein Nachweis für diese externe Integration.

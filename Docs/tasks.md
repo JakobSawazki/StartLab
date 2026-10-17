@@ -42,12 +42,16 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
 
 - [ ] 10. Supabase-Projekt in EU-Region anlegen, schulische Freigabe und Dienstbedingungen klären.
 - [ ] 11. [Claude, 2026-10-17] Nach dem Deploy `tools/smoke-check.mjs` ausführen (SUPABASE_SETUP.md).
-  Beide Migrationen (0001, dann 0002) anwenden, Edge Function deployen, Secrets und Redirects konfigurieren.
+  [Codex, 2026-10-17] Alle vier Migrationen in Reihenfolge 0001 bis 0004 anwenden,
+  Edge Function deployen, Secrets und Redirects konfigurieren.
 - [ ] 12. Erstes bestätigtes Admin-Konto und SMTP einrichten; Registrierung gezielt freischalten.
 - [ ] 13. [Claude, 2026-10-17] Vorab mit PGlite geprüft (tools/sql-check.mjs): Kürzel, Kollisionen,
   Mailabgleich, RLS/Rechte, Limits, Löschkaskade. Offen bleibt die echte Abnahme:
   Mit zwei Schüler-Testkonten und einem Admin-Konto RLS, parallele
   Kürzelkollision, E-Mail-Bestätigung, Recovery, unbefugte Adminaufrufe und Limits testen.
+  [Codex, 2026-10-17] Zusätzlich vorhandene Tokens nach Abmeldung/Passwortwechsel
+  sowie Auth-Bann und Profil-Sperre getrennt prüfen; Migration 0004 ergänzt die
+  aktive Sitzungsprüfung für Edge-Aktionen und direkte Profilabfragen.
 - [ ] 14. Kontosperre, Einladung/Freigabe, MFA, Kontolöschung, Auditansicht und
   ggf. Klassen-/Schuljahresverwaltung ausbauen. [Claude, 2026-10-17] Adminliste lädt jetzt
   seitenweise je 100 Konten; Auditansicht (letzte 100 Vorgänge) ergänzt. Beides gegen echtes
@@ -68,3 +72,13 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
 ## Veröffentlichungsstand
 
 Repository und Live-Veröffentlichung: siehe [VERIFICATION.md](VERIFICATION.md).
+
+## Weiterarbeit Codex [2026-10-17]
+
+- [x] 23. Claudes Kontensperre und Sitzungsbehandlung nachgeprüft. Aktive
+  Datenbanksitzung, Kontozuordnung, bestätigte E-Mail und beide Sperrsignale
+  werden vor geschützten Aktionen geprüft. RLS-Regel entsprechend erweitert.
+- [x] 24. Fehlgeschlagene globale Abmeldung nach Passwortwechsel wird nicht
+  mehr als bestätigte Abmeldung aller Geräte ausgegeben.
+- [ ] 25. Migration 0004 und die neuen Sitzungsfälle im echten Supabase abnehmen;
+  Kontofunktionen bis zur Einrichtung und Abnahme weiter deaktiviert lassen.

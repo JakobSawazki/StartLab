@@ -1,5 +1,13 @@
 # Änderungen
 
+## In Arbeit · 2026-10-17 [Codex]
+
+Sitzungsprüfung nach Auth-Validierung: Migration 0004 verknüpft aktiven
+Sitzungsdatensatz, Benutzer, E-Mail-Bestätigung, Auth-Bann und Profilsperre.
+Direkte Profilabfragen erhalten dieselbe Prüfung über RLS. Fehler bei der
+globalen Abmeldung nach Passwortwechsel werden ausdrücklich gemeldet.
+Kontofunktionen bleiben bis zur Supabase-Einrichtung und Abnahme deaktiviert.
+
 ## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
 
 Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob). Pages-Workflow auf node24-Actions
