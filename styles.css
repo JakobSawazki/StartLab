@@ -23,3 +23,4 @@ td.num{white-space:nowrap}table.wide{min-width:640px}th[scope=row]{font-weight:6
 .next-dates time{font-size:13px;font-weight:700;color:var(--green)}.next-dates span{font-size:14px}.next-dates small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 @media(max-width:850px){.next-panel{grid-template-columns:1fr}.next-dates{grid-template-columns:1fr}}
 .row-actions{display:flex;gap:8px;flex-wrap:wrap}.row-actions button{padding:8px 12px;font-size:13px}
+@media(max-width:560px){dialog td,dialog th{padding:8px 6px}}

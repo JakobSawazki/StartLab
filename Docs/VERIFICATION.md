@@ -189,5 +189,11 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Ausbildungsberufe mit Dokumentstand aus den OneNote-PDFs und Link zum KMK-Downloadbereich
   (Weiterleitung auf die aktuelle KMK-Adresse übernommen).
 
+### Inhaltsdialoge auf dem Handy [Claude, 2026-10-17]
+
+- Browser-Prüfstand: sieben Inhaltsdialoge bei 375 px mit aufgeklappten Abschnitten ohne seitlichen
+  Überlauf. Sichtprüfung Kalender: Datum bricht nicht mehr um, Tabellen auf schmalen Bildschirmen
+  kompakter.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
