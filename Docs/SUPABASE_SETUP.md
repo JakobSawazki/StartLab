@@ -11,8 +11,11 @@ oder in das Repository schreiben. Kosten und gewählten Tarif im Dashboard prüf
 
 ## 2. Datenbank
 
-`supabase/migrations/202610170001_startlab.sql` in einem neuen Projekt über den
-SQL-Editor anwenden. Sie erstellt Profile, Adminrollen, temporäre Anfragelimits,
+`supabase/migrations/202610170001_startlab.sql` und danach
+`supabase/migrations/202610170002_startlab_accounts.sql` in einem neuen Projekt über den
+SQL-Editor anwenden (oder per `supabase db push`). [Claude, 2026-10-17] Die zweite Migration
+vereinheitlicht die Kürzelbildung mit Website und Edge Function und hält `profiles.email`
+per Trigger mit der bestätigten Auth-Adresse synchron. Sie erstellt Profile, Adminrollen, temporäre Anfragelimits,
 Audit sowie die RLS-Regeln und einen Trigger zur Kürzelvergabe.
 
 Die Migration ist für die einmalige Initialisierung ausgelegt. Bei Fehlern den
@@ -89,6 +92,15 @@ Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
 6. Reset-Link erreichbar, neue Passwortvergabe, abgelaufener Link, erneute Anmeldung.
 7. Abmelden und Neuladen auf gemeinsamem Schul-PC hinterlassen keine Sitzung.
 8. Kontolöschung im Dashboard entfernt Profil und Rolle; Backup-Restore separat prüfen.
+9. [Claude, 2026-10-17] Mailadresse eines Testkontos ändern und bestätigen: `profiles.email`
+   folgt, Kürzel-Login und Admin-Reset nutzen die neue Adresse.
+10. Namen mit Akzenten (z. B. erfundene Testperson „Šimon Øster“) ergeben dasselbe Kürzel wie
+    die Vorschau im Formular (`simost`).
+11. SMTP absichtlich falsch konfigurieren: „Passwort vergessen“ bleibt neutral, die
+    Function-Logs zeigen `recover_failed`; Admin-Reset meldet den Fehler, Audit enthält
+    `password_reset_failed`. Logs enthalten keine Adressen.
+12. Passwortwechsel meldet auf einem zweiten Gerät angemeldete Sitzungen ab (spätestens
+    nach Ablauf des Access-Tokens).
 
 Erst danach Registrierung für den Unterricht aktivieren. Ohne Klassen-Einladungen
 ist die Registrierung nach Freischaltung grundsätzlich öffentlich. Das Auth-Dashboard
@@ -99,9 +111,11 @@ beachten; der Edge-Schalter allein sperrt direkte Auth-Registrierungen nicht.
 
 Kein vollständiges Schulverwaltungssystem: keine Klassenverwaltung, kein
 Klassen-Einladungscode, keine Freigabe, kein automatischer Löschlauf und keine
-Admin-MFA-Oberfläche. Adminübersicht zeigt bis zu 500 Konten. Eine Mailänderung
-über externe Auth-Werkzeuge erfordert aktuell auch einen geprüften Abgleich des
-Profilfelds `email`, weil die Kürzel-Anmeldung dieses Feld verwendet.
+Admin-MFA-Oberfläche. [Claude, 2026-10-17] Adminübersicht lädt seitenweise je 100 Konten.
+Kürzel-Login und Admin-Reset verwenden die Auth-Adresse; `profiles.email` wird per
+Trigger nachgeführt (ungeprüft gegen echtes Supabase). Ist im Dashboard
+„Secure password change“ aktiv, kann ein Passwortwechsel ohne frische Anmeldung eine
+erneute Bestätigung verlangen; das ist in der Abnahme zu prüfen.
 
 Globale und personenbezogene Limits sind eine erste Missbrauchsbremse, kein
 vollständiger DDoS-/Bot-Schutz. Für produktiven öffentlichen Betrieb Schutz am

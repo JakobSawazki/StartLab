@@ -2,7 +2,7 @@
 
 Stand: **17. Oktober 2026 (Europe/Berlin)** · Release **0.1.0**
 
-Mitwirkende: Jakob Sawazki, Codex. Einträge werden mit Autor und Datum geführt.
+Mitwirkende: Jakob Sawazki, Codex, Claude. Einträge werden mit Autor und Datum geführt.
 Struktur in Anlehnung an die Projektdokumentation von WorkbenchLab sowie die
 Aufgabenliste von Excel-Lab; keine Übernahme historischer Protokolle.
 
@@ -20,7 +20,7 @@ Vorgesehene Live-Adresse: https://jakobsawazki.github.io/StartLab/
 | Materialien | Suche, Filter, Status je Material; Neufassungen direkt druckbar |
 | Originale aus OneNote | Inventar begonnen, Anhänge noch nicht exportiert oder geprüft |
 | Startfortschritt | Vier lokale Häkchen, ohne Namen; kein Cloud-Lernstand |
-| Konten | Code vorbereitet, noch kein produktiver Supabase-Dienst |
+| Konten | Code vorbereitet und von Claude geprüft/nachgebessert (Abschnitt 8), noch kein produktiver Supabase-Dienst |
 | Administration | Servergeprüfte Rolle, Kontenübersicht, Reset-Link und Audit vorbereitet |
 | Offene Aufgaben / Antworten | [tasks.md](tasks.md) |
 | Einrichtung | [SUPABASE_SETUP.md](SUPABASE_SETUP.md) |
@@ -124,3 +124,90 @@ sind ohne diese Abnahme nicht als produktionsbereit zu verstehen.
 4. Supabase auf Jakobs ausdrückliche Auswahl hin vorbereitet.
 5. Öffentliches Repository erstellt und auf GitHub Pages veröffentlicht;
    erfolgreicher Workflow und HTTP-200-Antwort im Prüfprotokoll festgehalten.
+
+## 8. Bestandsprüfung und erster Verbesserungsblock [Claude, 2026-10-17]
+
+Grundlage: `Docs/CLAUDE_HANDOFF.md`, alle dort genannten Dokumente sowie
+`auth.js`, Edge Function, Migration, `app.js`, `styles.css` und Tests. Es gab
+keine fremden lokalen Änderungen außer der ungetrackten Übergabedatei.
+Supabase ist weiterhin **nicht** eingerichtet; alle Kontoprüfungen laufen gegen
+simulierte Antworten bzw. ein lokales Schein-Backend (nicht im Repository).
+
+### 8.1 Befunde Kontenarchitektur und Behebung
+
+| Befund | Behebung |
+| --- | --- |
+| Kürzelbildung in Website (NFD, alle Akzente) und SQL (kurze Liste) wich ab, z. B. `Šimon` → `sim` bzw. `imo`; zerlegte Umlaute (macOS) ergaben `a` statt `ae` | Eine gemeinsame Zeichentabelle in `content.js`, Edge Function und neuer Migration `202610170002_startlab_accounts.sql`, jeweils mit NFC-Normalisierung; ein Test vergleicht die drei Stellen wortgleich |
+| Kürzel-Login und Admin-Reset nutzten `profiles.email`, das nach einer Mailänderung veraltet | Edge Function liest die bestätigte Adresse aus Supabase Auth (`/auth/v1/admin/users/{id}`); zusätzlich Trigger `startlab_email_changed` gleicht `profiles.email` ab |
+| „Passwort vergessen“ verschluckte Versandfehler vollständig | Antwort bleibt neutral (keine Kontoexistenz), der Fehler wird ohne Adresse, Kürzel oder ID als `recover_failed` mit Statuscode protokolliert |
+| Admin-Reset meldete Mailausfall als allgemeinen Eingabefehler, Audit nur bei Erfolg | Admin erhält eine klare Versandfehlermeldung (502/429); Audit `password_reset_failed` bzw. `password_reset_requested` |
+| Alle Supabase-Fehler wurden zu 400; Ratenlimit beim Login erschien als „falsches Passwort“ | Statusklassen bleiben erhalten (429, 502); Login meldet nur echte Ablehnungen als 401 |
+| Ungültiges JSON / `null` / Array im Request führte zu 500 | 400 „Ungültige Anfrage.“ vor jedem Backendzugriff |
+| Namen ohne zwei lateinische Buchstaben scheiterten erst im Trigger mit unklarer Meldung | Edge Function und Formular prüfen vorab und verweisen ehrlich an die Lehrkraft (alternative Kürzelvergabe bleibt offen); Steuerzeichen in Namen abgewiesen (Edge und Trigger) |
+| Passwortwechsel ließ andere Sitzungen bestehen | Nach dem Wechsel `logout?scope=global`; die Oberfläche meldet ab und bittet um neue Anmeldung |
+| Abgelaufene/benutzte Links (`#error=…&error_code=otp_expired`) wurden still ignoriert | Fragment wird entfernt, Dialog „Passwort vergessen?“ mit Erklärung geöffnet |
+| Manipuliertes oder abgelaufenes Token blieb im Speicher | Sitzung speichert Ablaufzeit; bei 401 oder Ablauf wird sie verworfen, der Kopfbereich zeigt wieder „Anmelden“ |
+
+Geprüft ohne Änderungsbedarf: RLS und `revoke` auf allen vier Tabellen,
+keine Grants für `anon`/`authenticated` auf Funktionen, Adminrolle nur über
+`administrators` (keine Selbstvergabe, nicht aus Metadaten), parallele
+Kürzelvergabe per Advisory-Lock plus UNIQUE, Herkunftsprüfung vor jedem
+Backendzugriff, kein Passwort im Profil oder Audit, Token nur im Arbeitsspeicher.
+
+Bekannte Grenzen (dokumentiert, nicht behoben):
+
+- Die Registrierungssperre per `REGISTRATION_ENABLED` sperrt den öffentlichen
+  Auth-Endpunkt nicht; dafür bleibt „Allow new users to sign up“ im Dashboard
+  maßgeblich. Direkte Registrierungen dort umgehen die Edge-Vorprüfung, der
+  Trigger prüft Namen aber weiterhin.
+- Ein Kürzel-Login für ein existierendes Kürzel macht eine Anfrage mehr als für
+  ein unbekanntes; über Antwortzeiten ist die Existenz eines Kürzels erkennbar.
+  Kürzel sind aus Namen ableitbar und gelten deshalb nicht als geheim.
+- Registrierung meldet einen Mailausfall als 502. Bei defektem SMTP kann das in
+  Einzelfällen anzeigen, dass eine Adresse noch nicht registriert ist; dafür
+  wartet niemand auf eine Bestätigungsmail, die nie kommt.
+- Anfragelimits zählen pro Identifikator und global, nicht pro IP.
+- Die Migrationen und Trigger sind nicht gegen ein echtes PostgreSQL/Supabase
+  ausgeführt worden.
+
+### 8.2 Bedienbarkeit und Barrierefreiheit
+
+- Dialoge haben einen zugänglichen Namen (`aria-labelledby` auf die Überschrift).
+- Nach jedem Ansichtswechsel im Kontodialog liegt der Fokus auf der neuen
+  Überschrift; Fehleingaben setzen den Fokus auf das betroffene Feld und nennen
+  den Grund im Statusbereich. Umschalter „Anmelden/Registrieren“ zeigen den
+  aktiven Zustand (`aria-pressed`). Passwortregel per `aria-describedby`.
+- Registrierung zeigt vorab das voraussichtliche Kürzel bzw. einen Hinweis,
+  wenn das automatische Kürzel nicht gebildet werden kann.
+- Kopfbutton zeigt „Mein Konto“ bei aktiver Sitzung; Profil erklärt das
+  Verhalten auf gemeinsam genutzten Rechnern; Passwort kann nach Anmeldung
+  geändert werden. Adminliste: Spaltenköpfe mit `scope`, eindeutige
+  Button-Namen je Konto, Rückfrage vor dem Reset.
+- Seitentitel je Ansicht (WCAG 2.4.2), Filtergruppe mit `role="group"`,
+  Trefferanzahl der Materialsuche als Statusmeldung, Linktexte wie
+  „Entdecken“ und „Stand ansehen“ mit unsichtbarem Kontext.
+- Bingo: auf allen Bildschirmgrößen 4 × 4 (vorher mobil 2 Spalten, wodurch
+  „vier in einer Reihe“ nicht passte), weiche Trennstellen in langen Wörtern,
+  Statusmeldung zu markierten Feldern und vollständigen Reihen.
+- Kontraste: `--muted` von `#677572` auf `#5b6966` (vorher 4,2:1 auf getönten
+  Flächen, jetzt ≥ 4,98:1); Eingabefeldränder von 1,8–1,9:1 auf 3,45:1.
+- Druck: Ohne geöffneten Dialog wurde bisher eine leere Seite gedruckt. Jetzt
+  druckt jede Seite ihren Inhalt ohne Navigation und Bedienelemente; geöffnete
+  Vorlagen drucken oben ausgerichtet ohne Abdunklung.
+
+### 8.3 Nicht verändert
+
+Keine Inhalte zu Bewertung, Fristen, Bildungsplänen, Praktikum oder GFS
+ergänzt; Statusanzeigen für fehlende OneNote-Originale unverändert. Keine
+Versionsnummer erhöht, nichts veröffentlicht oder committet.
+
+### 8.4 Zweiter Block [Claude, 2026-10-17]
+
+- Adminliste: seitenweise je 100 Konten mit stabiler Sortierung (neueste zuerst,
+  dann ID); ungültige Seitenangaben werden abgewiesen. Damit entfällt die harte
+  Grenze von 500 Konten.
+- Browser-Prüfstand erweitert (siehe VERIFICATION.md). Der Kontodienst wird im
+  Test per `page.route` simuliert; es entsteht keine scheinbar echte Registrierung
+  im Browser und keine Anfrage an einen echten Dienst.
+- Unsichtbarer Kontext in wiederholten Button- und Linktexten steht in Klammern,
+  damit Screenreader „Stand ansehen (Leistungsbewertung)“ statt „Stand ansehen : …“ lesen.

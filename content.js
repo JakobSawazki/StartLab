@@ -14,8 +14,15 @@ export const materials = [
  {id:'hotkeys',category:'Werkzeuge',title:'Tipps & Tastenkürzel',description:'Kleine Handgriffe, die deinen Schulalltag leichter machen.',status:'StartLab-Neufassung',action:'Tipps entdecken'},
  {id:'kalender',category:'Orientierung',title:'Termine & Kalender',description:'Wichtige Termine für eure Klasse im Überblick.',status:'Termine noch offen',action:'Stand ansehen'}
 ];
-export const bingo = ['spielt ein Instrument','mag Rätsel','hat ein Haustier','kocht gern','spricht mehr als eine Sprache','fährt gern Fahrrad','hat schon programmiert','liest gern','hört gern Podcasts','interessiert sich für Technik','zeichnet gern','macht gern Sport','mag Brettspiele','ist gern draußen','möchte etwas Neues lernen','hat heute jemanden kennengelernt'];
+export const bingo = ['spielt ein Instrument','mag Rätsel','hat ein Haustier','kocht gern','spricht mehr als eine Sprache','fährt gern Fahrrad','hat schon program\u00admiert','liest gern','hört gern Podcasts','interes\u00adsiert sich für Technik','zeichnet gern','macht gern Sport','mag Brett\u00adspiele','ist gern draußen','möchte etwas Neues lernen','hat heute jemanden kennen\u00adgelernt'];
+// [Claude, 2026-10-17] Identical table in supabase/migrations/202610170002_startlab_accounts.sql
+// and supabase/functions/startlab/index.ts; tests/content.test.mjs compares all three.
+export const kuerzelMap = Object.freeze({
+ pairs:[['ä','ae'],['ö','oe'],['ü','ue'],['ß','ss'],['æ','ae'],['œ','oe']],
+ from:'áàâãåāăąéèêëēėęěíìîïīįıóòôõøōőúùûūůűųýÿñńňçćčďđğłľĺřŕšśşťţžźż',
+ to:'aaaaaaaaeeeeeeeeiiiiiiiooooooouuuuuuuyynnncccddglllrrsssttzzz'
+});
 export function usernameBase(first,last) {
- const norm=s=>s.trim().toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+ const norm=s=>{let v=String(s??'').normalize('NFC').trim().toLowerCase();for(const [a,b] of kuerzelMap.pairs)v=v.replaceAll(a,b);return [...v].map(c=>{const i=kuerzelMap.from.indexOf(c);return i<0?c:kuerzelMap.to[i];}).join('').replace(/[^a-z]/g,'');};
  return norm(first).slice(0,3)+norm(last).slice(0,3);
 }

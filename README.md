@@ -33,6 +33,12 @@ npm run serve
 
 Vorschau: http://127.0.0.1:4173
 
+Browserprüfung (Microsoft Edge, Playwright außerhalb des Projekts, z. B. `playwright-core`):
+
+```sh
+STARTLAB_PLAYWRIGHT=/pfad/zu/node_modules/playwright-core node tools/browser-check.cjs
+```
+
 `node tools/build.mjs` erstellt das öffentliche Website-Paket mit einer festen
 Dateiliste. Datenbankmigrationen und Projektdokumentation gehören zum öffentlichen
 Quellcode, nicht zum Website-Paket. Keine Schülerdaten oder Schlüssel einchecken.
