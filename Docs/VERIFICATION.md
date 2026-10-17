@@ -125,5 +125,15 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   Supabase: 11 von 11 Punkten ok. Gegenprobe mit falscher Herkunft endet mit Fehlercode 1.
   Gegen eine echte Supabase-Instanz noch nicht gelaufen.
 
+### Schutztests für das Pages-Paket [Claude, 2026-10-17]
+
+- `tests/build.test.mjs` (28 Tests gesamt bestanden): Jede in `index.html` verlinkte und jede
+  per `import` geladene Datei steht in der Build-Liste; die öffentlichen Dateien enthalten keine
+  JWTs oder Schlüsselbegriffe; eine gesetzte `apiUrl` muss eine `*.supabase.co`-Function sein,
+  damit die CSP sie zulässt.
+- Gegenproben: fehlende Datei in der Build-Liste, eingefügtes JWT und fremde `apiUrl` schlagen
+  jeweils fehl; eine gültige Supabase-Adresse besteht. Da der Pages-Workflow `npm test` vor dem
+  Deploy ausführt, stoppen diese Fehler eine Veröffentlichung.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
