@@ -102,8 +102,12 @@ values ('HIER-DIE-GEPRUEFTE-KONTEN-UUID');
 ```
 
 Kein Adminrecht aus Name, E-Mail-Adresse oder frei beschreibbaren Metadaten
-ableiten. Supabase-Dashboardkonto mit MFA schützen. Eine verpflichtende MFA für
-Adminaktionen in der StartLab-Anwendung ist noch ein Ausbaupunkt.
+ableiten. Supabase-Dashboardkonto mit MFA schützen. [Codex, 2026-10-17] Auch
+StartLab selbst verlangt nun TOTP für Adminaktionen: Im gehosteten Auth-Dienst
+TOTP-Einrichtung und -Bestätigung aktivieren und nach der Rollenvergabe in
+StartLab die Authenticator-App einrichten. Anleitung: [ADMIN_MFA.md](ADMIN_MFA.md).
+Die lokale Konfiguration enthält beide erforderlichen TOTP-Schalter; eine
+zusätzliche Datenbankmigration ist dafür nicht nötig.
 
 ## 6. Verbindliche Funktionsabnahme
 
@@ -149,6 +153,12 @@ Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
     wird die Löschung nicht automatisch wiederholt: erst den tatsächlichen
     Auth-/Profilzustand im Dashboard prüfen. Storage-Eigentum kann die Löschung
     verhindern; gespeicherte Dateien nicht ungeprüft entfernen.
+16. Administrator nach neuer Passwort-Anmeldung: Kontenliste, Audit, Reset,
+    Sperren und Löschung müssen vor der TOTP-Bestätigung 403 liefern. Faktor
+    einrichten, falschen Code prüfen, korrekten Code bestätigen und danach
+    Adminaktionen prüfen. Nach Abmeldung/Neuladen ist erneut ein Code nötig.
+    Passwort-Reset allein darf einen bestätigten Faktor nicht ersetzen.
+    Bedienung mit der tatsächlich eingesetzten Authenticator-App abnehmen.
 
 ### Sitzungsprüfung [Codex, 2026-10-17]
 
@@ -180,8 +190,10 @@ beachten; der Edge-Schalter allein sperrt direkte Auth-Registrierungen nicht.
 ## Grenzen und nächster Ausbau
 
 Kein vollständiges Schulverwaltungssystem: keine Klassenverwaltung, kein
-Klassen-Einladungscode, keine Freigabe, kein automatischer Löschlauf und keine
-Admin-MFA-Oberfläche. [Claude, 2026-10-17] Adminübersicht lädt seitenweise je 100 Konten.
+Klassen-Einladungscode, keine Freigabe und kein automatischer Löschlauf.
+[Codex, 2026-10-17] Admin-TOTP ist implementiert; die gehostete Konfiguration und
+das Vorgehen bei Faktorverlust müssen vor Betriebsaufnahme abgenommen werden.
+[Claude, 2026-10-17] Adminübersicht lädt seitenweise je 100 Konten.
 Kürzel-Login und Admin-Reset verwenden die Auth-Adresse; `profiles.email` wird per
 Trigger nachgeführt (ungeprüft gegen echtes Supabase). Ist im Dashboard
 „Secure password change“ aktiv, kann ein Passwortwechsel ohne frische Anmeldung eine
@@ -200,6 +212,7 @@ Passwörter oder personenbezogenen Request-Bodies in eigene Logs schreiben.
 - [Edge Function Secrets](https://supabase.com/docs/guides/functions/secrets)
 - [Sitzungen und Prüfung nach Abmeldung](https://supabase.com/docs/guides/auth/sessions)
 - [Konten serverseitig löschen](https://supabase.com/docs/reference/javascript/auth-admin-deleteuser)
+- [Zwei-Faktor-Anmeldung (TOTP)](https://supabase.com/docs/guides/auth/auth-mfa/totp)
 
 Diese Quellen wurden für den Architekturentwurf geprüft. Ein produktiver
 E-Mail-Versand, eine rechtliche Freigabe oder eine reale Datenbankabnahme ist

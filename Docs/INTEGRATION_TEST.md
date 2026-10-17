@@ -67,6 +67,9 @@ Datenbank-, Mail- oder Schlüsselartefakte.
 10. Verweigerte Selbstlöschung/falsche Kürzelbestätigung, erfolgreiche Löschung,
    entferntes Profil, abgewiesene alte Sitzung und anonymisiertes Audit.
 11. Selbst angeforderte Passwort-vergessen-Mail im lokalen Postfach.
+12. Admin-TOTP: MFA-Pflicht vor Verwaltungszugriff, Einrichtung, falscher Code,
+    Freigabe mit korrektem Code und erneute Bestätigung nach Login/Restore.
+    Die OTP-Berechnung ist ausschließlich ein Testtreiber; Supabase validiert.
 
 ## Bedeutung des Ergebnisses
 

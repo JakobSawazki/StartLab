@@ -24,6 +24,12 @@ ergänzt und bestanden; insgesamt elf Integrationsgruppen. Datenvergleich,
 Anmeldung, Adminrolle und RLS nach Restore geprüft. Kein produktiver Backupdienst
 eingerichtet. Betriebsumfang und Wiederanlauf in BACKUP_RESTORE.md dokumentiert.
 
+Verpflichtende TOTP-Bestätigung für Kontenverwaltung ergänzt: Einrichtung per
+Authenticator-App, Codeansicht bei neuer Anmeldung und serverseitige Prüfung
+von AAL2 und aktuellem Faktor. Keine Änderung der Schüleranmeldung. Im lokalen
+Supabase einschließlich neuer Anmeldung nach Restore geprüft (zwölf Gruppen);
+gehostete MFA-Einrichtung und App-Abnahme bleiben offen.
+
 ## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
 
 Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob). Pages-Workflow auf node24-Actions

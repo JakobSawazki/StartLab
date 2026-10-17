@@ -61,7 +61,10 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
   Supabase ungeprüft. Kontosperre ergänzt (ungeprüft gegen echtes Supabase).
   [Codex, 2026-10-17] Kontolöschung mit Kürzelbestätigung, serverseitigem Schutz
   von Admin-/eigenen Konten und Audit ergänzt; lokale Abnahme bestanden, echte
-  Supabase-Abnahme offen. Weiterhin offen: Einladung/Freigabe, MFA.
+  Supabase-Abnahme offen. [Codex, 2026-10-17] Admin-TOTP jetzt ebenfalls
+  implementiert; Einrichtung, Codefehler, Freigabe und erneute MFA nach Login/
+  Restore im lokalen Supabase geprüft. Offen: Einladung/Freigabe sowie gehostete
+  MFA-Konfiguration und Abnahme mit der tatsächlichen Authenticator-App.
 - [ ] 15. OneNote-Anhänge exportieren, lokal prüfen, Inhalte und Veröffentlichungsrechte sichten.
   [Claude, 2026-10-17] „Persönliche Vorstellung“ und „Vertrag“ liegen in `resources/` (jetzt
   Git-ignoriert) und sind gesichtet; Analyse lokal in `private/`.
@@ -113,3 +116,9 @@ Repository und Live-Veröffentlichung: siehe [VERIFICATION.md](VERIFICATION.md).
   wiederherstellen; Datenvergleich, bestehende Anmeldung, Adminrolle und RLS
   bestanden. Gesamtlauf umfasst nun elf Integrationsgruppen. BACKUP_RESTORE.md
   dokumentiert Umfang, Wartungsrechte und betriebliche Grenzen.
+- [x] 32. Verpflichtende TOTP-Bestätigung für alle Adminaktionen ergänzt:
+  Einrichtung und Codeansicht, serverseitiges AAL2 plus aktueller bestätigter
+  Faktor, Schutz vor Ersatz durch bloßen Passwort-Reset. Browser-/Backend- und
+  lokale Supabase-Prüfung bestanden; ADMIN_MFA.md dokumentiert Einrichtung.
+- [ ] 33. Admin-TOTP im gehosteten Auth-Dienst aktivieren, mit echter App
+  einrichten und Wiederherstellungszuständigkeit bei Faktorverlust festlegen.

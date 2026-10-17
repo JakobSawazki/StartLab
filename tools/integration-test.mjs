@@ -22,7 +22,7 @@ export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
  async function login(person,pass=password,identifier=person.email){const {data}=await edge('login',{identifier,password:pass});ensure(data.access_token,'Login lieferte keine Sitzung.');person.token=data.access_token;}
  async function upgradeAdmin(){
   let step=Math.floor(Date.now()/30000);
-  if(step<=lastTotpStep){await new Promise(r=>setTimeout(r,(lastTotpStep+1)*30000-Date.now()+200));step=Math.floor(Date.now()/30000);}
+  if(step<=lastTotpStep||30000-Date.now()%30000<1500){await new Promise(r=>setTimeout(r,(Math.max(lastTotpStep,step)+1)*30000-Date.now()+200));step=Math.floor(Date.now()/30000);}
   const {data}=await edge('mfa-verify',{factor_id:factorId,code:totp(totpSecret)},admin.token);ensure(data.access_token,'Zweiter Faktor liefert keine Sitzung.');
   admin.token=data.access_token;lastTotpStep=step;
  }
@@ -133,6 +133,13 @@ export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
    created.delete(b.id);
   });
   await check('Passwort-vergessen versendet weitere Recovery-Mail',async()=>{await edge('reset',{identifier:a.email});await messageLink(a.email,'recovery');});
+  await check('Faktorentfernung entzieht Adminzugriff und verlangt neue Einrichtung',async()=>{
+   const oldToken=admin.token;await http('/auth/v1/factors/'+factorId,{method:'DELETE',token:oldToken,expected:200});
+   const removed=await http('/functions/v1/startlab',{method:'POST',token:oldToken,body:{action:'admin-list'}});ensure([401,403].includes(removed.status),'Alter AAL2-Zugang bleibt nach Faktorentfernung offen.');
+   await login(admin);ensure((await edge('profile',{},admin.token)).data.admin_mfa_required===true,'Faktorentfernung verlangt keine neue Einrichtung.');
+   ensure((await edge('mfa-status',{},admin.token)).data.verified.length===0,'Entfernter Faktor bleibt bestätigt.');await edge('admin-list',{},admin.token,403);
+   const replacement=await edge('mfa-enroll',{},admin.token);ensure(replacement.data.factor_id&&replacement.data.factor_id!==factorId,'Neue Einrichtung nach Faktorentfernung scheitert.');
+  });
   console.log(`Supabase-Integration bestanden (${checks.length} Prüfgruppen). Nur lokale Testdaten und Testpostfach verwendet.`);
  }finally{
   for(const id of created){if(!/^[0-9a-f-]{36}$/i.test(id))continue;await http('/auth/v1/admin/users/'+id,{method:'DELETE',token:service,body:{should_soft_delete:false}}).catch(()=>null);}

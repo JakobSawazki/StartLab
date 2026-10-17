@@ -21,7 +21,7 @@ Live-Adresse: https://jakobsawazki.github.io/StartLab/
 | Originale aus OneNote | Mehrere Bereiche aus lokalen Exporten integriert; Originaldateien bleiben ignoriert; Inhaltsrückfragen und fehlende Bingo-/Tipps-Originale offen |
 | Startfortschritt | Vier lokale Häkchen, ohne Namen; kein Cloud-Lernstand |
 | Konten | In echter lokaler Supabase-Integration geprüft; gehosteter Dienst und produktive Registrierung weiterhin nicht eingerichtet |
-| Administration | Kontenübersicht, Reset, Sperren, Löschung und Audit vorbereitet und im lokalen Supabase-Teststack geprüft |
+| Administration | TOTP-geschützte Kontenübersicht, Reset, Sperren, Löschung und Audit im lokalen Supabase-Teststack geprüft |
 | Integration | [Temporärer Supabase-Stack mit Testpostfach](INTEGRATION_TEST.md), Prüfergebnisse in VERIFICATION.md |
 | Offene Aufgaben / Antworten | [tasks.md](tasks.md) |
 | Einrichtung | [SUPABASE_SETUP.md](SUPABASE_SETUP.md) |
@@ -106,8 +106,9 @@ Dokumente benötigen privaten Storage und servergeprüften Zugriff.
 Backups, Wiederherstellungstest, Kontolöschung zum festgelegten Zeitpunkt und
 protokollierte Adminvorgänge gehören zum Betrieb. Beim Löschen eines Auth-Kontos
 entfernt die Datenbank zugehöriges Profil und Adminrolle per Fremdschlüssel.
-Kontosperren und ein bestätigter Löschdialog sind implementiert. Klassenfreigaben,
-MFA-Oberfläche, automatische Löschfristen und Betriebs-Backups sind noch offen.
+Kontosperren, bestätigter Löschdialog und Admin-TOTP sind implementiert.
+Klassenfreigaben, automatische Löschfristen, Betriebs-Backups sowie die gehostete
+Konfiguration und Abnahme der Kontofunktionen sind noch offen.
 
 ## 6. Prüfung und Grenzen [Codex, 2026-10-17]
 
@@ -403,3 +404,24 @@ Das ersetzt keine betriebliche Sicherung. Verfahren, geschützter Aufbewahrungso
 Fristen, Zuständigkeiten und Wiederanlauf des gehosteten Projekts fehlen weiterhin.
 Bei echtem Restore müssen insbesondere alte Sitzungen und zwischenzeitlich
 erfolgte Löschungen/Sperren behandelt werden. Siehe BACKUP_RESTORE.md.
+
+## 13. Zweiter Faktor für Administratoren [Codex, 2026-10-17]
+
+Sämtliche Verwaltungsaktionen verlangen jetzt zusätzlich zur aktiven Sitzung
+und Adminrolle eine von Supabase Auth bestätigte AAL2-Sitzung und einen aktuell
+bestätigten TOTP-Faktor. Ohne Bestätigung sind Kontenliste, Audit, Reset,
+Sperren/Entsperren und Löschung gesperrt. Die Schüleranmeldung bleibt unverändert.
+
+Der Kontodialog ermöglicht die erste Einrichtung per QR-Code oder manuellem
+Schlüssel sowie die Bestätigung eines aktuellen Codes bei erneuter Anmeldung.
+Der SVG-QR-Code wird als Bild eingebunden, nicht als aktiver SVG-DOM-Inhalt.
+Schlüssel und Codes werden nicht gespeichert oder protokolliert; die Oberfläche
+entfernt Einrichtungsschlüssel beim Schließen bzw. erfolgreichen Bestätigen.
+Ein bestätigter Faktor kann mit Passwort/Recovery-Link allein nicht ersetzt
+werden. Faktorverlust benötigt einen gesonderten Wiederherstellungsprozess.
+
+Backendtests und Browserprüfung einschließlich axe sind bestanden. Der echte
+lokale Supabase-Lauf 39035260660 (Code `e3408c2`) bestätigt die MFA-Pflicht,
+Einrichtung, Ablehnung falscher Codes, AAL2-Freigabe und erneute Bestätigung nach
+Login/Restore; insgesamt zwölf Integrationsgruppen. Einzelheiten: ADMIN_MFA.md.
+Die Freischaltung und App-Bedienung im gehosteten Projekt sind weiterhin offen.

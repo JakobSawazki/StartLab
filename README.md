@@ -65,6 +65,7 @@ Quellcode, nicht zum Website-Paket. Keine Schülerdaten oder Schlüssel eincheck
 - [Supabase einrichten](Docs/SUPABASE_SETUP.md)
 - [Integrationstest mit lokalem Supabase und Testpostfach](Docs/INTEGRATION_TEST.md)
 - [Datensicherung und Wiederherstellung](Docs/BACKUP_RESTORE.md)
+- [Zwei-Faktor-Anmeldung für Administratoren](Docs/ADMIN_MFA.md)
 - [OneNote-Inventar](Docs/ONENOTE_INVENTAR.md)
 - [Versionsverlauf](CHANGELOG.md)
 - [Übergabe an Codex](Docs/claude2codex.md)
