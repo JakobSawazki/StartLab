@@ -111,5 +111,11 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   „Keine Verbindung zum Kontodienst …“ und gibt den Button wieder frei.
 - `npm run check` prüft jetzt auch die Werkzeugskripte.
 
+### Typprüfung Edge Function [Claude, 2026-10-17]
+
+- `tsc` 5.6.3 mit `--strict --moduleDetection force` und einer minimalen Deklaration für
+  `Deno.env`/`Deno.serve` (außerhalb des Repositories): keine Fehler. Ersetzt keinen
+  `supabase functions deploy`-Lauf mit echter Deno-Laufzeit.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

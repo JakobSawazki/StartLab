@@ -55,6 +55,8 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 - Zeitlimits: `auth.js` 20 s mit deutschen Meldungen für Offline/Timeout; Edge Function 10 s je Supabase-Aufruf (502, Log ohne Daten).
 - Offline-Fall im Browser-Prüfstand; `npm run check` umfasst `tools/`.
 
+- Edge Function besteht `tsc --strict` (Deklaration: `declare namespace Deno { const env:{get(k:string):string|undefined}; function serve(h:(r:Request)=>Response|Promise<Response>):void; }`).
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12
