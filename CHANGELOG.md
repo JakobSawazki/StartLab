@@ -1,6 +1,6 @@
 # Änderungen
 
-## In Arbeit · 2026-10-17 [Codex]
+## 0.2.0 · 2026-10-17 [Codex]
 
 Sitzungsprüfung nach Auth-Validierung: Migration 0004 verknüpft aktiven
 Sitzungsdatensatz, Benutzer, E-Mail-Bestätigung, Auth-Bann und Profilsperre.

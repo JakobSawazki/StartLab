@@ -2,7 +2,7 @@
 
 Gemeinsam ankommen, kennenlernen und das Schuljahr gestalten.
 
-Version **0.1.0**, 17. Oktober 2026 · Jakob Sawazki / Codex / Claude.
+Version **0.2.0**, 17. Oktober 2026 · Jakob Sawazki / Codex / Claude.
 Veröffentlichte Erweiterungen und vorbereitete Änderungen: siehe [CHANGELOG](CHANGELOG.md).
 
 StartLab ergänzt Excel-Lab und WorkbenchLab um einen übersichtlichen Einstieg

@@ -339,3 +339,29 @@ seiner Betriebsparameter und seines SMTP-Versands bleibt ausdrücklich offen.
 Das Ergebnis belegt einen Daten-Restore in dasselbe unveränderte lokale Schema.
 Gehostete Backups, Wiederaufbau auf neuer Infrastruktur, externe Dateien,
 Aufbewahrungsfristen und produktive Wiederanlaufverfahren sind weiterhin offen.
+
+### Zweiter Faktor für Administratoren [Codex, 2026-10-17]
+
+- `npm test`: **71 Tests bestanden**. Neun zusätzliche MFA-Backendfälle prüfen
+  AAL1-Sperre aller Adminaktionen, ignoriertes Request-AAL, entfernte Faktoren,
+  Schülerrollen, geheimnisarmen Status, eigene Faktorzuordnung, Einrichtung,
+  Codeformate, Limits und Ausfallbehandlung. TOTP-Testtreiber anhand der
+  RFC-6238-SHA1-Vektoren geprüft. Syntax-/strikte TypeScript-Prüfung bestanden.
+- `tools/mfa-browser.cjs` mit Edge, Mobilansicht und axe: Einrichtung, QR als
+  inertes Bild, Codevalidierung/-fehler, Freigabe, erneute Bestätigung nach
+  Anmeldung und Entfernen des Schlüssels beim Schließen bestanden. Keine
+  Speicherung der Testdaten, keine JS-/CSP-Fehler, keine axe-Verstöße im Prüfumfang.
+- Allgemeiner Browserprüfstand einschließlich axe und der Prüfstand für
+  verzögerte Kontoantworten nach den MFA-Änderungen bestanden; Build bestanden.
+- [39035260660](https://github.com/JakobSawazki/StartLab/actions/runs/39035260660)
+  für `e3408c2`: zwölf echte lokale Supabase-Prüfgruppen bestanden.
+- [39035823262](https://github.com/JakobSawazki/StartLab/actions/runs/39035823262)
+  für `0c36630`: **13 Integrationsgruppen bestanden**. Ergänzt: Entfernen des
+  bestätigten Faktors weist den alten Adminzugriff ab und verlangt nach neuer
+  Anmeldung eine neue Einrichtung. Auch MFA nach Daten-Restore bestanden.
+- Temporäre Stacks beendet. Keine tatsächlichen Personen/Authenticator-Geräte
+  beteiligt. Die Anwendung delegiert OTP-Prüfung an Supabase; der HMAC-Code
+  verbleibt ausschließlich im Testwerkzeug und gehört nicht zum Website-Paket.
+
+Offen bleiben das gehostete Projekt, dessen TOTP-/SMTP-Konfiguration, die Abnahme
+mit der tatsächlichen Authenticator-App sowie die schulischen Betriebsentscheidungen.

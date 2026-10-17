@@ -89,3 +89,22 @@ vor/nach identischer Profile/Rollen/Audit, Anmeldung und RLS nach Restore.
 unveränderte lokale Schema, kein vollständiger Wiederaufbau eines gehosteten
 Dienstes. Betriebsentscheidungen und gehostete Abnahme bleiben offen.
 Anleitung: Docs/BACKUP_RESTORE.md.
+
+## Admin-TOTP [Codex, 2026-10-17]
+
+Die Verwaltung verlangt nun AAL2 aus dem von Auth validierten Token sowie
+einen aktuell bestätigten TOTP-Faktor. Alle Adminaktionen sind geschützt;
+die Schüleranmeldung bleibt unverändert. Bootstrap/Status/Bestätigung sind
+adminexklusiv und pro Benutzer begrenzt. Bestätigte Faktoren lassen sich über
+die Anwendung nicht allein mit Passwort/Recovery-Link ersetzen.
+
+Einrichtungs-QR als inertes Bild; Schlüssel/Code nicht gespeichert oder
+protokolliert, aus dem Dialog nach Schließen/Bestätigung entfernt. Anleitung:
+Docs/ADMIN_MFA.md. Beide TOTP-Schalter in der gehosteten Auth-Konfiguration
+aktivieren; keine weitere Datenbankmigration nötig.
+
+71 Node-Tests, Syntax-/strikte TS-Prüfung, Build sowie allgemeiner Browser-,
+Antwortreihenfolge- und neuer MFA-Browserprüfstand bestanden (MFA mit axe).
+Lauf 39035823262 für `0c36630`: 13 echte lokale Supabase-Gruppen einschließlich
+Faktorentfernung und MFA nach Restore bestanden. Gehostete Einrichtung,
+App-Bedienung und Wiederherstellungsverantwortung bleiben offen.

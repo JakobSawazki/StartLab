@@ -1,6 +1,6 @@
 # StartLab – Projektdokumentation
 
-Stand: **17. Oktober 2026 (Europe/Berlin)** · Release **0.1.0**
+Stand: **17. Oktober 2026 (Europe/Berlin)** · Release **0.2.0**
 
 Mitwirkende: Jakob Sawazki, Codex, Claude. Einträge werden mit Autor und Datum geführt.
 Struktur in Anlehnung an die Projektdokumentation von WorkbenchLab sowie die

@@ -70,6 +70,8 @@ Datenbank-, Mail- oder Schlüsselartefakte.
 12. Admin-TOTP: MFA-Pflicht vor Verwaltungszugriff, Einrichtung, falscher Code,
     Freigabe mit korrektem Code und erneute Bestätigung nach Login/Restore.
     Die OTP-Berechnung ist ausschließlich ein Testtreiber; Supabase validiert.
+13. Entfernen eines bestätigten Faktors: Alter Adminzugriff ist gesperrt;
+    neue Passwort-Anmeldung verlangt eine neue Einrichtung.
 
 ## Bedeutung des Ergebnisses
 
