@@ -40,7 +40,9 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
 - [ ] 10. Supabase-Projekt in EU-Region anlegen, schulische Freigabe und Dienstbedingungen klären.
 - [ ] 11. Beide Migrationen (0001, dann 0002) anwenden, Edge Function deployen, Secrets und Redirects konfigurieren.
 - [ ] 12. Erstes bestätigtes Admin-Konto und SMTP einrichten; Registrierung gezielt freischalten.
-- [ ] 13. Mit zwei Schüler-Testkonten und einem Admin-Konto RLS, parallele
+- [ ] 13. [Claude, 2026-10-17] Vorab mit PGlite geprüft (tools/sql-check.mjs): Kürzel, Kollisionen,
+  Mailabgleich, RLS/Rechte, Limits, Löschkaskade. Offen bleibt die echte Abnahme:
+  Mit zwei Schüler-Testkonten und einem Admin-Konto RLS, parallele
   Kürzelkollision, E-Mail-Bestätigung, Recovery, unbefugte Adminaufrufe und Limits testen.
 - [ ] 14. Kontosperre, Einladung/Freigabe, MFA, Kontolöschung, Auditansicht und
   ggf. Klassen-/Schuljahresverwaltung ausbauen. [Claude, 2026-10-17] Adminliste lädt jetzt

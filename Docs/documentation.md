@@ -211,3 +211,12 @@ Versionsnummer erhöht, nichts veröffentlicht oder committet.
   im Browser und keine Anfrage an einen echten Dienst.
 - Unsichtbarer Kontext in wiederholten Button- und Linktexten steht in Klammern,
   damit Screenreader „Stand ansehen (Leistungsbewertung)“ statt „Stand ansehen : …“ lesen.
+
+### 8.5 SQL-Prüfung mit PGlite [Claude, 2026-10-17]
+
+`tools/sql-check.mjs` führt beide Migrationen in PGlite aus und prüft Kürzelregel
+(gleich `content.js`), Kollisionen, Namensprüfung, Mailabgleich, RLS und Rechte,
+Ratenlimit sowie die Löschkaskade. Die Stubs bilden nur die benötigten Teile von
+Supabase nach, einschließlich der Default-Grants für `anon`/`authenticated`, damit
+fehlende `revoke`-Anweisungen auffallen. PGlite ist wie Playwright keine
+Projektabhängigkeit. Die reale Abnahme in Supabase ersetzt das nicht.

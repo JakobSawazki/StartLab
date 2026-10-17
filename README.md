@@ -39,6 +39,12 @@ Browserprüfung (Microsoft Edge, Playwright außerhalb des Projekts, z. B. `play
 STARTLAB_PLAYWRIGHT=/pfad/zu/node_modules/playwright-core node tools/browser-check.cjs
 ```
 
+SQL-Prüfung der Migrationen (PGlite außerhalb des Projekts):
+
+```sh
+STARTLAB_PGLITE=/pfad/zu/node_modules/@electric-sql/pglite node tools/sql-check.mjs
+```
+
 `node tools/build.mjs` erstellt das öffentliche Website-Paket mit einer festen
 Dateiliste. Datenbankmigrationen und Projektdokumentation gehören zum öffentlichen
 Quellcode, nicht zum Website-Paket. Keine Schülerdaten oder Schlüssel einchecken.

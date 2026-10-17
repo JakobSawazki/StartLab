@@ -35,6 +35,11 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 - Unsichtbarer Kontext in Buttons/Links jetzt in Klammern, z. B. „Bingo starten (Kennenlern-Bingo)“,
   weil Chromium sonst „Bingo starten : …“ vorliest.
 
+## Dritter Block [Claude, 2026-10-17]
+
+- `tools/sql-check.mjs`: beide Migrationen gegen PGlite mit Supabase-Stubs, 9 Prüfungen bestanden,
+  Gegenprobe mit fehlendem `revoke` schlägt korrekt fehl. Aufruf siehe README.
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12

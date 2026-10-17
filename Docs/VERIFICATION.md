@@ -70,6 +70,19 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   Konten), Admin-Reset mit Rückfrage, Abmelden, Recovery mit Passwortwechsel, manipuliertes
   Token, leerer Local-/Session-Storage.
 
-Weiterhin nicht geprüft: echte Supabase-Datenbank, Migrationen 0001/0002,
-Trigger zur Mailsynchronisierung, echte Bestätigungs- und Recovery-Mails,
+### SQL-Prüfung [Claude, 2026-10-17]
+
+- `tools/sql-check.mjs` gegen PGlite 0.2.17 (PostgreSQL als WebAssembly, außerhalb des
+  Repositories installiert) mit minimalen Supabase-Stubs (`auth.users`, `auth.uid()`,
+  Rollen `anon`/`authenticated`/`service_role`, Supabase-typische Default-Grants):
+  9 Prüfungen bestanden. Beide Migrationen laufen fehlerfrei; Kürzel aus SQL gleich
+  `content.js` für 13 Namensfälle; Kollisionen `tesper`, `tesper2`, `tesper3`;
+  nichtlateinische Namen, Steuerzeichen und fehlende Namen abgewiesen; Profil-E-Mail folgt
+  Auth-E-Mail; Schüler sieht nur das eigene Profil und kann Profile, Rollen, Audit, Limits
+  und Funktionen weder lesen noch ändern; anonym kein Profilzugriff; Ratenlimit; Löschkaskade.
+- Gegenprobe: Ohne das `revoke` auf `startlab_username_base` schlägt die Prüfung fehl.
+- Grenzen: echte Supabase-Rollen, Auth-Dienst, Mailversand und parallele Registrierungen
+  (eine PGlite-Verbindung) sind damit nicht geprüft.
+
+Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
