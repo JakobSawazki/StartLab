@@ -441,3 +441,8 @@ Grenze: Durchsicht des Codes, keine Prüfung gegen ein gehostetes Supabase-Proje
   bei 320 px seitlich über. Druck aus dem Dunkelmodus: weißer Hintergrund, schwarze Schrift.
 - Lokale Datei (`file://`): Hinweis mit Link zur Online-Version erscheint statt leerer Seite.
 - 73 Node-Tests, `npm run check` (jetzt mit `theme.js`) und Build bestanden.
+
+
+### Erstes gehostetes Projekt [Codex, 2026-10-17]
+
+Projekt StartLab in Frankfurt angelegt und alle vier vorhandenen Migrationen angewandt. Vier Anwendungstabellen mit RLS, null Auth-Konten. Edge Function Version 1 und Betriebswerte bereitgestellt; Registrierung sowohl in Auth als auch im Kontodienst geschlossen. Alle 13 Prüfungen des gehosteten `tools/smoke-check.mjs` bestanden. Dies ersetzt weder den echten SMTP-/Recovery-Test noch die Admin-/Schülerabnahme. Einzelheiten und Connector-Migrationsnummern in SUPABASE_SETUP.md.

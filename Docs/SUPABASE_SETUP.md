@@ -1,6 +1,6 @@
 # Supabase einrichten
 
-Stand: 17. Oktober 2026 · vorbereitet, noch nicht produktiv eingerichtet.
+Stand: 17. Oktober 2026 · EU-Projekt angelegt, Einrichtung und Abnahme laufen.
 
 ## 1. Dienst und Projekt
 
@@ -217,3 +217,18 @@ Passwörter oder personenbezogenen Request-Bodies in eigene Logs schreiben.
 Diese Quellen wurden für den Architekturentwurf geprüft. Ein produktiver
 E-Mail-Versand, eine rechtliche Freigabe oder eine reale Datenbankabnahme ist
 dadurch noch nicht erfolgt.
+
+
+## Einrichtungsprotokoll 17. Oktober 2026
+
+- Jakob hat Supabase verbunden und das Anlegen in der Organisation „Sawazki“ bestätigt.
+- Projekt `StartLab`, Referenz `hrkmnmrfffcqlzbpzifm`, Region `eu-central-1` (Frankfurt), Organisation im Free-Tarif. Status ACTIVE_HEALTHY.
+- Vier vorhandene Migrationen über den Connector in der vorgesehenen Reihenfolge angewandt; gehostete Versionsnummern 20261017140432, 20261017140434, 20261017140436, 20261017140439. Der Connector vergibt eigene Zeitstempel; keine lokale Migration doppelt anwenden.
+- Vier Anwendungstabellen mit RLS bestätigt, noch keine Auth-Konten vorhanden.
+- Advisor: keine offenen Tabellenzugriffe; drei Hinweise auf absichtlich fehlende Client-Policies der nur für den Dienst zugänglichen Tabellen. Warnung für die absichtlich auf die eigene JWT-Sitzung begrenzte SECURITY-DEFINER-Hilfsfunktion; keine frei wählbare Konto-ID. Zwei Performance-Hinweise zu Audit-Fremdschlüsselindizes bleiben nachrangig.
+- Dashboard: Registrierung geschlossen, E-Mail-Bestätigung aktiv, Passwortminimum 12 gespeichert. Site-URL und exakte Redirect-URL auf https://jakobsawazki.github.io/StartLab/ gesetzt; TOTP aktiviert, maximal zwei Faktoren. Edge Function `startlab` Version 1 bereitgestellt; SITE_ORIGIN, SITE_URL und REGISTRATION_ENABLED=false hinterlegt. Website bleibt bis zur Endabnahme ohne API-Verbindung.
+
+- Gehosteter Smoke-Test: alle 13 Prüfungen bestanden (Herkunft, Preflight, Methode, Eingabe, fehlende/gefälschte Anmeldung, neutrale Recovery-Antwort, Cache-Verbot und geschlossene Registrierung). Keine Konten angelegt oder Mail an echte Empfänger ausgelöst. Eine neutrale Recovery-Antwort bestätigt noch keinen funktionierenden Mailversand.
+- Jakob hat `sawazki.electronics@googlemail.com` als Absender gewählt. SMTP wird für Gmail vorbereitet (smtp.gmail.com, Port 587/STARTTLS, vollständige Adresse als Benutzername). Google verlangt hierfür gegebenenfalls ein App-Passwort bei aktiver Zwei-Schritt-Bestätigung; dieses muss Jakob selbst im Konto erstellen und direkt in Supabase eintragen. Kein Passwort in Chat, Code oder Git. Echte Mail-/Kontoabnahme weiterhin offen.
+- SMTP-Quellen: https://supabase.com/docs/guides/auth/auth-smtp und https://support.google.com/mail/answer/7104828 sowie https://support.google.com/accounts/answer/185833 .
+- Schulische Freigabe, Verantwortlichkeit, Löschfrist, Registrierungsfreigabe und Einrichtung des ersten Admin-Kontos bleiben offen. Keine echten Schülerdaten erfasst.

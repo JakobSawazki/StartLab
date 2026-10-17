@@ -124,3 +124,11 @@ Repository und Live-Veröffentlichung: siehe [VERIFICATION.md](VERIFICATION.md).
   lokale Supabase-Prüfung bestanden; ADMIN_MFA.md dokumentiert Einrichtung.
 - [ ] 33. Admin-TOTP im gehosteten Auth-Dienst aktivieren, mit echter App
   einrichten und Wiederherstellungszuständigkeit bei Faktorverlust festlegen.
+
+
+## Gehostete Einrichtung [Codex, 2026-10-17]
+
+- EU-Projekt in Sawazki angelegt (Aufgabe 10 technisch teilweise erledigt, schulische Freigabe offen).
+- Alle vier Migrationen, Edge Function und Betriebswerte bereitgestellt, 13 gehostete Smoke-Prüfungen bestanden (Aufgabe 11). Weiterhin keine öffentliche Kontoanmeldung aktiviert.
+- Site-/Redirect-URL, E-Mail-Bestätigung, zwölf Zeichen Mindestlänge und TOTP mit zwei Faktoren konfiguriert.
+- Nächster notwendiger Schritt: Gmail-SMTP mit Jakobs gewählter Absenderadresse; App-Passwort ausschließlich durch Jakob direkt im Dienst eingeben. Danach erst Mailtest mit ausdrücklich gewähltem Empfänger und Admin-Einrichtung. Aufgaben 12/13/25/28/30/33 bleiben bis zur vollständigen Abnahme offen.
