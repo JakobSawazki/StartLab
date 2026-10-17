@@ -7,7 +7,7 @@ Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock
 
 - **Git:** Alle Arbeiten sind **lokal auf `main` committet, nichts gepusht.** Ein Push nach
   `main` veröffentlicht die Website sofort (GitHub Pages) – nur nach Jakobs Freigabe.
-  `git log --oneline 9946a19..HEAD` zeigt alle Claude-Commits.
+  `git log --oneline 9946a19..HEAD` zeigt alle Claude-Commits. Checkliste vor dem Push: `Docs/FREIGABE.md`.
 - **Zusammenarbeit:** Jakob lässt derzeit nur Claude arbeiten, nicht parallel Codex. Wenn
   Codex übernimmt, ist der Arbeitsbaum sauber bis auf `Docs/CLAUDE_HANDOFF.md` (von Jakob,
   bewusst nicht committet – Jakob entscheidet, ob sie ins öffentliche Repository soll).

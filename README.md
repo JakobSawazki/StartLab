@@ -66,6 +66,7 @@ Quellcode, nicht zum Website-Paket. Keine Schülerdaten oder Schlüssel eincheck
 - [OneNote-Inventar](Docs/ONENOTE_INVENTAR.md)
 - [Versionsverlauf](CHANGELOG.md)
 - [Übergabe an Codex](Docs/claude2codex.md)
+- [Freigabe vor dem nächsten Push](Docs/FREIGABE.md)
 
 Keine Lizenz für die Weiterverwendung vergeben. Weitere Originalmaterialien nur
 nach Jakobs Freigabe und ohne personenbezogene Daten übernehmen.
