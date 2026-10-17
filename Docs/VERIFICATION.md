@@ -369,3 +369,20 @@ mit der tatsächlichen Authenticator-App sowie die schulischen Betriebsentscheid
 Nachprüfung Druckausgabe [Codex, 2026-10-17]: Der Kontodialog ist im Druckmedium
 ausgeblendet. MFA-Browserprüfstand mit axe nach der Änderung bestanden;
 Einrichtungsschlüssel und Kontenlisten werden nicht mitgedruckt.
+
+### Veröffentlichung 0.2.0 [Codex, 2026-10-17]
+
+- Pull Request #1 zusammengeführt; veröffentlichter Implementierungsstand:
+  `020ba42cfd589fc625c7f42c871c4c2d96a50576`.
+- [Pages-Lauf 39036718748](https://github.com/JakobSawazki/StartLab/actions/runs/39036718748)
+  erfolgreich; Live-Seite mit HTTP 200 und Versionsanzeige `v0.2.0` geprüft.
+- [Integrationslauf 39036718778](https://github.com/JakobSawazki/StartLab/actions/runs/39036718778)
+  auf dem zusammengeführten Stand erfolgreich. Prüfstand: 71 Node-Tests und
+  13 Integrationsgruppen mit lokalen Supabase-Komponenten auf temporärem Runner.
+- Live-Konfiguration weiterhin mit leerer `apiUrl`: Schülerkonten sind nicht aktiviert.
+  Gehostetes Projekt, SMTP, schulische Betriebsentscheidungen und Geräteabnahme
+  bleiben offen; siehe Aufgaben 10–18, 25, 28, 30 und 33.
+- Lokaler Checkout auf denselben Stand abgeglichen. Sieben von Google Drive
+  erzeugte `desktop.ini`-Metadateien aus `.git/refs` unter dem ignorierten
+  `.local/git-metadata-backup/` gesichert, weil Git sie als ungültige Referenzen las.
+  Die lokale, nicht versionierte `Docs/CLAUDE_HANDOFF.md` bleibt erhalten.
