@@ -32,9 +32,13 @@ export async function roundTripBackup(){
  }
  const id=docker(['inspect','--format','{{.Id}}',name]).trim();
  if(!/^[0-9a-f]{64}$/.test(id))throw Error('Isolierter Datenbankcontainer nicht eindeutig.');
- const psql=['exec','-i',id,'psql','-X','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1','-v','VERBOSITY=sqlstate','-At'];
+ const sqlArgs=user=>['exec','-i',id,'psql','-X','-w','-U',user,'-d','postgres','-v','ON_ERROR_STOP=1','-v','VERBOSITY=sqlstate','-At'];
+ const psql=sqlArgs('postgres');
  if(docker(psql,'select current_database();').trim()!=='postgres')throw Error('Falsche Testdatenbank.');
  const tables=JSON.parse(docker(psql,"select json_agg(schemaname||'.'||tablename order by schemaname,tablename) from pg_tables where schemaname in ('auth','public');"));
  const dump=docker(['exec',id,'pg_dump','-U','postgres','-d','postgres','--data-only','--schema=auth','--schema=public','--no-owner','--no-privileges']);
- docker(psql,restoreSQL(tables,dump));
+ // The normal postgres role cannot set replication mode (SQLSTATE 42501).
+ // Use the maintenance role only inside this disposable local container;
+ // no role grants or permissions in the application are changed.
+ docker(sqlArgs('supabase_admin'),restoreSQL(tables,dump));
 }
