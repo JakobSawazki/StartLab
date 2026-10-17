@@ -38,7 +38,8 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
 ## Technische nächste Schritte
 
 - [ ] 10. Supabase-Projekt in EU-Region anlegen, schulische Freigabe und Dienstbedingungen klären.
-- [ ] 11. Beide Migrationen (0001, dann 0002) anwenden, Edge Function deployen, Secrets und Redirects konfigurieren.
+- [ ] 11. [Claude, 2026-10-17] Nach dem Deploy `tools/smoke-check.mjs` ausführen (SUPABASE_SETUP.md).
+  Beide Migrationen (0001, dann 0002) anwenden, Edge Function deployen, Secrets und Redirects konfigurieren.
 - [ ] 12. Erstes bestätigtes Admin-Konto und SMTP einrichten; Registrierung gezielt freischalten.
 - [ ] 13. [Claude, 2026-10-17] Vorab mit PGlite geprüft (tools/sql-check.mjs): Kürzel, Kollisionen,
   Mailabgleich, RLS/Rechte, Limits, Löschkaskade. Offen bleibt die echte Abnahme:

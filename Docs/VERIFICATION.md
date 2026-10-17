@@ -119,5 +119,11 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   `Deno.env`/`Deno.serve` (außerhalb des Repositories): keine Fehler. Ersetzt keinen
   `supabase functions deploy`-Lauf mit echter Deno-Laufzeit.
 
+### Smoke-Test-Skript [Claude, 2026-10-17]
+
+- `tools/smoke-check.mjs` gegen die echte Edge-Function-Datei, lokal gehostet mit simuliertem
+  Supabase: 11 von 11 Punkten ok. Gegenprobe mit falscher Herkunft endet mit Fehlercode 1.
+  Gegen eine echte Supabase-Instanz noch nicht gelaufen.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

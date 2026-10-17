@@ -57,6 +57,11 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 
 - Edge Function besteht `tsc --strict` (Deklaration: `declare namespace Deno { const env:{get(k:string):string|undefined}; function serve(h:(r:Request)=>Response|Promise<Response>):void; }`).
 
+## Siebter Block [Claude, 2026-10-17]
+
+- `tools/smoke-check.mjs`: zerstörungsfreier Smoke-Test der deployten Function; lokal gegen die echte Function-Datei mit simuliertem Supabase geprüft.
+- Fokusrückgabe nach Dialogen im Browser-Prüfstand.
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12

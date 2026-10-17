@@ -8,7 +8,7 @@ Abmeldung nach Passwortwechsel). Barrierefreiheit: Dialognamen und Fokus,
 Seitentitel, Statusmeldungen, Kontraste, mobiles 4×4-Bingo, Druckansicht.
 Adminliste seitenweise (je 100 Konten); Browser-Prüfstand um Barrierefreiheit,
 Druck und simulierte Kontoabläufe erweitert.
-Content-Security-Policy für die Website. Zeitlimits (Website 20 s, Edge 10 s je
+Smoke-Test-Skript für die deployte Edge Function. Content-Security-Policy für die Website. Zeitlimits (Website 20 s, Edge 10 s je
 Supabase-Aufruf) und verständliche Meldungen bei fehlender Verbindung.
 Skiplink wechselt nicht mehr zur Übersicht; axe-Audit ohne Verstöße.
 SQL-Prüfung beider Migrationen gegen PGlite (`tools/sql-check.mjs`).

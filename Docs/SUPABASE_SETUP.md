@@ -69,6 +69,20 @@ angepasst werden, sonst blockiert der Browser die Kontoanfragen.
 Im Browser ist weder der Service-Schlüssel noch eine Datenbankverbindung nötig.
 Der Service-Schlüssel bleibt ausschließlich in der Edge-Umgebung.
 
+### Smoke-Test nach dem Deploy [Claude, 2026-10-17]
+
+`tools/smoke-check.mjs` prüft die deployte Function ohne Konten anzulegen und ohne Mail an
+reale Personen (Reset nur an eine reservierte `.invalid`-Adresse): fremde Herkunft, Preflight,
+Methode, ungültiges JSON, unbekannte Aktion, fehlende/gefälschte Anmeldung, falsches Passwort,
+neutraler Reset, `no-store` und gesperrte Registrierung.
+
+```sh
+STARTLAB_API=https://DEINE-PROJEKTREFERENZ.supabase.co/functions/v1/startlab STARTLAB_ORIGIN=https://jakobsawazki.github.io node tools/smoke-check.mjs
+```
+
+Mehr als drei Läufe in 15 Minuten lösen das Reset-Limit (429) aus; das ist erwartetes Verhalten.
+Der Smoke-Test ersetzt nicht die Funktionsabnahme in Abschnitt 6.
+
 ## 5. Erstes Admin-Konto
 
 Registrierung im Auth-Dashboard und `REGISTRATION_ENABLED` vorübergehend
