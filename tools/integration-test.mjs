@@ -46,24 +46,33 @@ export async function runIntegration({api,mail,anon,service}){
  }
  try{
   await check('Anonyme Administration ist gesperrt',async()=>{await edge('admin-list',{},anon,401);await edge('admin-delete',{id:randomUUID(),confirm_username:'test'},anon,401);});
-  await check('Registrierung und E-Mail-Bestätigung über Testpostfach',async()=>{
+  await check('Parallele Registrierung gleicher Namen und E-Mail-Bestätigung',async()=>{
+   await Promise.all([a,b].map(person=>edge('register',{identifier:person.email,first_name:'Test',last_name:'Person',password})));
    for(const person of [a,b]){
-    await edge('register',{identifier:person.email,first_name:'Test',last_name:'Person',password});
     await edge('login',{identifier:person.email,password},anon,401);
     person.token=await confirm(await messageLink(person.email,'signup'));await profile(person);
    }
-   ensure(a.username==='tesper'&&b.username==='tesper2','Kürzelkollision wurde nicht korrekt aufgelöst.');
+   ensure([a.username,b.username].sort().join(',')==='tesper,tesper2','Parallele Kürzelkollision wurde nicht korrekt aufgelöst.');
   });
   await check('Kürzel-Anmeldung und getrennte Profile',async()=>{
    await login(a,password,a.username);await login(b,password,b.username);
    const {data}=await http('/rest/v1/profiles?select=id&id=eq.'+b.id,{token:a.token,expected:200});ensure(data.length===0,'Fremdes Profil ist lesbar.');
    await edge('admin-list',{},a.token,403);await edge('admin-lock',{id:b.id},a.token,403);await edge('admin-delete',{id:b.id,confirm_username:b.username},a.token,403);
+   await http('/rest/v1/administrators?select=user_id',{token:a.token,expected:403});
+   await http('/rest/v1/administrators',{method:'POST',body:{user_id:a.id},token:a.token,expected:403});
+   await http('/rest/v1/profiles?id=eq.'+a.id,{method:'PATCH',body:{username:'admin'},token:a.token,expected:403});
   });
   await check('Admin-Konto und serverseitige Rolle',async()=>{
    const {data}=await http('/auth/v1/admin/users',{method:'POST',token:service,body:{email:admin.email,password,email_confirm:true,user_metadata:{first_name:'Test',last_name:'Admin'}},expected:200});
    admin.id=data.id;ensure(admin.id,'Admin-Testkonto konnte nicht angelegt werden.');created.add(admin.id);
    await http('/rest/v1/administrators',{method:'POST',token:service,body:{user_id:admin.id},expected:201});await login(admin);const p=await profile(admin);ensure(p.is_admin===true,'Adminrolle wird nicht erkannt.');
    const {data:list}=await edge('admin-list',{},admin.token);ensure(list.users.length===3,'Kontenliste ist unvollständig.');
+  });
+  await check('Bestätigte Auth-Mailänderung, Profilabgleich und Kürzel-Anmeldung',async()=>{
+   const previous=a.email;a.email=email('changed');
+   await http('/auth/v1/admin/users/'+a.id,{method:'PUT',token:service,body:{email:a.email,email_confirm:true},expected:200});
+   const {data}=await http('/rest/v1/profiles?select=email&id=eq.'+a.id,{token:service,expected:200});ensure(data[0]?.email===a.email,'Profil folgt der bestätigten Auth-Adresse nicht.');
+   await edge('login',{identifier:previous,password},anon,401);await login(a,password,a.username);
   });
   await check('Recovery-Mail, Passwortwechsel und alte Sitzungen',async()=>{
    const oldToken=a.token;await edge('admin-reset',{id:a.id},admin.token);
