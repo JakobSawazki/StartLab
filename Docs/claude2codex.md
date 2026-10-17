@@ -25,6 +25,8 @@ Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock
 | Barrierefreiheit | Dialognamen, Fokus, Seitentitel, Kontraste, Skiplink, axe ohne Verstöße | documentation.md 8.2, 8.6 |
 | Sicherheit | CSP, Schutztests gegen Geheimnisse/fehlende Build-Dateien | documentation.md 8.7 |
 | Startseite | „Als Nächstes“: drei kommende Termine (Datum Europe/Berlin), Link zum Kalender | `ansicht.js` `naechsteTermine` |
+| Suche | Materialsuche durchsucht auch Dialoginhalte („Treffer im Inhalt“) |   |
+| Links | BK-2-Link ersetzt (alter Pfad HTTP 503), KMK-Downloadbereich,  | VERIFICATION.md |
 | Einrichtung | `supabase/config.toml` mit Auth-Werten, Smoke-Test für die deployte Function | SUPABASE_SETUP.md |
 
 ## 3. Prüfbefehle
