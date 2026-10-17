@@ -110,6 +110,8 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Browser-Prüfstand (mit axe) bestanden; neu: unterbrochene Verbindung beim Anmelden zeigt
   „Keine Verbindung zum Kontodienst …“ und gibt den Button wieder frei.
 - `npm run check` prüft jetzt auch die Werkzeugskripte.
+- Fokusrückgabe: Nach Escape liegt der Fokus wieder auf dem auslösenden Button (Materialdialog
+  und Kontodialog), im Browser-Prüfstand bestanden.
 
 ### Typprüfung Edge Function [Claude, 2026-10-17]
 
