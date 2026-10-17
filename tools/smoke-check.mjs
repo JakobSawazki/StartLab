@@ -13,6 +13,7 @@ await check('Ungültiges JSON (400)',async()=>assert.equal((await call('{kaputt'
 await check('Unbekannte Aktion (400)',async()=>assert.equal((await call({action:'drop-table'})).status,400));
 await check('Adminliste ohne Anmeldung (401)',async()=>assert.equal((await call({action:'admin-list'})).status,401));
 await check('Audit ohne Anmeldung (401)',async()=>assert.equal((await call({action:'admin-audit'})).status,401));
+await check('Kontosperre ohne Anmeldung (401)',async()=>assert.equal((await call({action:'admin-lock',id:'00000000-0000-0000-0000-000000000000'})).status,401));
 await check('Gefälschtes Token (401)',async()=>assert.equal((await call({action:'profile'},{token:'kein.gueltiges.token'})).status,401));
 await check('Falsches Passwort für erfundenes Kürzel (401)',async()=>assert.equal((await call({action:'login',identifier:'zzqxyv',password:'kein-echtes-passwort'})).status,401));
 await check('Reset für reservierte Adresse neutral (200)',async()=>{const r=await call({action:'reset',identifier:'smoke-check@example.invalid'});assert.equal(r.status,200);assert.match(r.data?.message||'',/Wenn ein passendes Konto existiert/);});

@@ -23,7 +23,7 @@ const kuerzelFrom='áàâãåāăąéèêëēėęěíìîïīįıóòôõøōő�
 function usernameBase(first:string,last:string){const norm=(s:string)=>{let v=s.normalize('NFC').trim().toLowerCase();for(const [a,b] of kuerzelPairs)v=v.replaceAll(a,b);return [...v].map(c=>{const i=kuerzelFrom.indexOf(c);return i<0?c:kuerzelTo[i];}).join('').replace(/[^a-z]/g,'');};return norm(first).slice(0,3)+norm(last).slice(0,3);}
 // The confirmed Auth e-mail is authoritative; the profile copy is only for listing.
 async function authEmail(id:string){const user=await request('/auth/v1/admin/users/'+encodeURIComponent(id));if(!user?.email)throw new Failure(404,'Konto nicht gefunden.');return user.email as string;}
-async function identity(req:Request){const token=req.headers.get('Authorization')?.replace(/^Bearer /,'');if(!token)throw new Failure(401,'Bitte melde dich an.');try{const user=await request('/auth/v1/user','GET',undefined,token);if(!user.email_confirmed_at)throw Error();return {user,token};}catch{throw new Failure(401,'Die Anmeldung ist abgelaufen. Bitte melde dich erneut an.');}}
+async function identity(req:Request){const token=req.headers.get('Authorization')?.replace(/^Bearer /,'');if(!token)throw new Failure(401,'Bitte melde dich an.');try{const user=await request('/auth/v1/user','GET',undefined,token);if(!user.email_confirmed_at)throw Error();if(user.banned_until&&new Date(user.banned_until).getTime()>Date.now())throw Error();return {user,token};}catch{throw new Failure(401,'Die Anmeldung ist abgelaufen. Bitte melde dich erneut an.');}}
 Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Cache-Control':'no-store','Vary':'Origin'};const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers});try{
  if(!origin||!site||new URL(site).origin!==origin)throw new Failure(503,'Der Kontodienst wird noch eingerichtet.');
  if(req.headers.get('Origin')!==origin)throw new Failure(403,'Diese Herkunft ist nicht zugelassen.');
@@ -34,7 +34,7 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  let body;try{body=JSON.parse(raw);}catch{throw new Failure(400,'Ungültige Anfrage.');}
  if(!body||typeof body!=='object'||Array.isArray(body))throw new Failure(400,'Ungültige Anfrage.');
  const action=text(body.action,30);
- if(!['register','login','reset','profile','password','logout','admin-list','admin-reset','admin-audit'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
+ if(!['register','login','reset','profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
  await limit('global:'+action,action==='register'?100:1000);
  if(['register','login','reset'].includes(action)){
  const identifier=text(body.identifier,254).toLowerCase();await limit(action+':'+await digest(identifier),action==='reset'?3:10);
@@ -61,10 +61,17 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  // [Claude, 2026-10-17] Read-only audit view: last 100 entries, accounts shown by Kürzel only (no e-mail).
  if(action==='admin-audit'){const rows=await request('/rest/v1/admin_audit?select=created_at,action,actor,target&order=created_at.desc,id.desc&limit=100');const ids:string[]=[...new Set<string>(rows.flatMap((r:{actor:string|null,target:string|null})=>[r.actor,r.target]).filter((v:string|null):v is string=>!!v&&/^[0-9a-f-]{36}$/i.test(v)))];const names=new Map<string,string>();if(ids.length)for(const p of await request('/rest/v1/profiles?select=id,username&id=in.('+ids.map(encodeURIComponent).join(',')+')'))names.set(p.id,p.username);const label=(id:string|null)=>id?names.get(id)??'unbekannt':'gelöschtes Konto';return reply({entries:rows.map((r:{created_at:string,action:string,actor:string|null,target:string|null})=>({created_at:r.created_at,action:r.action,actor:label(r.actor),target:label(r.target)}))});}
  // [Claude, 2026-10-17] Pages of 100 with a stable order; one extra row tells whether more exist.
- if(action==='admin-list'){const page=body.page??0;if(!Number.isInteger(page)||page<0||page>999)throw new Failure(400,'Ungültige Seite.');const rows=await request(`/rest/v1/profiles?select=id,username,first_name,last_name,email,created_at&order=created_at.desc,id.asc&limit=101&offset=${page*100}`);return reply({users:rows.slice(0,100),page,has_more:rows.length>100});}
+ if(action==='admin-list'){const page=body.page??0;if(!Number.isInteger(page)||page<0||page>999)throw new Failure(400,'Ungültige Seite.');const rows=await request(`/rest/v1/profiles?select=id,username,first_name,last_name,email,created_at,locked_at&order=created_at.desc,id.asc&limit=101&offset=${page*100}`);return reply({users:rows.slice(0,100),page,has_more:rows.length>100});}
  if(action==='admin-reset'){const id=text(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))throw new Failure(400,'Ungültiges Konto.');await limit('admin-reset:'+id,3);const target=await request('/rest/v1/profiles?select=id&id=eq.'+encodeURIComponent(id));if(!target.length)throw new Failure(404,'Konto nicht gefunden.');const address=await authEmail(id);
  const audit=(result:string)=>request('/rest/v1/admin_audit','POST',{actor:user.id,target:id,action:result});
  try{await request('/auth/v1/recover?redirect_to='+encodeURIComponent(site),'POST',{email:address},anon);}catch(error){await audit('password_reset_failed').catch(()=>null);throw new Failure(error instanceof Failure&&error.status===429?429:502,'Der Reset-Link konnte nicht versendet werden. Prüfe den Mailversand (SMTP) und versuche es später erneut.');}
  await audit('password_reset_requested');return reply({message:'Der Reset-Link wurde angefordert. Das neue Passwort wählt die Person selbst.'});}
+ // [Claude, 2026-10-17] Lock = Supabase Auth ban (no sign-in, no token refresh; identity() also rejects banned users).
+ // locked_at mirrors the state for the list. No self-lock, so the last admin cannot lock themselves out.
+ if(action==='admin-lock'||action==='admin-unlock'){const id=text(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))throw new Failure(400,'Ungültiges Konto.');if(id===user.id)throw new Failure(400,'Das eigene Konto kann nicht gesperrt werden.');const target=await request('/rest/v1/profiles?select=id&id=eq.'+encodeURIComponent(id));if(!target.length)throw new Failure(404,'Konto nicht gefunden.');const lock=action==='admin-lock';
+ await request('/auth/v1/admin/users/'+encodeURIComponent(id),'PUT',{ban_duration:lock?'876000h':'none'});
+ await request('/rest/v1/profiles?id=eq.'+encodeURIComponent(id),'PATCH',{locked_at:lock?new Date().toISOString():null});
+ await request('/rest/v1/admin_audit','POST',{actor:user.id,target:id,action:lock?'account_locked':'account_unlocked'});
+ return reply({message:lock?'Das Konto ist gesperrt. Anmeldung und Verlängerung der Sitzung sind nicht mehr möglich.':'Das Konto ist wieder freigegeben.',locked:lock});}
  throw new Failure(400,'Unbekannte Aktion.');
  }catch(error){if(error instanceof Failure)return reply({message:error.message},error.status);console.error(JSON.stringify({event:'unexpected_error'}));return reply({message:'Der Kontodienst ist derzeit nicht verfügbar.'},500);}});

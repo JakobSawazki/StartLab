@@ -12,7 +12,8 @@ oder in das Repository schreiben. Kosten und gewählten Tarif im Dashboard prüf
 ## 2. Datenbank
 
 `supabase/migrations/202610170001_startlab.sql` und danach
-`supabase/migrations/202610170002_startlab_accounts.sql` in einem neuen Projekt über den
+`supabase/migrations/202610170002_startlab_accounts.sql` sowie
+`supabase/migrations/202610170003_startlab_lock.sql` (Spalte `locked_at`) in einem neuen Projekt über den
 SQL-Editor anwenden (oder per `supabase db push`). [Claude, 2026-10-17] Die zweite Migration
 vereinheitlicht die Kürzelbildung mit Website und Edge Function und hält `profiles.email`
 per Trigger mit der bestätigten Auth-Adresse synchron. Sie erstellt Profile, Adminrollen, temporäre Anfragelimits,
@@ -124,6 +125,9 @@ Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
     `password_reset_failed`. Logs enthalten keine Adressen.
 12. Passwortwechsel meldet auf einem zweiten Gerät angemeldete Sitzungen ab (spätestens
     nach Ablauf des Access-Tokens).
+13. [Claude, 2026-10-17] Kontosperre: Admin sperrt Testkonto B; B kann sich nicht anmelden und
+    keine geschützte Aktion mehr ausführen; Audit `account_locked`; Entsperren stellt den Zugang her.
+    Ein Admin kann das eigene Konto nicht sperren.
 
 Erst danach Registrierung für den Unterricht aktivieren. Ohne Klassen-Einladungen
 ist die Registrierung nach Freischaltung grundsätzlich öffentlich. Das Auth-Dashboard

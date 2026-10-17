@@ -21,7 +21,7 @@ Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock
 | --- | --- | --- |
 | OneNote-Inhalte | Vorstellung, Vertrag/Regeln, Leistungsbewertung + Notenschlüssel, Praktikum BK1, GFS BG, Termine 2026/27, Bildungsplan-Links auf der Website | documentation.md 8.10, ONENOTE_INVENTAR.md |
 | Konten (Code) | Kürzeltabelle einheitlich (Browser, Edge, SQL), Auth-E-Mail als Quelle, Mailfehler/Timeouts sauber, Abmeldung nach Passwortwechsel, Adminliste paginiert, Audit-Ansicht | documentation.md 8.1–8.9 |
-| Datenbank | Migration 0002 (Kürzelfunktion, Mailabgleich-Trigger) | `supabase/migrations/` |
+| Datenbank | Migration 0002 (Kürzelfunktion, Mailabgleich-Trigger), 0003 (`locked_at`) | `supabase/migrations/` |
 | Barrierefreiheit | Dialognamen, Fokus, Seitentitel, Kontraste, Skiplink, axe ohne Verstöße | documentation.md 8.2, 8.6 |
 | Sicherheit | CSP, Schutztests gegen Geheimnisse/fehlende Build-Dateien | documentation.md 8.7 |
 | Startseite | „Als Nächstes“: drei kommende Termine (Datum Europe/Berlin), Link zum Kalender | `ansicht.js` `naechsteTermine` |
@@ -30,7 +30,7 @@ Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock
 ## 3. Prüfbefehle
 
 ```sh
-npm test            # 38 Unit-Tests (Kürzel, Backend simuliert, Inhalte, Build-Schutz)
+npm test            # 42 Unit-Tests (Kürzel, Backend simuliert, Inhalte, Build-Schutz)
 npm run check       # Syntaxprüfung aller Website- und Werkzeugdateien
 node tools/build.mjs
 npm run serve       # http://127.0.0.1:4173
@@ -85,9 +85,9 @@ Claude nutzte playwright-core 1.48.2 (Browser: installiertes Microsoft Edge), ax
 2. Nach Antworten auf Abschnitt 5 die betroffenen Daten in `inhalte.js` anpassen.
 3. Supabase-Einrichtung nach SUPABASE_SETUP.md, sobald Jakob Projekt und SMTP bereitstellt;
    danach Smoke-Test und Funktionsabnahme (Abschnitt 6 der Anleitung, Punkte 1–12).
-4. Kontosperre (Aufgabe 14) war begonnen und ist zurückgestellt: geplant waren Admin-Aktionen
-   `admin-lock`/`admin-unlock` über Supabase `ban_duration`, Migration 0003 mit
-   `profiles.locked_at` für die Anzeige, Audit-Einträge, keine Selbstsperre.
+4. Kontosperre ist umgesetzt (`admin-lock`/`admin-unlock`, Migration 0003, Audit, keine
+   Selbstsperre). Bei der echten Abnahme prüfen, ob `/auth/v1/user` `banned_until` liefert
+   (Abnahmepunkt 13). Weiterer Ausbau: Einladung/Freigabe, MFA, Kontolöschung.
 5. Weiterhin: Screenreader-Test, echte Mobilgeräte, Schul-PC (Aufgabe 17).
 
 ## 7. Besonderheiten im Code

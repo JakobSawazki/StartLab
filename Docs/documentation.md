@@ -277,3 +277,11 @@ nicht die Dateien. Daten stehen in `inhalte.js`, die Darstellung in `ansicht.js`
 Die Übersicht zeigt die nächsten drei Termine aus dem Kalender 2026/27 (ab dem heutigen Datum
 in Europe/Berlin) und verlinkt den vollständigen, filterbaren Kalender. Nach dem letzten Termin
 erscheint ein Hinweis statt einer leeren Liste; für 2027/28 braucht es neue Kalenderdaten.
+
+### 8.12 Kontosperre [Claude, 2026-10-17]
+
+Administratoren können Konten sperren und entsperren. Technisch ist das ein Bann in Supabase
+Auth (keine Anmeldung, keine Sitzungsverlängerung); zusätzlich weist die Edge Function Konten
+mit aktivem `banned_until` bei jeder geschützten Aktion ab. `profiles.locked_at` (Migration
+0003) spiegelt den Zustand für die Adminliste. Das eigene Konto kann nicht gesperrt werden, damit
+sich der letzte Admin nicht aussperrt. Jeder Vorgang wird auditiert.

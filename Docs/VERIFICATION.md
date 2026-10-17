@@ -170,5 +170,15 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Browser-Prüfstand mit axe bestanden: Bereich „Als Nächstes“ mit höchstens drei Terminen,
   Link öffnet den Kalenderdialog.
 
+### Kontosperre [Claude, 2026-10-17]
+
+- 42 Tests bestanden (neu: nur Admins, keine Selbstsperre, Bann/`locked_at`/Audit beim Sperren
+  und Entsperren, gesperrtes Konto bei geschützten Aktionen abgewiesen, abgelaufener Bann wirkt nicht).
+- `tsc --strict` ohne Fehler; SQL-Prüfung mit Migration 0003 bestanden (Schüler können
+  `locked_at` nicht ändern).
+- Browser-Prüfstand mit axe bestanden: Sperren/Entsperren mit Rückfrage, Abbrechen ändert nichts.
+- Smoke-Test lokal: „Kontosperre ohne Anmeldung (401)“ ergänzt.
+- Nicht geprüft: Verhalten echter Supabase-Bans (z. B. ob `/auth/v1/user` `banned_until` liefert).
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
