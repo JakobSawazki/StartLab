@@ -247,3 +247,125 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
+
+### Sitzungsabsicherung nach der Claude-Übergabe [Codex, 2026-10-17]
+
+- `npm test`: **49 Tests bestanden**, davon fünf neue Fälle zu widerrufenen
+  Sitzungen, Bindung an den bestätigten Benutzer, fehlenden/manipulierten
+  Sitzungs-IDs, Dienstausfällen und fehlgeschlagener globaler Abmeldung.
+- `npm run check`: bestanden.
+- TypeScript 5.6.3 mit `--noEmit --strict`, ES2022/ES2023+DOM und lokaler
+  Deno-Deklaration: Edge Function ohne Typfehler.
+- `tools/sql-check.mjs` gegen PGlite 0.2.17: **11 Prüfgruppen bestanden**;
+  alle vier Migrationen wurden in Reihenfolge auf die lokale Testdatenbank
+  mit Supabase-Auth-Schemastubs angewandt. Neue Prüfungen: aktive Sitzung,
+  fremde Benutzerzuordnung, Kontobann, Profilsperre, E-Mail-Bestätigung,
+  entzogene Sitzung sowie RPC-Rechte und direktes Profil-RLS.
+- Edge-Browserprüfung mit axe-core: Navigation, Materialien, Druck, mobile
+  Ansichten und simulierte Kontoabläufe bestanden; keine JavaScript-/CSP-Fehler,
+  keine Verstöße im automatischen axe-Prüfumfang.
+- `node tools/build.mjs`: bestanden. `config.js` weiterhin ohne API-Adresse;
+  keine Kontofunktion freigeschaltet und keine echten Konten oder Mails erzeugt.
+
+Die neue Migration ist noch nicht auf einem echten Supabase-Projekt angewandt.
+Insbesondere das Löschen der Sitzungsdatensätze beim tatsächlichen Logout,
+Passwortwechsel und die Recovery-Sitzungen müssen dort getestet werden. Lokale
+Prüfungen sind kein Nachweis für diese externe Integration.
+
+### Kontolöschung und Antwortreihenfolge [Codex, 2026-10-17]
+
+- `npm test`: **57 Tests bestanden**. Acht neue Backendfälle prüfen
+  Löschberechtigung, eigene/Admin-Konten, UUID und Kürzelbestätigung,
+  verschwundene Konten, Rate-Limits, Vorab-Audit, Hard-Delete,
+  unbestätigte Löschung und Fehler des Abschlussprotokolls.
+- `npm run check`, Build und strikte TypeScript-Prüfung bestanden.
+- 11 lokale PGlite-Prüfgruppen bestanden. Löschprüfung erweitert um die
+  Sitzungs-Kaskade sowie das Erhalten/Anonymisieren alter Auditbezüge.
+- Edge-Browserprüfung inklusive Löschbestätigung, Abbrechen und falschem
+  Kürzel bestanden. Das Löschformular ist zusätzlich im automatischen axe-
+  Prüfumfang ohne Verstöße. Keine echten Konten oder E-Mails beteiligt.
+- `tools/account-races.cjs`: kontrolliert verzögerte Antworten bei geschlossenem
+  Login, ersetzter Profilansicht, alter Adminliste und alter 401 nach neuer
+  Anmeldung bestanden; keine fremde Datenübernahme oder JavaScript-Fehler.
+
+Weiterhin offen: reale Supabase-Abnahme und schulische Betriebsentscheidungen.
+
+### Vollständiger lokaler Supabase-Teststack [Codex, 2026-10-17]
+
+- GitHub-Workflow [39033294662](https://github.com/JakobSawazki/StartLab/actions/runs/39033294662)
+  für Commit `09e0242`: neun Prüfgruppen mit echten Supabase-Komponenten bestanden.
+- Erweiterter Workflow [39033467128](https://github.com/JakobSawazki/StartLab/actions/runs/39033467128)
+  für Commit `0477baa`: **zehn Prüfgruppen bestanden**, einschließlich gleichzeitiger
+  Registrierungen gleicher Namen und administrativ bestätigter Auth-Mailänderung.
+- Supabase-CLI 2.121.0 auf Ubuntu 24.04; echte PostgreSQL-/Auth-/PostgREST-/Edge-
+  Komponenten und lokales Mailpit. Alle vier Migrationen wurden angewandt.
+- Belegt: Bestätigungsmails und Recovery-Links, Login erst nach Bestätigung,
+  eindeutige Kürzel bei parallelen Anfragen, Kürzel-Anmeldung, Trennung der Profile,
+  verweigerte direkte Rollen-/Profiländerung, Adminliste, aktuelle Auth-Mail als
+  Reset-/Anmeldeziel, Passwortwechsel, Widerruf vorheriger Sitzungen, direkte
+  Profil-RLS nach Abmeldung/Sperre, Entsperren, bestätigte Löschung und anonymes Audit.
+- Beide Teststacks nach erfolgreicher Prüfung beendet. Keine realen Personen,
+  kein externes SMTP, keine gehosteten Supabase-Projekte. Workflow-Ausgabe des
+  ersten Laufs auf JWT-/Secret-Key-Muster geprüft: keine Treffer (begrenzter
+  Mustercheck, keine allgemeine Geheimnisfreiheit zugesichert).
+- Lokale Node-Prüfung: **59 Tests bestanden**, darunter zwei Prüfungen zu
+  Zielbegrenzung und isolierter Testkonfiguration; Syntaxprüfung bestanden.
+
+Diese Ergebnisse ersetzen die frühere Beschränkung auf simulierte Antworten
+für die genannten Kontoabläufe. Die Abnahme des späteren gehosteten Projekts,
+seiner Betriebsparameter und seines SMTP-Versands bleibt ausdrücklich offen.
+
+### Datensicherung und Wiederherstellung [Codex, 2026-10-17]
+
+- [Lauf 39034370695](https://github.com/JakobSawazki/StartLab/actions/runs/39034370695),
+  Codecommit `70dece7`: **elf Integrationsgruppen bestanden**.
+- Ergänzt wurde ein echter PostgreSQL-Datendump von `auth` und `public` im
+  temporären Datenbankcontainer. Die Tabellen wurden im Test geleert und in
+  einer Transaktion wiederhergestellt. Profile, Adminrollen und Audit sind
+  vor/nach Wiederherstellung identisch; Anmeldung mit bestehendem Passwort,
+  Adminrechte und Trennung fremder Profile anschließend geprüft.
+- Danach auch Recovery, Passwortwechsel, Widerruf, Sperren und Löschung erneut
+  im selben Integrationstest bestanden. Wartungsmodus in derselben Sitzung
+  nach Commit auf `origin` geprüft; temporären Stack danach beendet.
+- Zwei frühere Wiederherstellungsläufe schlugen fehl. Der eingegrenzte Fehler
+  war SQLSTATE `42501` im Restore. Der normale lokale `postgres`-Zugang genügte
+  nicht; die ausschließlich im Testcontainer verwendete Wartungsrolle
+  `supabase_admin` beseitigte diesen Fehler. Keine App-Berechtigungen geändert.
+- Dumpdaten blieben im Arbeitsspeicher des Testprozesses. Bei Fehlern werden
+  ausschließlich Stufe und SQLSTATE/Kategorie ausgegeben, keine Dumpzeilen.
+- `npm test`: **61 Tests bestanden**, einschließlich zweier Schutzprüfungen
+  für Wiederherstellungsumfang und Transaktionsgrenze; Syntaxprüfung bestanden.
+
+Das Ergebnis belegt einen Daten-Restore in dasselbe unveränderte lokale Schema.
+Gehostete Backups, Wiederaufbau auf neuer Infrastruktur, externe Dateien,
+Aufbewahrungsfristen und produktive Wiederanlaufverfahren sind weiterhin offen.
+
+### Zweiter Faktor für Administratoren [Codex, 2026-10-17]
+
+- `npm test`: **71 Tests bestanden**. Neun zusätzliche MFA-Backendfälle prüfen
+  AAL1-Sperre aller Adminaktionen, ignoriertes Request-AAL, entfernte Faktoren,
+  Schülerrollen, geheimnisarmen Status, eigene Faktorzuordnung, Einrichtung,
+  Codeformate, Limits und Ausfallbehandlung. TOTP-Testtreiber anhand der
+  RFC-6238-SHA1-Vektoren geprüft. Syntax-/strikte TypeScript-Prüfung bestanden.
+- `tools/mfa-browser.cjs` mit Edge, Mobilansicht und axe: Einrichtung, QR als
+  inertes Bild, Codevalidierung/-fehler, Freigabe, erneute Bestätigung nach
+  Anmeldung und Entfernen des Schlüssels beim Schließen bestanden. Keine
+  Speicherung der Testdaten, keine JS-/CSP-Fehler, keine axe-Verstöße im Prüfumfang.
+- Allgemeiner Browserprüfstand einschließlich axe und der Prüfstand für
+  verzögerte Kontoantworten nach den MFA-Änderungen bestanden; Build bestanden.
+- [39035260660](https://github.com/JakobSawazki/StartLab/actions/runs/39035260660)
+  für `e3408c2`: zwölf echte lokale Supabase-Prüfgruppen bestanden.
+- [39035823262](https://github.com/JakobSawazki/StartLab/actions/runs/39035823262)
+  für `0c36630`: **13 Integrationsgruppen bestanden**. Ergänzt: Entfernen des
+  bestätigten Faktors weist den alten Adminzugriff ab und verlangt nach neuer
+  Anmeldung eine neue Einrichtung. Auch MFA nach Daten-Restore bestanden.
+- Temporäre Stacks beendet. Keine tatsächlichen Personen/Authenticator-Geräte
+  beteiligt. Die Anwendung delegiert OTP-Prüfung an Supabase; der HMAC-Code
+  verbleibt ausschließlich im Testwerkzeug und gehört nicht zum Website-Paket.
+
+Offen bleiben das gehostete Projekt, dessen TOTP-/SMTP-Konfiguration, die Abnahme
+mit der tatsächlichen Authenticator-App sowie die schulischen Betriebsentscheidungen.
+
+Nachprüfung Druckausgabe [Codex, 2026-10-17]: Der Kontodialog ist im Druckmedium
+ausgeblendet. MFA-Browserprüfstand mit axe nach der Änderung bestanden;
+Einrichtungsschlüssel und Kontenlisten werden nicht mitgedruckt.

@@ -1,5 +1,35 @@
 # Änderungen
 
+## 0.2.0 · 2026-10-17 [Codex]
+
+Sitzungsprüfung nach Auth-Validierung: Migration 0004 verknüpft aktiven
+Sitzungsdatensatz, Benutzer, E-Mail-Bestätigung, Auth-Bann und Profilsperre.
+Direkte Profilabfragen erhalten dieselbe Prüfung über RLS. Fehler bei der
+globalen Abmeldung nach Passwortwechsel werden ausdrücklich gemeldet.
+Kontofunktionen bleiben bis zur Supabase-Einrichtung und Abnahme deaktiviert.
+
+Admin-Kontolöschung mit Kürzelbestätigung, Schutz eigener und fremder
+Administratorkonten, Zielkonto-Limit und Audit vorbereitet. Verzögerte Antworten
+auf geschlossene oder ersetzte Kontoansichten werden verworfen; eine alte 401
+verwirft keine neue Sitzung. Eigener Browserprüfstand für diese Antwortfolgen.
+
+Vollständige Integration mit echten lokalen Supabase-Komponenten und Mailpit
+auf einem temporären GitHub-Runner: zehn Prüfgruppen bestanden, einschließlich
+paralleler Registrierung, Mailbestätigung, Rollen-/RLS-Schutz, Auth-Mailänderung,
+Recovery, Passwortwechsel, Sitzungswiderruf, Sperren und Löschung. Keine produktive
+Registrierung aktiviert. Erforderliche lokale CLI-Projektkennung ergänzt.
+
+Datensicherung/Wiederherstellung von Auth und Anwendung im temporären Teststack
+ergänzt und bestanden; insgesamt elf Integrationsgruppen. Datenvergleich,
+Anmeldung, Adminrolle und RLS nach Restore geprüft. Kein produktiver Backupdienst
+eingerichtet. Betriebsumfang und Wiederanlauf in BACKUP_RESTORE.md dokumentiert.
+
+Verpflichtende TOTP-Bestätigung für Kontenverwaltung ergänzt: Einrichtung per
+Authenticator-App, Codeansicht bei neuer Anmeldung und serverseitige Prüfung
+von AAL2 und aktuellem Faktor. Keine Änderung der Schüleranmeldung. Im lokalen
+Supabase einschließlich neuer Anmeldung nach Restore geprüft (zwölf Gruppen);
+gehostete MFA-Einrichtung und App-Abnahme bleiben offen.
+
 ## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
 
 Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob). Pages-Workflow auf node24-Actions

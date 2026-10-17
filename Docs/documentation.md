@@ -1,6 +1,6 @@
 # StartLab – Projektdokumentation
 
-Stand: **17. Oktober 2026 (Europe/Berlin)** · Release **0.1.0**
+Stand: **17. Oktober 2026 (Europe/Berlin)** · Release **0.2.0**
 
 Mitwirkende: Jakob Sawazki, Codex, Claude. Einträge werden mit Autor und Datum geführt.
 Struktur in Anlehnung an die Projektdokumentation von WorkbenchLab sowie die
@@ -8,7 +8,7 @@ Aufgabenliste von Excel-Lab; keine Übernahme historischer Protokolle.
 
 Repository: https://github.com/JakobSawazki/StartLab
 
-Vorgesehene Live-Adresse: https://jakobsawazki.github.io/StartLab/
+Live-Adresse: https://jakobsawazki.github.io/StartLab/
 
 ## Wegweiser und aktueller Stand
 
@@ -18,10 +18,11 @@ Vorgesehene Live-Adresse: https://jakobsawazki.github.io/StartLab/
 | Oberfläche | Responsive Website, ohne Framework und externe Schriftarten |
 | Einstieg | Kennenlernen → Zusammenarbeit → Orientierung |
 | Materialien | Suche, Filter, Status je Material; Neufassungen direkt druckbar |
-| Originale aus OneNote | Inventar begonnen, Anhänge noch nicht exportiert oder geprüft |
+| Originale aus OneNote | Mehrere Bereiche aus lokalen Exporten integriert; Originaldateien bleiben ignoriert; Inhaltsrückfragen und fehlende Bingo-/Tipps-Originale offen |
 | Startfortschritt | Vier lokale Häkchen, ohne Namen; kein Cloud-Lernstand |
-| Konten | Code vorbereitet und von Claude geprüft/nachgebessert (Abschnitt 8), noch kein produktiver Supabase-Dienst |
-| Administration | Servergeprüfte Rolle, Kontenübersicht, Reset-Link und Audit vorbereitet |
+| Konten | In echter lokaler Supabase-Integration geprüft; gehosteter Dienst und produktive Registrierung weiterhin nicht eingerichtet |
+| Administration | TOTP-geschützte Kontenübersicht, Reset, Sperren, Löschung und Audit im lokalen Supabase-Teststack geprüft |
+| Integration | [Temporärer Supabase-Stack mit Testpostfach](INTEGRATION_TEST.md), Prüfergebnisse in VERIFICATION.md |
 | Offene Aufgaben / Antworten | [tasks.md](tasks.md) |
 | Einrichtung | [SUPABASE_SETUP.md](SUPABASE_SETUP.md) |
 | Materialienübernahme | [ONENOTE_INVENTAR.md](ONENOTE_INVENTAR.md) |
@@ -34,15 +35,16 @@ lädt zum Ankommen ein; Kennenlernen erfordert keine persönlichen Offenbarungen
 Ein Bingo fördert Gespräche, ein Steckbrief und eine Lernvereinbarung lassen
 sich drucken. Vereinbarungen werden mit der Klasse und Lehrkraft besprochen.
 
-Die Website behauptet keine unbekannten Bewertungsregeln und bindet noch keine
-unzugeordneten Bildungspläne ein. Neue Vorlagen ersetzen nicht stillschweigend
-die Originale. Termine, Praktikums- und GFS-Vorgaben bleiben bis zur Sichtung offen.
+Die Website verwendet die bereits gesichteten organisatorischen Inhalte,
+Bewertungsinformationen, Termine, Praktikums-/GFS-Vorgaben und Bildungsplanlinks.
+Unklare Zuordnungen, Quellenabweichungen und der teilweise ältere Praktikumsstand
+sind als Rückfragen dokumentiert. Neufassungen ersetzen Originale nicht stillschweigend.
 
 ## 2. Technische Architektur [Codex, 2026-10-17]
 
 Öffentlicher Quellcode und die statische Website liegen auf GitHub / Pages.
 Die Veröffentlichung verwendet ausschließlich die Dateiliste in `tools/build.mjs`.
-Die Backendvorbereitung besteht aus einer PostgreSQL-Migration und einer
+Die Backendvorbereitung besteht aus vier geordneten PostgreSQL-Migrationen und einer
 Supabase Edge Function; keine zusätzlichen JavaScript-Laufzeitpakete nötig.
 
 Browser → Edge Function → Supabase Auth / PostgreSQL. Die Kürzelauflösung findet
@@ -104,8 +106,9 @@ Dokumente benötigen privaten Storage und servergeprüften Zugriff.
 Backups, Wiederherstellungstest, Kontolöschung zum festgelegten Zeitpunkt und
 protokollierte Adminvorgänge gehören zum Betrieb. Beim Löschen eines Auth-Kontos
 entfernt die Datenbank zugehöriges Profil und Adminrolle per Fremdschlüssel.
-Ein eigener Löschdialog, Klassenfreigaben, Kontosperren und MFA-Oberfläche stehen
-noch auf der Aufgabenliste.
+Kontosperren, bestätigter Löschdialog und Admin-TOTP sind implementiert.
+Klassenfreigaben, automatische Löschfristen, Betriebs-Backups sowie die gehostete
+Konfiguration und Abnahme der Kontofunktionen sind noch offen.
 
 ## 6. Prüfung und Grenzen [Codex, 2026-10-17]
 
@@ -304,3 +307,121 @@ README auf den aktuellen Stand gebracht.
 Die Liste steht jetzt als Daten in `inhalte.js` (`tastenkuerzel`) und deckt die Themen der
 OneNote-Seite „Hotkeys“ ab (Kopieren, Ausschneiden, Einfügen, Screenshot, Desktop, Zoom). Es
 bleibt eine StartLab-Neufassung mit Windows-Standardkürzeln, bis das Original vorliegt.
+
+## 9. Nachprüfung und Sitzungsabsicherung [Codex, 2026-10-17]
+
+Claudes Stand einschließlich der neuen Inhalte und Kontoverwaltung übernommen.
+Die bestehende Auth-Abfrage wurde um einen expliziten Sitzungsabgleich ergänzt:
+Nach Prüfung des Tokens durch Auth werden dessen Sitzungs-ID und die bestätigte
+Benutzer-ID gemeinsam in der Datenbank geprüft. Migration 0004 berücksichtigt
+`auth.sessions`, die E-Mail-Bestätigung, den Auth-Bann und `profiles.locked_at`.
+Die RLS-Regel für eigene Profile nutzt denselben Abgleich auch bei direktem
+PostgREST-Zugriff. Es entstehen keine öffentlich lesbaren Sitzungstabellen.
+
+Damit hängt die Wirkung von Abmeldung und Sperren nicht nur vom Ablauf eines
+bereits ausgestellten Tokens oder von `banned_until` in der User-API-Antwort ab.
+Die Grundlage ist Supabases dokumentierte Empfehlung zum Abgleich mit
+[`auth.sessions`](https://supabase.com/docs/guides/auth/sessions).
+
+Ein Dienstausfall bei der Identitäts-/Sitzungsprüfung bleibt als solcher erkennbar
+(502/429), statt als falsche Anmeldung dargestellt zu werden. Beim Passwortwechsel
+wird ein Fehler der globalen Abmeldung nicht mehr verschluckt: Die Person erhält
+die Bestätigung des Passwortwechsels und einen ausdrücklichen Hinweis, dass die
+Abmeldung anderer Geräte nicht bestätigt werden konnte; lokal wird abgemeldet.
+
+Die Funktion bleibt deaktiviert, bis alle vier Migrationen und die echte
+Supabase-Abnahme einschließlich Recovery-Sitzungen abgeschlossen sind.
+
+## 10. Kontolöschung und verzögerte Antworten [Codex, 2026-10-17]
+
+Die vorbereitete Adminoberfläche enthält einen eigenen Löschbereich. Vor dem
+Absenden muss das Kürzel des gewählten Kontos eingegeben werden. Abbrechen und
+falsche Eingabe erzeugen keinen Löschaufruf. Der Server verlangt aktuelle
+Sitzung und Adminrolle, gültige Ziel-ID, das passende Kürzel und ein Zielkonto
+ohne Adminrolle. Eigenes Konto und alle Administratorkonten sind auf diesem
+Weg nicht löschbar. Ein zielbezogenes Limit begrenzt Wiederholungsversuche.
+
+Vor dem Auth-Hard-Delete wird der Auftrag im Audit gespeichert. Schlägt das
+fehl, wird nicht gelöscht. Nach erfolgreicher Löschung werden die vorhandenen
+Fremdschlüssel genutzt: Profil und Sitzungen entfallen; Auditbezüge zum
+Zielkonto werden null. Ein Abschlussereignis enthält keine Kopie von Namen,
+E-Mail oder Kürzel. Kann die Löschung wegen eines Dienstausfalls nicht bestätigt
+werden, meldet der Server diesen unklaren Zustand und wiederholt nicht
+automatisch. Schlägt nur das Abschlussprotokoll fehl, bestätigt die Antwort die
+tatsächliche Löschung samt Hinweis auf den fehlenden Abschlussnachweis.
+
+Keine echten Konten wurden angelegt oder gelöscht. Einrichtungs- und
+Abnahmevoraussetzungen bleiben bestehen. Die Funktion ersetzt keine geregelte
+Löschfrist, keinen Backup-Löschprozess und keine Datenbereinigung in später
+hinzukommenden Diensten. Storage-Eigentum kann die Auth-Löschung blockieren;
+solche Dateien werden nicht automatisch entfernt.
+
+Zusätzlich ordnet die Oberfläche asynchrone Antworten ihrer ursprünglichen
+Kontoansicht zu. Antworten auf bereits geschlossene oder ersetzte Dialoge
+ändern die aktuelle Ansicht nicht. Eine verspätete 401 einer alten Sitzung
+verwirft keine inzwischen neu angemeldete Sitzung. Parallel gestartete
+Ladevorgänge erzeugen keine doppelten Zeilen in der Kontenliste. Der gezielte
+Browserprüfstand `tools/account-races.cjs` verwendet dafür kontrolliert
+verzögerte simulierte Antworten.
+
+## 11. Echte lokale Supabase-Integration [Codex, 2026-10-17]
+
+Der Workflow `Supabase integration` prüft die Kontoabläufe mit echten lokalen
+Supabase-Komponenten auf einem temporären GitHub-Runner. Alle vier Migrationen
+werden auf dessen PostgreSQL-Datenbank angewandt; die Edge Function läuft im
+Supabase-Runtime-Container. Auth-Mails landen ausschließlich im lokalen Mailpit.
+Es werden keine gehosteten Projekte, echten Personen oder externen SMTP-Dienste
+verwendet. Die Testwerkzeuge verweigern gehostete Ziele.
+
+Nach dem ersten erfolgreichen Lauf wurde die Prüfung um gleichzeitige
+Registrierungen identischer Namen und eine administrativ bestätigte
+Auth-Mailänderung ergänzt. Lauf 39033467128 (Commit `0477baa`) hat zehn
+Prüfgruppen bestanden, einschließlich direkter RLS-/Rechteprüfungen, Recovery,
+Widerruf offener Sitzungen, Sperren und Kontolöschung. Der Stack wurde anschließend
+beendet. Einzelheiten und Grenzen: VERIFICATION.md und INTEGRATION_TEST.md.
+
+Die Kontoabläufe sind damit über die vorherigen simulierten Prüfungen hinaus
+integriert geprüft. Die spätere gehostete Umgebung mit ihren eigenen Einstellungen,
+SMTP-Zustellung, Berechtigungen und schulischen Vorgaben muss weiterhin abgenommen
+werden. Die produktive Registrierung bleibt geschlossen. Die Projektkonfiguration
+enthält jetzt auch die von der CLI verlangte lokale `project_id`.
+
+## 12. Sicherung/Wiederherstellung im Teststack [Codex, 2026-10-17]
+
+Der Integrationstest sichert jetzt auch die Auth- und Anwendungsdaten per
+`pg_dump` im temporären Datenbankcontainer, leert die erfassten Tabellen und
+stellt sie in einer Transaktion wieder her. Dumpdaten verlassen den
+Arbeitsspeicher des Prüfprozesses nicht. Die Wartungsrolle `supabase_admin`
+wird nur für diesen lokalen Restore verwendet; App-Rechte bleiben unverändert.
+
+Profile, Adminrollen und Audit wurden vor/nach Restore identisch geprüft.
+Anmeldung mit dem bestehenden Passwort sowie Admin- und RLS-Rechte funktionieren
+danach; die weiteren Kontoabläufe sind im selben Lauf ebenfalls bestanden.
+Nach dem Commit ist der transaktionslokale Wartungsmodus beendet. Lauf
+39034370695 für `70dece7` hat elf Integrationsgruppen bestanden.
+
+Das ersetzt keine betriebliche Sicherung. Verfahren, geschützter Aufbewahrungsort,
+Fristen, Zuständigkeiten und Wiederanlauf des gehosteten Projekts fehlen weiterhin.
+Bei echtem Restore müssen insbesondere alte Sitzungen und zwischenzeitlich
+erfolgte Löschungen/Sperren behandelt werden. Siehe BACKUP_RESTORE.md.
+
+## 13. Zweiter Faktor für Administratoren [Codex, 2026-10-17]
+
+Sämtliche Verwaltungsaktionen verlangen jetzt zusätzlich zur aktiven Sitzung
+und Adminrolle eine von Supabase Auth bestätigte AAL2-Sitzung und einen aktuell
+bestätigten TOTP-Faktor. Ohne Bestätigung sind Kontenliste, Audit, Reset,
+Sperren/Entsperren und Löschung gesperrt. Die Schüleranmeldung bleibt unverändert.
+
+Der Kontodialog ermöglicht die erste Einrichtung per QR-Code oder manuellem
+Schlüssel sowie die Bestätigung eines aktuellen Codes bei erneuter Anmeldung.
+Der SVG-QR-Code wird als Bild eingebunden, nicht als aktiver SVG-DOM-Inhalt.
+Schlüssel und Codes werden nicht gespeichert oder protokolliert; die Oberfläche
+entfernt Einrichtungsschlüssel beim Schließen bzw. erfolgreichen Bestätigen.
+Ein bestätigter Faktor kann mit Passwort/Recovery-Link allein nicht ersetzt
+werden. Faktorverlust benötigt einen gesonderten Wiederherstellungsprozess.
+
+Backendtests und Browserprüfung einschließlich axe sind bestanden. Der echte
+lokale Supabase-Lauf 39035260660 (Code `e3408c2`) bestätigt die MFA-Pflicht,
+Einrichtung, Ablehnung falscher Codes, AAL2-Freigabe und erneute Bestätigung nach
+Login/Restore; insgesamt zwölf Integrationsgruppen. Einzelheiten: ADMIN_MFA.md.
+Die Freischaltung und App-Bedienung im gehosteten Projekt sind weiterhin offen.

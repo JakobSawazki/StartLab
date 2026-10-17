@@ -13,7 +13,8 @@ oder in das Repository schreiben. Kosten und gewählten Tarif im Dashboard prüf
 
 `supabase/migrations/202610170001_startlab.sql` und danach
 `supabase/migrations/202610170002_startlab_accounts.sql` sowie
-`supabase/migrations/202610170003_startlab_lock.sql` (Spalte `locked_at`) in einem neuen Projekt über den
+`supabase/migrations/202610170003_startlab_lock.sql` (Spalte `locked_at`) und
+`supabase/migrations/202610170004_startlab_sessions.sql` (aktive Sitzungen) in einem neuen Projekt über den
 SQL-Editor anwenden (oder per `supabase db push`). [Claude, 2026-10-17] Die zweite Migration
 vereinheitlicht die Kürzelbildung mit Website und Edge Function und hält `profiles.email`
 per Trigger mit der bestätigten Auth-Adresse synchron. Sie erstellt Profile, Adminrollen, temporäre Anfragelimits,
@@ -101,10 +102,20 @@ values ('HIER-DIE-GEPRUEFTE-KONTEN-UUID');
 ```
 
 Kein Adminrecht aus Name, E-Mail-Adresse oder frei beschreibbaren Metadaten
-ableiten. Supabase-Dashboardkonto mit MFA schützen. Eine verpflichtende MFA für
-Adminaktionen in der StartLab-Anwendung ist noch ein Ausbaupunkt.
+ableiten. Supabase-Dashboardkonto mit MFA schützen. [Codex, 2026-10-17] Auch
+StartLab selbst verlangt nun TOTP für Adminaktionen: Im gehosteten Auth-Dienst
+TOTP-Einrichtung und -Bestätigung aktivieren und nach der Rollenvergabe in
+StartLab die Authenticator-App einrichten. Anleitung: [ADMIN_MFA.md](ADMIN_MFA.md).
+Die lokale Konfiguration enthält beide erforderlichen TOTP-Schalter; eine
+zusätzliche Datenbankmigration ist dafür nicht nötig.
 
 ## 6. Verbindliche Funktionsabnahme
+
+[Codex, 2026-10-17] Die grundlegenden Kontoabläufe lassen sich inzwischen mit
+echten lokalen Supabase-Komponenten im temporären GitHub-Testsystem prüfen:
+[Integrationstest](INTEGRATION_TEST.md). Das reduziert die Lücke gegenüber den
+simulierten Tests, ersetzt aber nicht die folgende Abnahme des tatsächlichen
+gehosteten Projekts und seines SMTP-Dienstes.
 
 Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
 
@@ -123,11 +134,53 @@ Mit ausschließlich erfundenen Testpersonen und eigenen Testadressen prüfen:
 11. SMTP absichtlich falsch konfigurieren: „Passwort vergessen“ bleibt neutral, die
     Function-Logs zeigen `recover_failed`; Admin-Reset meldet den Fehler, Audit enthält
     `password_reset_failed`. Logs enthalten keine Adressen.
-12. Passwortwechsel meldet auf einem zweiten Gerät angemeldete Sitzungen ab (spätestens
-    nach Ablauf des Access-Tokens).
+12. [Codex, 2026-10-17] Nach Abmeldung bzw. erfolgreicher globaler Abmeldung beim
+    Passwortwechsel eine zuvor gespeicherte Test-Sitzung auf einem zweiten Gerät
+    erneut verwenden: geschützte Edge-Aktionen müssen sofort 401 liefern, direkte
+    Profilabfragen dürfen keine Zeile liefern (auch vor Ablauf des Access-Tokens).
+    Passwortwechsel mit absichtlich gestörtem globalem Logout: Passwort ist geändert,
+    die Oberfläche meldet die nicht bestätigte Abmeldung anderer Geräte ausdrücklich.
 13. [Claude, 2026-10-17] Kontosperre: Admin sperrt Testkonto B; B kann sich nicht anmelden und
     keine geschützte Aktion mehr ausführen; Audit `account_locked`; Entsperren stellt den Zugang her.
     Ein Admin kann das eigene Konto nicht sperren.
+14. [Codex, 2026-10-17] Ausschließlich mit einem eigens angelegten Testkonto:
+    Kontolöschung abbrechen, falsches Kürzel eingeben, dann korrekt bestätigen.
+    Nur die richtige Bestätigung darf das gewählte Konto löschen. Profil und
+    Sitzungen müssen fehlen, zugehörige alte Auditbezüge müssen null sein.
+    Neue Anmeldung und vorhandenes altes Token dürfen keinen Zugriff erlauben.
+15. Eigene und fremde Administratorkonten sind über `admin-delete` geschützt.
+    Ein fehlgeschlagenes Vorabprotokoll verhindert den Löschaufruf. Bei Timeout
+    wird die Löschung nicht automatisch wiederholt: erst den tatsächlichen
+    Auth-/Profilzustand im Dashboard prüfen. Storage-Eigentum kann die Löschung
+    verhindern; gespeicherte Dateien nicht ungeprüft entfernen.
+16. Administrator nach neuer Passwort-Anmeldung: Kontenliste, Audit, Reset,
+    Sperren und Löschung müssen vor der TOTP-Bestätigung 403 liefern. Faktor
+    einrichten, falschen Code prüfen, korrekten Code bestätigen und danach
+    Adminaktionen prüfen. Nach Abmeldung/Neuladen ist erneut ein Code nötig.
+    Passwort-Reset allein darf einen bestätigten Faktor nicht ersetzen.
+    Bedienung mit der tatsächlich eingesetzten Authenticator-App abnehmen.
+
+### Sitzungsprüfung [Codex, 2026-10-17]
+
+Ein gültiges Access-Token allein genügt nicht für geschützte StartLab-Anfragen.
+Nach der Auth-Prüfung wird dessen `session_id` mit einer aktiven Sitzung derselben
+Person in `auth.sessions` abgeglichen. Bestätigte E-Mail, aktueller Auth-Bann und
+`profiles.locked_at` werden in derselben Datenbankabfrage geprüft. Eine fehlende
+oder unzulässige Sitzung wird abgewiesen. Bei Datenbankausfall wird kein Zugriff
+gewährt; die API meldet den Dienstausfall, statt ein falsches Passwort zu behaupten.
+
+Die neue RLS-Regel bindet auch direkte Profilabfragen an die aktive eigene Sitzung.
+Der Browser erhält weder Zugriff auf `auth.sessions` noch die Möglichkeit, fremde
+Sitzungen abzufragen. Die allgemeine Prüffunktion darf nur die Service-Rolle
+aufrufen; angemeldete Personen erhalten lediglich eine parameterlose Prüfung
+ihrer eigenen signierten JWT-Sitzung.
+
+Das ist lokal mit PostgreSQL/PGlite und simulierten Auth-Antworten geprüft. Vor
+Produktivbetrieb müssen die Existenz von `auth.sessions`, das tatsächliche
+Entfernen der Sitzungen beim Logout und das Verhalten von Recovery-Sitzungen
+gegen das eingerichtete Supabase-Projekt abgenommen werden. Bei teilweise
+fehlgeschlagener Kontosperre können Auth-Bann und Profilstatus voneinander
+abweichen; beide Sperrsignale verweigern Zugriff bis zur erfolgreichen Entsperrung.
 
 Erst danach Registrierung für den Unterricht aktivieren. Ohne Klassen-Einladungen
 ist die Registrierung nach Freischaltung grundsätzlich öffentlich. Das Auth-Dashboard
@@ -137,8 +190,10 @@ beachten; der Edge-Schalter allein sperrt direkte Auth-Registrierungen nicht.
 ## Grenzen und nächster Ausbau
 
 Kein vollständiges Schulverwaltungssystem: keine Klassenverwaltung, kein
-Klassen-Einladungscode, keine Freigabe, kein automatischer Löschlauf und keine
-Admin-MFA-Oberfläche. [Claude, 2026-10-17] Adminübersicht lädt seitenweise je 100 Konten.
+Klassen-Einladungscode, keine Freigabe und kein automatischer Löschlauf.
+[Codex, 2026-10-17] Admin-TOTP ist implementiert; die gehostete Konfiguration und
+das Vorgehen bei Faktorverlust müssen vor Betriebsaufnahme abgenommen werden.
+[Claude, 2026-10-17] Adminübersicht lädt seitenweise je 100 Konten.
 Kürzel-Login und Admin-Reset verwenden die Auth-Adresse; `profiles.email` wird per
 Trigger nachgeführt (ungeprüft gegen echtes Supabase). Ist im Dashboard
 „Secure password change“ aktiv, kann ein Passwortwechsel ohne frische Anmeldung eine
@@ -155,6 +210,9 @@ Passwörter oder personenbezogenen Request-Bodies in eigene Logs schreiben.
 - [Benutzerprofile](https://supabase.com/docs/guides/auth/managing-user-data)
 - [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 - [Edge Function Secrets](https://supabase.com/docs/guides/functions/secrets)
+- [Sitzungen und Prüfung nach Abmeldung](https://supabase.com/docs/guides/auth/sessions)
+- [Konten serverseitig löschen](https://supabase.com/docs/reference/javascript/auth-admin-deleteuser)
+- [Zwei-Faktor-Anmeldung (TOTP)](https://supabase.com/docs/guides/auth/auth-mfa/totp)
 
 Diese Quellen wurden für den Architekturentwurf geprüft. Ein produktiver
 E-Mail-Versand, eine rechtliche Freigabe oder eine reale Datenbankabnahme ist

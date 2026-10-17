@@ -1,0 +1,37 @@
+name: Supabase integration
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/**'
+      - 'tools/integration-*.mjs'
+      - '.github/workflows/integration.yml'
+  pull_request:
+    paths:
+      - 'supabase/**'
+      - 'tools/integration-*.mjs'
+      - '.github/workflows/integration.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  accounts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.121.0
+      - run: node tools/integration-stack.mjs prepare
+      - run: node tools/integration-stack.mjs start
+      - run: node tools/integration-stack.mjs test
+      - name: Stop disposable stack
+        if: always()
+        run: node tools/integration-stack.mjs stop

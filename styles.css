@@ -25,3 +25,10 @@ td.num{white-space:nowrap}table.wide{min-width:640px}th[scope=row]{font-weight:6
 .row-actions{display:flex;gap:8px;flex-wrap:wrap}.row-actions button{padding:8px 12px;font-size:13px}
 @media(max-width:560px){dialog td,dialog th{padding:8px 6px}}
 .shortcuts{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:0}.shortcuts dt{margin:0}.shortcuts dd{margin:0}kbd{font:inherit;font-size:13px;font-weight:600;background:#eef1e8;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:2px 8px;white-space:nowrap}@media(max-width:560px){.shortcuts{grid-template-columns:1fr;gap:2px}.shortcuts dd{margin-bottom:8px}}
+
+/* [Codex, 2026-10-17] Destructive account action, readable on light surfaces. */
+button.danger{background:#8c3029;color:#fff}#delete-panel{margin-top:20px}#delete-panel h4{font-size:19px;margin-top:0}
+
+.mfa-qr{display:block;width:220px;max-width:100%;height:auto;background:#fff;margin:18px 0;padding:10px;border:1px solid var(--line)}#mfa-secret{display:block;overflow-wrap:anywhere;padding:12px 0}#mfa-form{margin-top:18px}
+/* Account dialogs can contain setup credentials and personal account lists. */
+@media print{#auth[open]{display:none!important}}
