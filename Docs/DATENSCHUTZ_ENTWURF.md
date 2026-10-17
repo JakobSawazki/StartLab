@@ -12,7 +12,7 @@ darf nicht geraten werden.
 | --- | --- |
 | Hosting | GitHub Pages. GitHub verarbeitet beim Abruf technisch notwendige Verbindungsdaten (z. B. IP-Adresse) in eigener Verantwortung. **[OFFEN]** Hinweis auf GitHub und ggf. Drittlandbezug (USA) formulieren. |
 | Cookies, Analyse, Werbung | Keine. Keine externen Skripte, Schriften oder Tracker; die Content-Security-Policy erlaubt nur eigene Skripte/Styles. |
-| Browserspeicher | Nur `localStorage["startlab.checks"]`: Nummern (0–3) der abgehakten Startschritte, keine Namen; und `localStorage["startlab.theme"]` (`light`/`dark`), nur wenn das Design über den Umschalter gewählt wird. Löschbar über „Datenschutz & Speicherung“. Bingo-Markierungen werden nicht gespeichert. |
+| Browserspeicher | Nur `localStorage["startlab.checks"]`: Nummern (0–3) der abgehakten Startschritte, keine Namen; `localStorage["startlab.theme"]` (`light`/`dark`), nur wenn das Design über den Umschalter gewählt wird; `localStorage["startlab.settings"]` (Farbschema, zwei Farbwerte, Schriftgröße), nur wenn Anzeige-Einstellungen von „Standard“ abweichen. Löschbar über „Datenschutz & Speicherung“. Bingo-Markierungen werden nicht gespeichert. |
 | Externe Links | bildungsplaene-bw.de, kmk.org, WorkbenchLab. Verbindung erst beim Anklicken; Bildungsplan-Links öffnen mit `rel="noopener noreferrer"`. |
 | Inhalte | Organisatorische Inhalte aus OneNote ohne Schülerdaten; als einzige Person namentlich genannt: die Lehrkraft. |
 | Downloads | Vier Dateien in `downloads/`, Metadaten (Autor, Bearbeiter, Firma) entfernt; das PDF nennt die Lehrkraft als Autor. |
