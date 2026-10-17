@@ -1,0 +1,3 @@
+[functions.startlab]
+# Public login/reset entry point. Each privileged operation verifies its token.
+verify_jwt = false

@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {usernameBase,materials,bingo} from '../content.js';
+test('Kürzel: Leerzeichen, Umlaute, kurze Namen und Akzente',()=>{assert.equal(usernameBase(' Jakob ','Sawazki'),'jaksaw');assert.equal(usernameBase('Max','Müller'),'maxmue');assert.equal(usernameBase('Éva','Öztürk'),'evaoez');assert.equal(usernameBase('Li','Wu'),'liwu');});
+test('Materialien haben eindeutige IDs und ehrlichen Herkunftsstatus',()=>{assert.equal(new Set(materials.map(x=>x.id)).size,materials.length);assert.ok(materials.every(x=>x.status));assert.equal(bingo.length,16);});

@@ -1,0 +1,10 @@
+desktop.ini
+node_modules/
+.env
+.env.*
+!.env.example
+.local/
+private/
+supabase/.temp/
+test-results/
+dist/
