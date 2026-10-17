@@ -285,3 +285,8 @@ Auth (keine Anmeldung, keine Sitzungsverlängerung); zusätzlich weist die Edge 
 mit aktivem `banned_until` bei jeder geschützten Aktion ab. `profiles.locked_at` (Migration
 0003) spiegelt den Zustand für die Adminliste. Das eigene Konto kann nicht gesperrt werden, damit
 sich der letzte Admin nicht aussperrt. Jeder Vorgang wird auditiert.
+
+### 8.13 Suche im Inhalt [Claude, 2026-10-17]
+
+Die Materialsuche durchsucht neben Titel und Beschreibung auch den Text der Dialoge (einmalig
+beim ersten Suchen aufgebaut). Treffer nur im Inhalt sind mit „Treffer im Inhalt“ markiert.

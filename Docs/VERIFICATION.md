@@ -195,5 +195,10 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   Überlauf. Sichtprüfung Kalender: Datum bricht nicht mehr um, Tabellen auf schmalen Bildschirmen
   kompakter.
 
+### Suche im Inhalt [Claude, 2026-10-17]
+
+- Im Browser: „Laufzettel“ → GFS, „Calibri“ → Praktikum, „Abitur“ → GFS und Kalender, „NAGOLD“ →
+  Vertrag und Bewertung, Unsinn → 0. Browser-Prüfstand um „Laufzettel“ ergänzt und bestanden.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
