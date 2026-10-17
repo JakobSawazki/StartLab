@@ -147,13 +147,22 @@ export const gfs = {
 };
 
 export const bildungsplaene = {
- quelle: 'OneNote „Bildungspläne“ – Links',
+ quelle: 'OneNote „Bildungspläne“ – Links und Dokumente; Links am 17.10.2026 geprüft',
  links: [
   ['Bildungspläne Baden-Württemberg (Startseite)', 'https://bildungsplaene-bw.de/,Lde/Startseite'],
   ['BK 1 – Informatik (Kaufmännisches Berufskolleg I)', 'https://bildungsplaene-bw.de/site/bildungsplan-rebrush2024/get/documents_E-245063636/lsbw/Bildungsplaene-BERS/MediaCenter/bk/bk_schv/bk_kfm/bk1/08_3571_Kfm-BK%20I_Informatik.pdf'],
-  ['BK 2 – Informatik (Kaufmännisches Berufskolleg II)', 'https://bildungsplaene-bw.de/site/bildungsplan/get/documents_E271796087/lsbw/Bildungsplaene-BERS/MediaCenter/bk/bk_I-II/bkkfm2/08_3572_Kfm-BK%20II_Informatik.pdf']
+  // [Claude, 2026-10-17] Der OneNote-Link (Pfad /site/bildungsplan/) lieferte dauerhaft HTTP 503; gleiche Dokumentnummer unter /site/bildungsplan-rebrush2024/, Inhalt geprüft.
+  ['BK 2 – Informatik (Kaufmännisches Berufskolleg II)', 'https://bildungsplaene-bw.de/site/bildungsplan-rebrush2024/get/documents_E271796087/lsbw/Bildungsplaene-BERS/MediaCenter/bk/bk_I-II/bkkfm2/08_3572_Kfm-BK%20II_Informatik.pdf'],
+  ['KMK-Rahmenlehrpläne für Ausbildungsberufe (Downloadbereich)', 'https://www.kmk.org/service/servicebereich-berufliche-schulen/downloadbereich-rahmenlehrplaene.html']
  ],
- berufe: ['Kaufmann/Kauffrau im E-Commerce', 'Kaufmann/Kauffrau im Einzelhandel', 'Fachkraft für Lagerlogistik', 'Industriekaufmann/Industriekauffrau', 'Kaufmann/Kauffrau für Büromanagement']
+ // Titel und Stand aus den in OneNote abgelegten Dokumenten.
+ berufe: [
+  ['Kaufmann/Kauffrau im E-Commerce', 'KMK-Rahmenlehrplan, Beschluss vom 24.11.2017'],
+  ['Kaufmann/Kauffrau im Einzelhandel', 'KMK-Rahmenlehrplan (mit Verkäufer/Verkäuferin), Beschluss vom 17.06.2004 i. d. F. vom 16.09.2016'],
+  ['Fachkraft für Lagerlogistik', 'KMK-Rahmenlehrplan vom 25.03.2004 und Bildungsplan Baden-Württemberg (in Kraft seit 01.08.2006, Fassung vom 01.08.2014)'],
+  ['Industriekaufmann/Industriekauffrau', 'Bildungsplan Baden-Württemberg, KMK-Beschluss vom 15.12.2023'],
+  ['Kaufmann/Kauffrau für Büromanagement', 'Bildungsplan Baden-Württemberg, KMK-Beschluss vom 27.09.2013, dazu Zusatzmaterialien zu den Lernfeldern 1–4']
+ ]
 };
 
 // Schülerrelevante Termine aus den Kalendern 2026/27 (allgemein, J1, J2). Interne Konferenzen weggelassen.

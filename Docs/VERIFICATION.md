@@ -180,5 +180,14 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Smoke-Test lokal: „Kontosperre ohne Anmeldung (401)“ ergänzt.
 - Nicht geprüft: Verhalten echter Supabase-Bans (z. B. ob `/auth/v1/user` `banned_until` liefert).
 
+### Bildungsplan-Links [Claude, 2026-10-17]
+
+- Der BK-2-Link aus OneNote (`/site/bildungsplan/…`) lieferte mehrfach HTTP 503. Dieselbe
+  Dokumentnummer unter `/site/bildungsplan-rebrush2024/…` liefert ein PDF; dessen Titelseite
+  („Kaufmännisches Berufskolleg II – Informatik“) wurde geprüft. Link ersetzt.
+- `tools/link-check.mjs`: alle fünf externen Links HTTP 200. Ein Test verhindert den alten Pfad.
+- Ausbildungsberufe mit Dokumentstand aus den OneNote-PDFs und Link zum KMK-Downloadbereich
+  (Weiterleitung auf die aktuelle KMK-Adresse übernommen).
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

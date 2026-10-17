@@ -42,6 +42,7 @@ Optionale Werkzeuge, jeweils **außerhalb** des Projekts installiert (keine Proj
 STARTLAB_PLAYWRIGHT=/pfad/node_modules/playwright-core STARTLAB_AXE=/pfad/node_modules/axe-core/axe.min.js node tools/browser-check.cjs
 STARTLAB_PGLITE=/pfad/node_modules/@electric-sql/pglite node tools/sql-check.mjs
 STARTLAB_API=https://REF.supabase.co/functions/v1/startlab STARTLAB_ORIGIN=https://jakobsawazki.github.io node tools/smoke-check.mjs
+node tools/link-check.mjs   # externe Links (Netz nötig)
 ```
 
 Claude nutzte playwright-core 1.48.2 (Browser: installiertes Microsoft Edge), axe-core 4.10.2,
@@ -66,7 +67,9 @@ Claude nutzte playwright-core 1.48.2 (Browser: installiertes Microsoft Edge), ax
    18 → 5,1). Vermutlich Tippfehler; Tabelle deshalb nicht veröffentlicht. Welcher Schlüssel gilt
    für die Berufsschule – diese Tabelle oder der IHK-Schlüssel?
 2. Der IHK-Schlüssel stammt von der IHK Hannover. Gilt er so für eure Klassen?
-3. `Links.txt`: Der Link für BKFH ist identisch mit dem für BK 2. Richtigen BKFH-Link nachreichen?
+3. `Links.txt`: Der Link für BKFH ist identisch mit dem für BK 2 (deshalb kein eigener BKFH-Link
+   auf der Seite). Außerdem war der BK-2-Link selbst gestört (HTTP 503); Claude hat ihn durch
+   dieselbe Dokumentnummer unter `/site/bildungsplan-rebrush2024/` ersetzt (Inhalt geprüft).
 4. Praktikum: Die OneNote-Seite zu deinen Klassen (Website-Präsentation) trägt Termine von
    2025/26. Gilt das Vorgehen 2026/27 unverändert? Auf der Website als „Stand 2025/26“ markiert.
 5. Kalender 2026/27: Rosenmontag steht am 07.02.2027 (Sonntag), richtig wäre 08.02. Betrifft die

@@ -72,7 +72,7 @@ export function gfsHTML() {
 export function bildungsplaeneHTML() {
  return `<p>Die Bildungspläne beschreiben, welche Ziele und Kompetenzen in deinem Bildungsgang gelten. Die Links führen zu den offiziellen Dokumenten des Landes Baden-Württemberg.</p>
  <ul class="link-list">${bildungsplaene.links.map(([t, u]) => `<li><a href="${esc(u)}" rel="noopener noreferrer" target="_blank">${esc(t)}<span class="sr-only"> (öffnet in neuem Tab)</span></a></li>`).join('')}</ul>
- <h3>Ausbildungsberufe</h3><p>Für diese Ausbildungsberufe liegen die Rahmenlehrpläne in OneNote vor. Frag deine Lehrkraft nach dem Plan für deinen Beruf.</p>${list(bildungsplaene.berufe)}
+ <h3>Ausbildungsberufe</h3><p>Für diese Ausbildungsberufe liegen die Pläne in OneNote vor. Die KMK-Rahmenlehrpläne findest du im Downloadbereich der KMK, die Bildungspläne des Landes auf der Bildungsplan-Seite; deine Lehrkraft hilft dir beim richtigen Dokument.</p><ul>${bildungsplaene.berufe.map(([b, s]) => `<li><strong>${esc(b)}</strong><br>${esc(s)}</li>`).join('')}</ul>
  ${quelle(bildungsplaene.quelle)}`;
 }
 
