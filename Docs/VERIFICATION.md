@@ -96,5 +96,12 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - `tools/browser-check.cjs` mit `STARTLAB_AXE` und ohne bestanden.
 - axe deckt nicht alles ab (z. B. Verständlichkeit, Screenreader-Ausgabe, reale Geräte).
 
+### Content-Security-Policy [Claude, 2026-10-17]
+
+- CSP per Meta-Tag: nur eigene Skripte/Styles, Verbindungen nur zur eigenen Herkunft und zu
+  `https://*.supabase.co`. Browser-Prüfstand bestanden, keine CSP-Verstöße in der Konsole;
+  ein Abruf zu einem fremden Ziel löst nachweislich einen `connect-src`-Verstoß aus. Der
+  simulierte Kontodienst nutzt eine `*.supabase.co`-Adresse und läuft damit unter der CSP.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

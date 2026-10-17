@@ -45,6 +45,11 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 - axe-Audit (optional via `STARTLAB_AXE` im Browser-Prüfstand): verschachteltes `aside` behoben, jetzt ohne Verstöße.
 - Skiplink-Fehler behoben (wechselte per `#main` zur Übersicht).
 
+## Fünfter Block [Claude, 2026-10-17]
+
+- CSP-Meta-Tag in `index.html`; Browser-Prüfstand wertet CSP-Verstöße als Fehler und prüft die Blockade fremder Ziele.
+  Bei eigener Function-Domain `connect-src` anpassen.
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12

@@ -228,3 +228,10 @@ Handybreite; der Hinweiskasten der Startseite ist kein verschachteltes `aside`
 mehr. Der Skiplink springt jetzt zum Inhalt, ohne die Route zu wechseln (vorher
 führte er von jeder Unterseite zur Übersicht). Beides ist im Browser-Prüfstand
 abgesichert.
+
+### 8.7 Content-Security-Policy [Claude, 2026-10-17]
+
+`index.html` setzt eine CSP: keine fremden Skripte, Styles, Formularziele oder
+Basis-URLs; Netzwerkzugriffe nur zur eigenen Herkunft und zu `*.supabase.co`.
+Das begrenzt die Folgen einer möglichen HTML-Einschleusung. GitHub Pages erlaubt
+keine eigenen HTTP-Header; `frame-ancestors` ist per Meta-Tag nicht wirksam.

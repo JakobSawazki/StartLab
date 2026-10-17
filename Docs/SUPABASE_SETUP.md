@@ -62,6 +62,10 @@ export const config = Object.freeze({
 });
 ```
 
+[Claude, 2026-10-17] `index.html` erlaubt per Content-Security-Policy Verbindungen nur zu
+`https://*.supabase.co`. Bei einer eigenen Domain für die Function muss `connect-src` dort
+angepasst werden, sonst blockiert der Browser die Kontoanfragen.
+
 Im Browser ist weder der Service-Schlüssel noch eine Datenbankverbindung nötig.
 Der Service-Schlüssel bleibt ausschließlich in der Edge-Umgebung.
 

@@ -8,6 +8,7 @@ Abmeldung nach Passwortwechsel). Barrierefreiheit: Dialognamen und Fokus,
 Seitentitel, Statusmeldungen, Kontraste, mobiles 4×4-Bingo, Druckansicht.
 Adminliste seitenweise (je 100 Konten); Browser-Prüfstand um Barrierefreiheit,
 Druck und simulierte Kontoabläufe erweitert.
+Content-Security-Policy für die Website.
 Skiplink wechselt nicht mehr zur Übersicht; axe-Audit ohne Verstöße.
 SQL-Prüfung beider Migrationen gegen PGlite (`tools/sql-check.mjs`).
 Keine neue Version vergeben; Kontofunktionen bleiben deaktiviert.
