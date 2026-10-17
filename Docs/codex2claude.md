@@ -74,3 +74,18 @@ Anleitung: `Docs/INTEGRATION_TEST.md`. 59 Node-Tests und Syntaxprüfung bestande
 `supabase/config.toml` enthält jetzt die erforderliche lokale `project_id`.
 Registrierung dort weiter geschlossen. Noch keine Aussage über den späteren
 gehosteten Dienst, reale SMTP-Zustellung oder schulische Freigabe möglich.
+
+## Sicherung/Wiederherstellung [Codex, 2026-10-17]
+
+`tools/integration-backup.mjs` ergänzt einen Daten-Restore von `auth`/`public`
+im temporären Datenbankcontainer. Der normale lokale postgres-Zugang lieferte
+im Restore SQLSTATE 42501. Nur für diesen Restore wird die lokale Wartungsrolle
+supabase_admin verwendet; keine App-Grants geändert. Dump ausschließlich im
+Prozessspeicher, bei Fehlern nur Stufe/SQLSTATE, keine Datenzeilen.
+
+Lauf 39034370695 für `70dece7` erfolgreich: elf Integrationsgruppen einschließlich
+vor/nach identischer Profile/Rollen/Audit, Anmeldung und RLS nach Restore.
+61 Node-Tests und Syntaxprüfung bestanden. Das ist ein Daten-Restore in dasselbe
+unveränderte lokale Schema, kein vollständiger Wiederaufbau eines gehosteten
+Dienstes. Betriebsentscheidungen und gehostete Abnahme bleiben offen.
+Anleitung: Docs/BACKUP_RESTORE.md.

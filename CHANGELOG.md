@@ -19,6 +19,11 @@ paralleler Registrierung, Mailbestätigung, Rollen-/RLS-Schutz, Auth-Mailänderu
 Recovery, Passwortwechsel, Sitzungswiderruf, Sperren und Löschung. Keine produktive
 Registrierung aktiviert. Erforderliche lokale CLI-Projektkennung ergänzt.
 
+Datensicherung/Wiederherstellung von Auth und Anwendung im temporären Teststack
+ergänzt und bestanden; insgesamt elf Integrationsgruppen. Datenvergleich,
+Anmeldung, Adminrolle und RLS nach Restore geprüft. Kein produktiver Backupdienst
+eingerichtet. Betriebsumfang und Wiederanlauf in BACKUP_RESTORE.md dokumentiert.
+
 ## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
 
 Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob). Pages-Workflow auf node24-Actions

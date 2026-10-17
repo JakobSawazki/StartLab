@@ -55,15 +55,18 @@ Datenbank-, Mail- oder Schlüsselartefakte.
 4. Administratorkonto, serverseitige Rolle und Kontenübersicht.
 5. Eine administrativ bestätigte E-Mail-Änderung muss im Profil ankommen;
    Kürzel-Anmeldung und anschließender Reset nutzen die neue Auth-Adresse.
-6. Administrativer Reset, echte Recovery-Mail, neuer Passwortsatz,
+6. Datensicherung und Wiederherstellung von `auth` und `public` im temporären
+   Datenbankcontainer; Profile/Rollen/Audit identisch, erneute Anmeldung und
+   RLS-Trennung wirksam. Details: [BACKUP_RESTORE.md](BACKUP_RESTORE.md).
+7. Administrativer Reset, echte Recovery-Mail, neuer Passwortsatz,
    Zurückweisung alter Sitzungen und des alten Passworts.
-7. Abmeldung und erneute Verwendung des vorherigen Tokens; auch direktes
+8. Abmeldung und erneute Verwendung des vorherigen Tokens; auch direktes
    Profil-RLS muss Zugriff verweigern.
-8. Sperren eines Kontos mit vorhandener Sitzung, fehlgeschlagene Anmeldung,
+9. Sperren eines Kontos mit vorhandener Sitzung, fehlgeschlagene Anmeldung,
    Entsperren und erneute Anmeldung.
-9. Verweigerte Selbstlöschung/falsche Kürzelbestätigung, erfolgreiche Löschung,
+10. Verweigerte Selbstlöschung/falsche Kürzelbestätigung, erfolgreiche Löschung,
    entferntes Profil, abgewiesene alte Sitzung und anonymisiertes Audit.
-10. Selbst angeforderte Passwort-vergessen-Mail im lokalen Postfach.
+11. Selbst angeforderte Passwort-vergessen-Mail im lokalen Postfach.
 
 ## Bedeutung des Ergebnisses
 

@@ -384,3 +384,22 @@ integriert geprüft. Die spätere gehostete Umgebung mit ihren eigenen Einstellu
 SMTP-Zustellung, Berechtigungen und schulischen Vorgaben muss weiterhin abgenommen
 werden. Die produktive Registrierung bleibt geschlossen. Die Projektkonfiguration
 enthält jetzt auch die von der CLI verlangte lokale `project_id`.
+
+## 12. Sicherung/Wiederherstellung im Teststack [Codex, 2026-10-17]
+
+Der Integrationstest sichert jetzt auch die Auth- und Anwendungsdaten per
+`pg_dump` im temporären Datenbankcontainer, leert die erfassten Tabellen und
+stellt sie in einer Transaktion wieder her. Dumpdaten verlassen den
+Arbeitsspeicher des Prüfprozesses nicht. Die Wartungsrolle `supabase_admin`
+wird nur für diesen lokalen Restore verwendet; App-Rechte bleiben unverändert.
+
+Profile, Adminrollen und Audit wurden vor/nach Restore identisch geprüft.
+Anmeldung mit dem bestehenden Passwort sowie Admin- und RLS-Rechte funktionieren
+danach; die weiteren Kontoabläufe sind im selben Lauf ebenfalls bestanden.
+Nach dem Commit ist der transaktionslokale Wartungsmodus beendet. Lauf
+39034370695 für `70dece7` hat elf Integrationsgruppen bestanden.
+
+Das ersetzt keine betriebliche Sicherung. Verfahren, geschützter Aufbewahrungsort,
+Fristen, Zuständigkeiten und Wiederanlauf des gehosteten Projekts fehlen weiterhin.
+Bei echtem Restore müssen insbesondere alte Sitzungen und zwischenzeitlich
+erfolgte Löschungen/Sperren behandelt werden. Siehe BACKUP_RESTORE.md.

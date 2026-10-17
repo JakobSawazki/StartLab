@@ -76,6 +76,9 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
   [Claude, 2026-10-17] Teilweise: Tastatur-/Fokuslogik, Kontraste, 375-px-Ansicht und Druck lokal
   geprüft; Screenreader, Schul-PC und echte Geräte stehen aus.
 - [ ] 18. Datenschutzinformationen vervollständigen, Backups und Wiederherstellung testen.
+  [Codex, 2026-10-17] Sicherung/Wiederherstellung der Auth- und Anwendungsdaten
+  im lokalen Supabase-Teststack bestanden. Offen: geschützter betrieblicher
+  Sicherungsort, Rhythmus/Aufbewahrung und Abnahme im gehosteten Projekt.
 - [x] 22. [Claude, 2026-10-17] tools/browser-check.cjs um Dialognamen, Seitentitel, Bingo-Status,
   Druckmedium und simulierte Kontoabläufe erweitert; mit Edge bestanden.
 
@@ -106,3 +109,7 @@ Repository und Live-Veröffentlichung: siehe [VERIFICATION.md](VERIFICATION.md).
   Abmeldung, Sperren und Löschung bestanden. Nur synthetische lokale Testdaten.
 - [ ] 30. Ergebnisse der lokalen Integration nach Einrichtung des gehosteten
   Projekts dort reproduzieren; realen SMTP-Dienst und betriebliche Freigaben prüfen.
+- [x] 31. Auth-/Anwendungsdaten per pg_dump sichern und im isolierten Stack
+  wiederherstellen; Datenvergleich, bestehende Anmeldung, Adminrolle und RLS
+  bestanden. Gesamtlauf umfasst nun elf Integrationsgruppen. BACKUP_RESTORE.md
+  dokumentiert Umfang, Wartungsrechte und betriebliche Grenzen.

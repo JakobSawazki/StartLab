@@ -314,3 +314,28 @@ Weiterhin offen: reale Supabase-Abnahme und schulische Betriebsentscheidungen.
 Diese Ergebnisse ersetzen die frühere Beschränkung auf simulierte Antworten
 für die genannten Kontoabläufe. Die Abnahme des späteren gehosteten Projekts,
 seiner Betriebsparameter und seines SMTP-Versands bleibt ausdrücklich offen.
+
+### Datensicherung und Wiederherstellung [Codex, 2026-10-17]
+
+- [Lauf 39034370695](https://github.com/JakobSawazki/StartLab/actions/runs/39034370695),
+  Codecommit `70dece7`: **elf Integrationsgruppen bestanden**.
+- Ergänzt wurde ein echter PostgreSQL-Datendump von `auth` und `public` im
+  temporären Datenbankcontainer. Die Tabellen wurden im Test geleert und in
+  einer Transaktion wiederhergestellt. Profile, Adminrollen und Audit sind
+  vor/nach Wiederherstellung identisch; Anmeldung mit bestehendem Passwort,
+  Adminrechte und Trennung fremder Profile anschließend geprüft.
+- Danach auch Recovery, Passwortwechsel, Widerruf, Sperren und Löschung erneut
+  im selben Integrationstest bestanden. Wartungsmodus in derselben Sitzung
+  nach Commit auf `origin` geprüft; temporären Stack danach beendet.
+- Zwei frühere Wiederherstellungsläufe schlugen fehl. Der eingegrenzte Fehler
+  war SQLSTATE `42501` im Restore. Der normale lokale `postgres`-Zugang genügte
+  nicht; die ausschließlich im Testcontainer verwendete Wartungsrolle
+  `supabase_admin` beseitigte diesen Fehler. Keine App-Berechtigungen geändert.
+- Dumpdaten blieben im Arbeitsspeicher des Testprozesses. Bei Fehlern werden
+  ausschließlich Stufe und SQLSTATE/Kategorie ausgegeben, keine Dumpzeilen.
+- `npm test`: **61 Tests bestanden**, einschließlich zweier Schutzprüfungen
+  für Wiederherstellungsumfang und Transaktionsgrenze; Syntaxprüfung bestanden.
+
+Das Ergebnis belegt einen Daten-Restore in dasselbe unveränderte lokale Schema.
+Gehostete Backups, Wiederaufbau auf neuer Infrastruktur, externe Dateien,
+Aufbewahrungsfristen und produktive Wiederanlaufverfahren sind weiterhin offen.
