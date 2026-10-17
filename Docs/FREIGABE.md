@@ -1,5 +1,8 @@
 # Freigabe vor dem nächsten Push
 
+> Stand 17.10.2026: Die hier beschriebenen Änderungen bis `7dfab4c` sind veröffentlicht. Die
+> Checkliste gilt sinngemäß für jeden weiteren Push.
+
 [Claude, 2026-10-17] · Ein Push nach `main` veröffentlicht die Website sofort über GitHub Pages.
 Diese Liste hilft Jakob (oder Codex), den lokalen Stand bewusst freizugeben.
 

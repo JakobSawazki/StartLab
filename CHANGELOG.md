@@ -1,6 +1,8 @@
 # Änderungen
 
-## Unveröffentlicht · 2026-10-17 [Claude]
+## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
+
+Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob).
 
 Kontenvorbereitung nachgebessert (einheitliche Kürzeltabelle, Migration 0002 mit
 Mailabgleich, Auth-E-Mail als Quelle, Mail- und Tokenfehler sauber behandelt,

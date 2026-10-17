@@ -224,5 +224,16 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Sperren/Entsperren ist wie der Admin-Reset pro Zielkonto begrenzt (10 in 15 Minuten); 44 Tests
   bestanden, `tsc --strict` ohne Fehler.
 
+### Veröffentlichung [Claude, 2026-10-17]
+
+- Auf Jakobs ausdrückliche Freigabe im Chat gepusht: `9946a19..7dfab4c` nach `origin/main`.
+- GitHub-Actions-Lauf 39031845180 erfolgreich (npm test, npm run check, Build, Deploy).
+- Live-Seite geprüft: HTTP 200 für Seite und Skripte, CSP vorhanden, `apiUrl` leer; `resources/`,
+  `private/`, `Docs/` und `supabase/` liefern 404. Im Browser: Station 02 mit 10 Regeln, Kalender
+  mit 107 Terminen, „Als Nächstes“ mit 3 Einträgen, keine Konsolenfehler.
+- Hinweise aus dem Workflow: Die verwendeten Actions laufen noch auf Node 20 (von GitHub auf
+  Node 24 umgestellt) und `ubuntu-latest` wechselt ab 19.10.2026 auf Ubuntu 26. Aktualisierung
+  der Action-Versionen als Folgeaufgabe.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

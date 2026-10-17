@@ -5,8 +5,8 @@ Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock
 
 ## 1. Arbeitsstand auf einen Blick
 
-- **Git:** Alle Arbeiten sind **lokal auf `main` committet, nichts gepusht.** Ein Push nach
-  `main` veröffentlicht die Website sofort (GitHub Pages) – nur nach Jakobs Freigabe.
+- **Git:** Stand `7dfab4c` ist auf Jakobs Freigabe gepusht und live (17.10.2026, Workflow
+  39031845180). Ein Push nach `main` veröffentlicht die Website sofort – weiterhin nur nach Freigabe.
   `git log --oneline 9946a19..HEAD` zeigt alle Claude-Commits. Checkliste vor dem Push: `Docs/FREIGABE.md`.
 - **Zusammenarbeit:** Jakob lässt derzeit nur Claude arbeiten, nicht parallel Codex. Wenn
   Codex übernimmt, ist der Arbeitsbaum sauber bis auf `Docs/CLAUDE_HANDOFF.md` (von Jakob,
@@ -94,6 +94,8 @@ Claude nutzte playwright-core 1.48.2 (Browser: installiertes Microsoft Edge), ax
    Selbstsperre). Bei der echten Abnahme prüfen, ob `/auth/v1/user` `banned_until` liefert
    (Abnahmepunkt 13). Weiterer Ausbau: Einladung/Freigabe, MFA, Kontolöschung.
 5. Weiterhin: Screenreader-Test, echte Mobilgeräte, Schul-PC (Aufgabe 17).
+6. Pages-Workflow: Action-Versionen auf Node-24-fähige Releases anheben (Warnung im Lauf
+   39031845180); `ubuntu-latest` wechselt ab 19.10.2026 auf Ubuntu 26.
 
 ## 7. Besonderheiten im Code
 
