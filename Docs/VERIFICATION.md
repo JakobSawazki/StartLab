@@ -84,5 +84,17 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Grenzen: echte Supabase-Rollen, Auth-Dienst, Mailversand und parallele Registrierungen
   (eine PGlite-Verbindung) sind damit nicht geprüft.
 
+### Barrierefreiheits-Audit [Claude, 2026-10-17]
+
+- axe-core 4.10.2 (WCAG 2.0/2.1 A und AA plus Best Practices, außerhalb des Repositories)
+  über sechs Ansichten, fünf Materialdialoge, Datenschutzdialog und die Kontoansichten
+  Anmelden/Registrieren/Passwort vergessen, jeweils bei 1440 und 375 px Breite.
+  Einziger Befund: verschachteltes `aside` auf der Startseite, behoben. Danach ohne Verstöße.
+- Fehler gefunden und behoben: Der Skiplink setzte `#main` als Route und schaltete deshalb
+  von jeder Unterseite zur Übersicht. Jetzt bleibt die Route erhalten, der Fokus springt auf
+  den Inhalt. Im Browser-Prüfstand von der Materialseite aus geprüft.
+- `tools/browser-check.cjs` mit `STARTLAB_AXE` und ohne bestanden.
+- axe deckt nicht alles ab (z. B. Verständlichkeit, Screenreader-Ausgabe, reale Geräte).
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

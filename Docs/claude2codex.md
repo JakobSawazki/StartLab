@@ -40,6 +40,11 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 - `tools/sql-check.mjs`: beide Migrationen gegen PGlite mit Supabase-Stubs, 9 Prüfungen bestanden,
   Gegenprobe mit fehlendem `revoke` schlägt korrekt fehl. Aufruf siehe README.
 
+## Vierter Block [Claude, 2026-10-17]
+
+- axe-Audit (optional via `STARTLAB_AXE` im Browser-Prüfstand): verschachteltes `aside` behoben, jetzt ohne Verstöße.
+- Skiplink-Fehler behoben (wechselte per `#main` zur Übersicht).
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12

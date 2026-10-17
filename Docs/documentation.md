@@ -220,3 +220,11 @@ Ratenlimit sowie die Löschkaskade. Die Stubs bilden nur die benötigten Teile v
 Supabase nach, einschließlich der Default-Grants für `anon`/`authenticated`, damit
 fehlende `revoke`-Anweisungen auffallen. PGlite ist wie Playwright keine
 Projektabhängigkeit. Die reale Abnahme in Supabase ersetzt das nicht.
+
+### 8.6 Barrierefreiheits-Audit [Claude, 2026-10-17]
+
+Automatisches axe-Audit über alle Ansichten und Dialoge in Desktop- und
+Handybreite; der Hinweiskasten der Startseite ist kein verschachteltes `aside`
+mehr. Der Skiplink springt jetzt zum Inhalt, ohne die Route zu wechseln (vorher
+führte er von jeder Unterseite zur Übersicht). Beides ist im Browser-Prüfstand
+abgesichert.

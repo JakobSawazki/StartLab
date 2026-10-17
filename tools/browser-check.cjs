@@ -4,6 +4,7 @@ const site='http://127.0.0.1:4173';
 // [Claude, 2026-10-17] Accessibility, print and account UI checks. The account service is simulated inside the test
 // (page.route) with fictional values; no request leaves the machine and no real account is involved.
 async function accessibility(page){
+ await page.goto('about:blank');await page.goto(site+'/#material');await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.className),'skip');assert.equal(await page.locator('.skip').isVisible(),true);await page.keyboard.press('Enter');assert.equal(await page.evaluate(()=>document.activeElement.id),'main');assert.equal(new URL(page.url()).hash,'#material');assert.equal(await page.locator('main h1').textContent(),'Alles an einem Ort.');
  await page.goto(site+'/#material');assert.equal(await page.title(),'Materialien · StartLab');
  await page.getByRole('group',{name:'Materialfilter'}).getByRole('button',{name:'Orientierung'}).click();assert.match(await page.locator('#material-count').textContent(),/^\d+ Materialien gefunden\.$/);
  await page.getByRole('button',{name:'Alle'}).click();await page.getByRole('button',{name:'Bingo starten (Kennenlern-Bingo)'}).click();const dialog=page.getByRole('dialog',{name:'Kennenlern-Bingo'});await dialog.waitFor();
@@ -12,6 +13,13 @@ async function accessibility(page){
  await page.goto(site+'/#regeln');await page.emulateMedia({media:'print'});assert.equal(await page.locator('header').isVisible(),false);assert.equal(await page.locator('main h1').isVisible(),true);assert.equal(await page.getByRole('button',{name:/Lernvereinbarung/}).isVisible(),false);await page.emulateMedia({media:'screen'});
  await page.setViewportSize({width:375,height:812});await page.goto(site+'/#material');await page.getByRole('button',{name:'Bingo starten'}).click();assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.bingo-grid')).gridTemplateColumns.split(' ').length),4);assert.equal(await page.evaluate(()=>[...document.querySelectorAll('[data-bingo]')].every(b=>b.scrollWidth<=b.clientWidth+1)),true,'Bingo-Felder ohne Überlauf');await page.setViewportSize({width:1440,height:1000});
 }
+// Optional WCAG 2.1 AA audit with axe-core installed outside the project: STARTLAB_AXE=/path/axe-core/axe.min.js
+async function axeAudit(browser){const file=process.env.STARTLAB_AXE;if(!file)return 'axe übersprungen';const axe=require('node:fs').readFileSync(file,'utf8');const found=[];
+ for(const viewport of [{width:1440,height:1000},{width:375,height:812}]){const page=await browser.newPage({viewport});const run=async label=>{await page.addScriptTag({content:axe});const r=await page.evaluate(()=>axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','best-practice']}}));for(const v of r.violations)found.push(viewport.width+' '+label+': '+v.id);};
+  for(const route of ['start','kennenlernen','regeln','material','orientierung','checkliste']){await page.goto('about:blank');await page.goto(site+'/#'+route);await page.locator('main h1').waitFor();await run(route);}
+  for(const id of ['vorstellung','bingo','vertrag','hotkeys','bewertung']){await page.goto('about:blank');await page.goto(site+'/#material');await page.locator('[data-material="'+id+'"]').click();await run('Dialog '+id);}
+  await page.close();}
+ assert.deepEqual(found,[],'axe-Verstöße');return 'axe ohne Verstöße';}
 async function accounts(browser){
  const context=await browser.newContext({viewport:{width:1280,height:900}});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));const api='https://accounts.invalid/startlab';const calls=[];
  await context.route('**/config.js',r=>r.fulfill({contentType:'text/javascript',body:`export const config=Object.freeze({apiUrl:'${api}'});`}));
@@ -43,5 +51,5 @@ async function accounts(browser){
  await page.goto(site+'/#checkliste');await page.locator('[data-check="0"]').check();await page.reload();assert.equal(await page.locator('[data-check="0"]').isChecked(),true);await page.getByRole('button',{name:/Anmelden/}).click();await page.getByRole('heading',{name:'Dein Konto kommt dazu.'}).waitFor();assert.equal(await page.locator('#auth input').count(),0);await page.locator('#auth [data-close]').click();
  await accessibility(page);
  await page.setViewportSize({width:390,height:844});for(const route of ['start','kennenlernen','regeln','material','orientierung','checkliste']){await page.goto(site+'/#'+route);await page.locator('main h1').waitFor();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'Kein horizontaler Überlauf: '+route);}await page.goto(site);await page.screenshot({path:'.local/startlab-mobile.png',fullPage:true});assert.deepEqual(errors,[]);
- await accounts(browser);
- console.log('Browserprüfung bestanden: Navigation, Materialsuche, Bingo, Checklistenpersistenz, deaktivierte Konten, Seitentitel, Dialognamen, Bingo-Status, Druckansicht, mobiles Bingo, sechs mobile Ansichten, simulierte Kontoabläufe inkl. seitenweiser Adminliste, keine JS-Fehler.');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
+ await accounts(browser);const axeResult=await axeAudit(browser);
+ console.log('Browserprüfung bestanden: Navigation, Materialsuche, Bingo, Checklistenpersistenz, deaktivierte Konten, Seitentitel, Dialognamen, Bingo-Status, Druckansicht, mobiles Bingo, sechs mobile Ansichten, simulierte Kontoabläufe inkl. seitenweiser Adminliste, keine JS-Fehler, '+axeResult+'.');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -39,6 +39,8 @@ Browserprüfung (Microsoft Edge, Playwright außerhalb des Projekts, z. B. `play
 STARTLAB_PLAYWRIGHT=/pfad/zu/node_modules/playwright-core node tools/browser-check.cjs
 ```
 
+Optional zusätzlich ein axe-Audit: `STARTLAB_AXE=/pfad/zu/node_modules/axe-core/axe.min.js`.
+
 SQL-Prüfung der Migrationen (PGlite außerhalb des Projekts):
 
 ```sh
