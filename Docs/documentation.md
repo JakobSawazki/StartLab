@@ -118,8 +118,9 @@ sind ohne diese Abnahme nicht als produktionsbereit zu verstehen.
 ## 7. Arbeitsprotokoll [Codex, 2026-10-17]
 
 1. WorkbenchLab-Dokumentation und Excel-Lab-Aufgabenformat gesichtet.
-2. OneNote-Abschnitt und erste zwei Seiten gelesen/visuell gesichtet.
+2. OneNote-Abschnitt, Unternehmen und Leistungsbewertung gesichtet; Tipps,
+   Hotkeys und Bildungspläne gelesen, Praktikumsbereich geöffnet.
 3. StartLab-Oberfläche und eigene Einstiegsvorlagen erstellt.
 4. Supabase auf Jakobs ausdrückliche Auswahl hin vorbereitet.
-5. Öffentliches Repository und Pages-Veröffentlichung vorbereitet; finalen
-   Veröffentlichungsstatus im Prüfprotokoll festhalten.
+5. Öffentliches Repository erstellt und auf GitHub Pages veröffentlicht;
+   erfolgreicher Workflow und HTTP-200-Antwort im Prüfprotokoll festgehalten.

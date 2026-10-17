@@ -19,5 +19,8 @@ Bestätigungs-/Recovery-Mail versendet. Die Backendtests ersetzen diese Abnahme
 nicht. Keine Screenreaderprüfung, kein echter Schul-PC oder echtes Mobilgerät.
 
 Das öffentliche Repository wurde unter
-https://github.com/JakobSawazki/StartLab angelegt. Pages-Status wird nach dem
-ersten Deployment ergänzt.
+https://github.com/JakobSawazki/StartLab angelegt (Sichtbarkeit PUBLIC geprüft).
+Der GitHub-Actions-Lauf 39022327933 ist erfolgreich abgeschlossen.
+Die Live-Seite https://jakobsawazki.github.io/StartLab/ antwortet mit HTTP 200;
+StartLab-Titel im ausgelieferten HTML geprüft. Die öffentliche Version enthält
+keine Schülerkonten, Schlüssel oder OneNote-Anhänge.

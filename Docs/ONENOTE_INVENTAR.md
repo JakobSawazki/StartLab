@@ -9,10 +9,10 @@ Anweisungen an den Agenten. Diese Liste enthält keine Schülerdaten.
 | --- | --- | --- |
 | 1. Unternehmen | Anhänge „Persönliche Vorstellung“, „Kennenlern-Bingo“, „Vertrag“; Tabellen für Termine, Kontostand und Jobs | Kennenlernen und Klassenorganisation; eigene Vorlagen erstellt, Originale offen |
 | 2. Leistungsbewertung | Eingebettete Word-, Excel- und PDF-Dateien, u. a. Zuordnungen BK/BS/BG | Bewertung nach Bildungsgang; Anhänge noch zu prüfen |
-| 3. Tipps | Seitentitel in Navigation erfasst | Inhalte noch zu sichten |
-| 4. Hotkeys | Seitentitel in Navigation erfasst | Neue kompakte Tastenkürzelliste vorhanden, Original offen |
-| 5. Bildungspläne | Seite zur weiteren Sichtung geöffnet | Bildungsgang und gültige Originale noch zuzuordnen |
-| 6. Betriebspraktikum BK1 | Seitentitel in Navigation erfasst | Unterlagen und Fristen offen |
+| 3. Tipps | macOS-Tastatur-/Touchpad-Hinweise und Werkzeugverweise gelesen | Nach Betriebssystem ordnen; Zugangshinweise werden nicht übernommen |
+| 4. Hotkeys | Windows-Kürzel für Kopieren, Ausschneiden, Einfügen, Screenshot, Desktop und Zoom gelesen | Neue kompakte Liste vorhanden; Originalauswahl noch abzugleichen |
+| 5. Bildungspläne | Informatik BK/BG sowie E-Commerce, Büromanagement, Industriekaufleute, Lagerlogistik und Einzelhandel erfasst | Konkrete Dateien, Gültigkeit und Klassen noch zuzuordnen |
+| 6. Betriebspraktikum BK1 | Seite geöffnet und als weiterer Materialbereich erfasst | Unterlagen und Fristen offen |
 | 7. GFS BG | Seitentitel in Navigation erfasst | Anforderungen und Formulare offen |
 | 8. Kalender | Seitentitel in Navigation erfasst | Termine noch zu übernehmen |
 

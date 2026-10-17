@@ -12,6 +12,7 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
 - [x] 2. Supabase als Backendgrundlage vorbereiten (Jakobs Auswahl im Chat).
 - [x] 3. Erste motivierende Oberfläche mit Einstieg und Materialregal erstellen.
 - [x] 4. Registrierung, Kürzel, Recovery und Adminübersicht als Backendcode vorbereiten.
+- [x] Öffentliches GitHub-Repository und Live-Seite eingerichtet; siehe Prüfprotokoll.
 
 ## Fragen an Jakob
 
