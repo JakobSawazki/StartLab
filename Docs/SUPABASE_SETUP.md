@@ -28,6 +28,11 @@ Im Auth-Dashboard E-Mail-Bestätigung aktiv lassen, Passwortminimum auf mindeste
 SMTP-Dienst konfigurieren und mit Testadressen prüfen. Supabase-Standardmail ist
 für Entwicklung begrenzt und kein fertig eingerichteter Schulversand.
 
+[Claude, 2026-10-17] Diese Werte stehen zusätzlich in `supabase/config.toml` (`enable_signup = false`,
+`enable_confirmations = true`, `minimum_password_length = 12`, Site/Redirect-URL). Sie gelten für
+`supabase start` lokal; im gehosteten Projekt bleiben die Dashboard-Werte maßgeblich, bis sie
+bewusst übertragen werden. Ein Test prüft, dass Datei, Anleitung und Edge Function übereinstimmen.
+
 Site URL und erlaubte Redirect URL genau setzen:
 
 `https://jakobsawazki.github.io/StartLab/`

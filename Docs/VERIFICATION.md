@@ -135,5 +135,12 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   jeweils fehl; eine gültige Supabase-Adresse besteht. Da der Pages-Workflow `npm test` vor dem
   Deploy ausführt, stoppen diese Fehler eine Veröffentlichung.
 
+### Auth-Konfiguration und Bingo-Reset [Claude, 2026-10-17]
+
+- `supabase/config.toml` enthält die Auth-Einstellungen (Schlüssel gegen die CLI-Referenz geprüft;
+  `minimum_password_length` steht dort nicht, nur in der CLI-Vorlage). Neuer Test gleicht sie mit
+  Edge Function und Anleitung ab; Gegenprobe mit Minimum 8 schlägt fehl. 29 Tests bestanden.
+- Bingo „Markierungen zurücksetzen“ im Browser-Prüfstand bestanden; im Druck ausgeblendet.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

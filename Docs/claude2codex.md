@@ -70,6 +70,11 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 
 - Neuer Ordner `resources/` mit zwei Word-Originalen (nicht von mir angelegt) in `.gitignore` aufgenommen, damit sie nicht versehentlich öffentlich werden. Gesichtet; Analyse nur in `private/UEBERNAHME_ANALYSE.md`. Keine Inhalte auf die Website übernommen (Frage 6).
 
+## Zehnter Block [Claude, 2026-10-17]
+
+- `supabase/config.toml`: Auth-Einstellungen aus der Anleitung, per Test mit Edge Function und Anleitung abgeglichen.
+- Bingo-Knopf „Markierungen zurücksetzen“.
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12
