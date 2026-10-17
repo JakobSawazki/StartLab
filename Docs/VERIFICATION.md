@@ -219,5 +219,10 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Nur Kleinigkeiten: Pfeil in den Buttons von Station 01 für Screenreader ausgeblendet; `showDetail`
   öffnet den Dialog nur, wenn er noch nicht offen ist. Tests und Browser-Prüfstand mit axe bestanden.
 
+### Limit für Kontosperre [Claude, 2026-10-17]
+
+- Sperren/Entsperren ist wie der Admin-Reset pro Zielkonto begrenzt (10 in 15 Minuten); 44 Tests
+  bestanden, `tsc --strict` ohne Fehler.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

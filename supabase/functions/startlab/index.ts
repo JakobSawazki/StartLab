@@ -68,7 +68,7 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  await audit('password_reset_requested');return reply({message:'Der Reset-Link wurde angefordert. Das neue Passwort wählt die Person selbst.'});}
  // [Claude, 2026-10-17] Lock = Supabase Auth ban (no sign-in, no token refresh; identity() also rejects banned users).
  // locked_at mirrors the state for the list. No self-lock, so the last admin cannot lock themselves out.
- if(action==='admin-lock'||action==='admin-unlock'){const id=text(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))throw new Failure(400,'Ungültiges Konto.');if(id===user.id)throw new Failure(400,'Das eigene Konto kann nicht gesperrt werden.');const target=await request('/rest/v1/profiles?select=id&id=eq.'+encodeURIComponent(id));if(!target.length)throw new Failure(404,'Konto nicht gefunden.');const lock=action==='admin-lock';
+ if(action==='admin-lock'||action==='admin-unlock'){const id=text(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))throw new Failure(400,'Ungültiges Konto.');if(id===user.id)throw new Failure(400,'Das eigene Konto kann nicht gesperrt werden.');await limit('admin-lock:'+id,10);const target=await request('/rest/v1/profiles?select=id&id=eq.'+encodeURIComponent(id));if(!target.length)throw new Failure(404,'Konto nicht gefunden.');const lock=action==='admin-lock';
  await request('/auth/v1/admin/users/'+encodeURIComponent(id),'PUT',{ban_duration:lock?'876000h':'none'});
  await request('/rest/v1/profiles?id=eq.'+encodeURIComponent(id),'PATCH',{locked_at:lock?new Date().toISOString():null});
  await request('/rest/v1/admin_audit','POST',{actor:user.id,target:id,action:lock?'account_locked':'account_unlocked'});
