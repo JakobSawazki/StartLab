@@ -10,6 +10,9 @@ Claude seitdem: `Docs/DATENSCHUTZ_ENTWURF.md` (Bestandsaufnahme aus dem Code, of
 Entscheidungen als [OFFEN]) und `tests/datenschutz.test.mjs`. Neue Tabellen oder
 Browserspeicher-Schlüssel erfordern eine Ergänzung des Entwurfs, sonst schlägt der Test fehl.
 
+Hinweis für Codex: `tools/mfa-browser.cjs` schlug bei Claude einmal fehl (1 von 15 Läufen, nicht
+reproduzierbar); Einzelheiten in VERIFICATION.md, Abschnitt „Codex-Browserprüfstände nachgeprüft“.
+
 ## 1. Arbeitsstand auf einen Blick
 
 - **Git:** Stand bis `0ed2947` (Inhalte seit `7dfab4c`) ist auf Jakobs Freigabe gepusht und live (17.10.2026, Workflow

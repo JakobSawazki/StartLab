@@ -393,3 +393,13 @@ Einrichtungsschlüssel und Kontenlisten werden nicht mitgedruckt.
   axe, 11 PGlite-Prüfgruppen und Linkprüfung (5/5) lokal bestanden.
 - `tests/datenschutz.test.mjs`: Entwurf nennt alle Anwendungstabellen und Browserspeicher-Schlüssel;
   Gegenprobe mit entfernter Tabelle schlägt fehl. 73 Node-Tests bestanden.
+
+### Codex-Browserprüfstände nachgeprüft [Claude, 2026-10-17]
+
+- `tools/account-races.cjs` bestanden.
+- `tools/mfa-browser.cjs` (mit axe): Der erste Lauf direkt nach dem Serverstart schlug mit einer
+  `strictEqual`-Abweichung fehl; die Meldung wurde dabei nicht vollständig festgehalten. Danach
+  14 Läufe bestanden, davon 4 mit frisch gestartetem Server. Nicht reproduzierbar, Test unverändert.
+  Kandidaten für zeitabhängige Prüfungen: Überlaufprüfung direkt nach Anzeige des QR-Bildes und
+  `#admin` leer direkt nach dem Schließen. Bei erneutem Auftreten auf Warten per
+  `waitForFunction` umstellen.
