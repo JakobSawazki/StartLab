@@ -23,11 +23,16 @@ export async function roundTripBackup(){
  const name='supabase_db_startlab-integration';
  function docker(args,input){
   try{return execFileSync('docker',args,{input,encoding:'utf8',stdio:['pipe','pipe','pipe'],timeout:60000,maxBuffer:20*1024*1024});}
-  catch{throw Error('Sicherung/Wiederherstellung im isolierten Testcontainer fehlgeschlagen. Keine Dumpdaten ausgegeben.');}
+  catch(error){
+   const stage=args[0]==='inspect'?'Container':args.includes('pg_dump')?'pg_dump':input?.startsWith('BEGIN;')?'Restore':input?.includes('json_agg')?'Tabelleninventar':'Datenbankprüfung';
+   const stderr=String(error.stderr||''),code=stderr.match(/ERROR:\s+([A-Z0-9]{5})(?:\s|$)/m)?.[1];
+   const reason=/permission denied|must be owner|superuser/i.test(stderr)?'Berechtigung':/duplicate key/i.test(stderr)?'doppelter Schlüssel':/syntax error/i.test(stderr)?'SQL-Syntax':/unrecognized configuration parameter/i.test(stderr)?'unbekannter Parameter':'Details geschützt';
+   throw Error(`Sicherung/Wiederherstellung fehlgeschlagen: ${stage}; ${code||reason}. Keine Dumpdaten ausgegeben.`);
+  }
  }
  const id=docker(['inspect','--format','{{.Id}}',name]).trim();
  if(!/^[0-9a-f]{64}$/.test(id))throw Error('Isolierter Datenbankcontainer nicht eindeutig.');
- const psql=['exec','-i',id,'psql','-X','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1','-At'];
+ const psql=['exec','-i',id,'psql','-X','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1','-v','VERBOSITY=sqlstate','-At'];
  if(docker(psql,'select current_database();').trim()!=='postgres')throw Error('Falsche Testdatenbank.');
  const tables=JSON.parse(docker(psql,"select json_agg(schemaname||'.'||tablename order by schemaname,tablename) from pg_tables where schemaname in ('auth','public');"));
  const dump=docker(['exec',id,'pg_dump','-U','postgres','-d','postgres','--data-only','--schema=auth','--schema=public','--no-owner','--no-privileges']);
