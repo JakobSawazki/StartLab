@@ -34,7 +34,7 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  let body;try{body=JSON.parse(raw);}catch{throw new Failure(400,'Ungültige Anfrage.');}
  if(!body||typeof body!=='object'||Array.isArray(body))throw new Failure(400,'Ungültige Anfrage.');
  const action=text(body.action,30);
- if(!['register','login','reset','profile','password','logout','admin-list','admin-reset'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
+ if(!['register','login','reset','profile','password','logout','admin-list','admin-reset','admin-audit'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
  await limit('global:'+action,action==='register'?100:1000);
  if(['register','login','reset'].includes(action)){
  const identifier=text(body.identifier,254).toLowerCase();await limit(action+':'+await digest(identifier),action==='reset'?3:10);
@@ -58,6 +58,8 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  const roles=await request('/rest/v1/administrators?select=user_id&user_id=eq.'+encodeURIComponent(user.id));const isAdmin=roles.length===1;
  if(action==='profile'){const profiles=await request('/rest/v1/profiles?select=username,first_name,last_name&id=eq.'+encodeURIComponent(user.id));if(!profiles.length)throw new Failure(404,'Kein Profil gefunden.');return reply({...profiles[0],is_admin:isAdmin});}
  if(!isAdmin)throw new Failure(403,'Nur für Administratoren.');
+ // [Claude, 2026-10-17] Read-only audit view: last 100 entries, accounts shown by Kürzel only (no e-mail).
+ if(action==='admin-audit'){const rows=await request('/rest/v1/admin_audit?select=created_at,action,actor,target&order=created_at.desc,id.desc&limit=100');const ids:string[]=[...new Set<string>(rows.flatMap((r:{actor:string|null,target:string|null})=>[r.actor,r.target]).filter((v:string|null):v is string=>!!v&&/^[0-9a-f-]{36}$/i.test(v)))];const names=new Map<string,string>();if(ids.length)for(const p of await request('/rest/v1/profiles?select=id,username&id=in.('+ids.map(encodeURIComponent).join(',')+')'))names.set(p.id,p.username);const label=(id:string|null)=>id?names.get(id)??'unbekannt':'gelöschtes Konto';return reply({entries:rows.map((r:{created_at:string,action:string,actor:string|null,target:string|null})=>({created_at:r.created_at,action:r.action,actor:label(r.actor),target:label(r.target)}))});}
  // [Claude, 2026-10-17] Pages of 100 with a stable order; one extra row tells whether more exist.
  if(action==='admin-list'){const page=body.page??0;if(!Number.isInteger(page)||page<0||page>999)throw new Failure(400,'Ungültige Seite.');const rows=await request(`/rest/v1/profiles?select=id,username,first_name,last_name,email,created_at&order=created_at.desc,id.asc&limit=101&offset=${page*100}`);return reply({users:rows.slice(0,100),page,has_more:rows.length>100});}
  if(action==='admin-reset'){const id=text(body.id,36);if(!/^[0-9a-f-]{36}$/i.test(id))throw new Failure(400,'Ungültiges Konto.');await limit('admin-reset:'+id,3);const target=await request('/rest/v1/profiles?select=id&id=eq.'+encodeURIComponent(id));if(!target.length)throw new Failure(404,'Konto nicht gefunden.');const address=await authEmail(id);

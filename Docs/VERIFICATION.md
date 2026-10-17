@@ -142,5 +142,12 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   Edge Function und Anleitung ab; Gegenprobe mit Minimum 8 schlägt fehl. 29 Tests bestanden.
 - Bingo „Markierungen zurücksetzen“ im Browser-Prüfstand bestanden; im Druck ausgeblendet.
 
+### Audit-Ansicht [Claude, 2026-10-17]
+
+- Neue Admin-Aktion `admin-audit`: 31 Tests bestanden (nur Admins; Kürzel statt E-Mail; gelöschte
+  Konten markiert). `tsc --strict` fand einen Typfehler in der ersten Fassung, behoben, danach ohne Fehler.
+- Browser-Prüfstand mit axe bestanden: Protokolltabelle mit Berliner Zeit und deutschen Vorgangsnamen.
+- Smoke-Test um „Audit ohne Anmeldung (401)“ ergänzt; lokal 12 von 12 ok.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

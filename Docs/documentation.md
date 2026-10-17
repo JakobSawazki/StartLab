@@ -243,3 +243,10 @@ Zeitüberschreitungen verständlich auf Deutsch, statt dauerhaft „Bitte kurz
 warten …“ oder die englische Browsermeldung anzuzeigen. Die Edge Function
 begrenzt jeden Supabase-Aufruf auf 10 Sekunden und antwortet dann mit 502; das
 Log enthält nur Pfad und Ereignis.
+
+### 8.9 Audit-Ansicht [Claude, 2026-10-17]
+
+Administratoren sehen im Kontodialog die letzten 100 Verwaltungsvorgänge
+(Zeitpunkt in Berliner Zeit, Vorgang, ausführendes und betroffenes Kürzel). E-Mail-
+Adressen werden nicht ausgegeben; Einträge zu inzwischen gelöschten Konten zeigen
+„gelöschtes Konto“, weil die Datenbank die Verweise beim Löschen leert.

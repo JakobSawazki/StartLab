@@ -75,6 +75,10 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 - `supabase/config.toml`: Auth-Einstellungen aus der Anleitung, per Test mit Edge Function und Anleitung abgeglichen.
 - Bingo-Knopf „Markierungen zurücksetzen“.
 
+## Elfter Block [Claude, 2026-10-17]
+
+- Admin-Aktion `admin-audit` (letzte 100 Einträge, Kürzel statt E-Mail) mit Tabelle im Adminbereich; Tests, Browser- und Smoke-Test ergänzt.
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12
