@@ -444,3 +444,27 @@ Skript, vor dem ersten Zeichnen) setzt das Theme: gespeicherte Wahl (`startlab.t
 Systemeinstellung; Umschalter mit `aria-pressed` in der Kopfzeile. Wird `index.html` als lokale
 Datei geöffnet, erklärt die Seite, wie man sie ansieht, statt leer zu bleiben. Druck ist immer
 schwarz auf weiß.
+
+### 8.18 Eigene Seiten, Kacheln, Premium-Gestaltung, Anzeige-Einstellungen [Claude, 2026-10-17]
+
+Auf Jakobs Wünsche:
+- Jeder Inhalt hat eine eigene Seite mit eigener Adresse (`#vorstellung`, `#bingo`, `#vertrag`,
+  `#lernvereinbarung`, `#bewertung`, `#bildungsplaene`, `#praktikum`, `#gfs`, `#hotkeys`,
+  `#kalender`), mit Pfadnavigation, Seitentitel, Druckknopf und Zurück-Link. Hash-Adressen, weil
+  GitHub Pages keine Server-Weiterleitung für tiefe Pfade bietet; Lesezeichen, Teilen und der
+  Zurück-Knopf funktionieren. Die Materialdialoge entfallen; der Detaildialog bleibt nur für
+  „Datenschutz & Speicherung“.
+- Kacheln sind ganze Klickflächen („Stretched Link“: der Titel ist der Link, seine Fläche deckt die
+  Kachel ab). Die Knöpfe „… öffnen“ entfallen. Beim Darüberfahren vergrößert sich die Kachel leicht,
+  ein Lichtschimmer gleitet darüber, der Rahmen wird golden; ohne Animation bei „Bewegung reduzieren“.
+- Premium-Ebene: gebürstete Metalloptik und Lichtkante auf Knöpfen mit Glanz beim Darüberfahren,
+  champagnerfarbene Verlaufsrahmen, dezente Lichtverläufe im Hintergrund, metallische Kopfzeilenlinie.
+  Alles aus den Design-Variablen abgeleitet, daher auch im Dunkelmodus und mit eigenen Farben.
+- Anzeige-Einstellungen (Knopf links vom Hell-/Dunkel-Umschalter): Farbschemata (Standard, Creme,
+  hoher Kontrast hell/dunkel, eigene Farben mit Live-Kontrastanzeige), Schriftgröße 90–150 % (alle
+  Schriftgrößen in rem), Zurücksetzen. Gespeichert als `startlab.settings`; der Hell-/Dunkel-Knopf
+  setzt eigene Farben auf das Standarddesign zurück. Druck bleibt schwarz auf weiß.
+- Logo führt zur Übersicht und scrollt dort nach oben. Fußzeile: „Designed by Sawazki Electronics“.
+- Downloads auf Wunsch wieder entfernt (ONENOTE_INVENTAR.md).
+- Überschriften auf Inhaltsseiten eine Ebene höher (h1 → h2 → h3); axe meldete sonst
+  übersprungene Ebenen.

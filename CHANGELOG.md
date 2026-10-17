@@ -2,6 +2,12 @@
 
 ## Unveröffentlicht · 2026-10-17 [Claude]
 
+Eigene Seite mit eigener Adresse für jeden Inhalt; Kacheln als ganze Klickflächen mit
+Vergrößerung und Lichtschimmer beim Darüberfahren; edle Metalloptik für Knöpfe, Rahmen und
+Hintergrund; Anzeige-Einstellungen (Farbschemata, eigene Farben mit Kontrastanzeige,
+Schriftgröße, Zurücksetzen); Logo scrollt die Übersicht nach oben; Fußzeile „Designed by
+Sawazki Electronics“; Downloads auf Wunsch wieder entfernt.
+
 Neues, ruhigeres Design: Serifenüberschriften, Elfenbein/Waldgrün/Messing, Strichsymbole statt
 Emoji, Hero ohne gedrehte Elemente; Umschalter für helles und dunkles Design (Wahl lokal
 gespeichert, sonst Systemeinstellung); Hinweis statt leerer Seite beim Öffnen als lokale Datei.

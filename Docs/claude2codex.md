@@ -22,9 +22,10 @@ Variable in beiden Themes ergänzen und Kontrast prüfen. `theme.js` speichert `
 (im Datenschutz-Entwurf erfasst). In Playwright-Tests kein `page.waitForFunction` verwenden (CSP);
 stattdessen von Node aus abfragen wie in `tools/mfa-browser.cjs`.
 
-Downloads (17.10.2026): nur geprüfte, bereinigte Kopien in `downloads/` (Liste in `inhalte.js`,
-Build kopiert genau diese). Zurückgehaltene Dokumente und Gründe: ONENOTE_INVENTAR.md. Neue
-Downloads nur nach derselben Prüfung; `tests/downloads.test.mjs` muss bestehen.
+Seiten statt Dialoge (17.10.2026): Jeder Inhalt hat eine eigene Seite `#<id>` (Router in `app.js`,
+`detailPage`, `materialBody`); Kacheln nutzen `unit()` mit „Stretched Link“. Downloads wurden auf
+Jakobs Wunsch entfernt – nicht wieder einführen. Anzeige-Einstellungen in `theme.js`
+(`startlab.settings`). Premium-Optik am Ende von `styles.css`, nur über Variablen.
 
 ## 1. Arbeitsstand auf einen Blick
 

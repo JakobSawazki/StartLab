@@ -459,3 +459,21 @@ Projekt StartLab in Frankfurt angelegt und alle vier vorhandenen Migrationen ang
   (HTTP 200), im Druck ausgeblendet; axe ohne Verstöße.
 - Lokaler Server: Dokumente nur unter `/downloads/`; `resources/`, `private/`, `Docs/`, `dist/`
   liefern 404 (auch abweichende Groß-/Kleinschreibung). Auf GitHub Pages gelangt ohnehin nur `dist/`.
+
+### Eigene Seiten, Kacheln, Premium-Gestaltung [Claude, 2026-10-17]
+
+- 73 Node-Tests, `npm run check` und Build bestanden (Download-Test entfernt).
+- Browser-Prüfstand bestanden, angepasst auf Seiten: Klick auf den Beschreibungstext einer Kachel
+  (echter Mausklick) öffnet `#bingo`, Seitentitel und Menüpunkt stimmen, Pfadnavigation vorhanden,
+  Zurück-Knopf führt zum Materialregal, keine Knöpfe mehr in Kacheln, Kachel vergrößert sich beim
+  Darüberfahren, kein Download-Bereich; private Pfade und `downloads/` liefern 404; Kalender- und
+  Bewertungsseite; 375 px ohne seitlichen Überlauf für sieben Inhaltsseiten.
+- axe ohne Verstöße über sechs Ansichten, zehn Inhaltsseiten und den Einstellungsdialog, jeweils
+  hell/dunkel und Desktop/375 px (zuvor gefunden und behoben: übersprungene Überschriftenebenen).
+- Anzeige-Einstellungen: hoher Kontrast dunkel (Hintergrund schwarz, Schrift weiß, 21:1),
+  Schriftgröße 120 % (19,2 px) übersteht Neuladen, Warnung bei schwachem Kontrast, Zurücksetzen
+  entfernt Speicher und Variablen, Umschalter setzt eigene Farben zurück; Dialog bei 320/390 px ohne
+  Überlauf. Logo scrollt die Übersicht nach oben.
+- Hover-Kontrast markierter Bingo-Felder und gewählter Filter jetzt 11–12:1 (vorher unlesbar).
+- Druck von Inhaltsseiten aus dem Dunkelmodus: weiß, ohne Kopfzeile, Pfad und Knöpfe; Bingo-Raster
+  sichtbar. MFA- und Antwortreihenfolge-Prüfstand bestanden.
