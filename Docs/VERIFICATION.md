@@ -103,5 +103,13 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   ein Abruf zu einem fremden Ziel löst nachweislich einen `connect-src`-Verstoß aus. Der
   simulierte Kontodienst nutzt eine `*.supabase.co`-Adresse und läuft damit unter der CSP.
 
+### Zeitlimits und Verbindungsfehler [Claude, 2026-10-17]
+
+- `npm test`: 25 Tests bestanden (neu: nicht erreichbares Supabase ergibt 502 mit adressfreiem
+  Log; alle Upstream-Aufrufe tragen ein Zeitlimit).
+- Browser-Prüfstand (mit axe) bestanden; neu: unterbrochene Verbindung beim Anmelden zeigt
+  „Keine Verbindung zum Kontodienst …“ und gibt den Button wieder frei.
+- `npm run check` prüft jetzt auch die Werkzeugskripte.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

@@ -235,3 +235,11 @@ abgesichert.
 Basis-URLs; Netzwerkzugriffe nur zur eigenen Herkunft und zu `*.supabase.co`.
 Das begrenzt die Folgen einer möglichen HTML-Einschleusung. GitHub Pages erlaubt
 keine eigenen HTTP-Header; `frame-ancestors` ist per Meta-Tag nicht wirksam.
+
+### 8.8 Zeitlimits und Verbindungsfehler [Claude, 2026-10-17]
+
+Die Website bricht Kontoanfragen nach 20 Sekunden ab und meldet Offline- und
+Zeitüberschreitungen verständlich auf Deutsch, statt dauerhaft „Bitte kurz
+warten …“ oder die englische Browsermeldung anzuzeigen. Die Edge Function
+begrenzt jeden Supabase-Aufruf auf 10 Sekunden und antwortet dann mit 502; das
+Log enthält nur Pfad und Ereignis.

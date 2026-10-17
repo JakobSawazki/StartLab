@@ -50,6 +50,11 @@ Siehe `VERIFICATION.md`, Abschnitt „Nachprüfung [Claude, 2026-10-17]“.
 - CSP-Meta-Tag in `index.html`; Browser-Prüfstand wertet CSP-Verstöße als Fehler und prüft die Blockade fremder Ziele.
   Bei eigener Function-Domain `connect-src` anpassen.
 
+## Sechster Block [Claude, 2026-10-17]
+
+- Zeitlimits: `auth.js` 20 s mit deutschen Meldungen für Offline/Timeout; Edge Function 10 s je Supabase-Aufruf (502, Log ohne Daten).
+- Offline-Fall im Browser-Prüfstand; `npm run check` umfasst `tools/`.
+
 ## Offen / Vorschläge
 
 1. Migrationen 0001+0002 erst mit echtem Projekt anwenden; Abnahmepunkte 9–12
