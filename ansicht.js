@@ -1,5 +1,5 @@
 // [Claude, 2026-10-17] HTML for the OneNote contents in inhalte.js. All text passes through esc().
-import {vorstellung, unternehmen, bewertung, schluessel, praktikum, gfs, bildungsplaene, termine} from './inhalte.js';
+import {vorstellung, unternehmen, bewertung, schluessel, praktikum, gfs, bildungsplaene, termine, tastenkuerzel} from './inhalte.js';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const list = (items, tag = 'ul') => `<${tag}>${items.map(i => `<li>${esc(i)}</li>`).join('')}</${tag}>`;
 const quelle = q => `<p class="source">Quelle: ${esc(q)}</p>`;
@@ -95,4 +95,8 @@ export function naechsteTermine(heute = heuteBerlin(), anzahl = 3) { return term
 export function naechsteTermineHTML(heute = heuteBerlin()) {
  const liste = naechsteTermine(heute);
  return liste.length ? `<ul class="next-dates">${liste.map(([d, g, t]) => `<li><time datetime="${d}">${esc(datum.format(new Date(d + 'T12:00:00Z')))}</time><span>${esc(t)}<small>${esc(g === 'Alle' ? 'Alle Klassen' : g)}</small></span></li>`).join('')}</ul>` : '<p>Für dieses Schuljahr sind keine weiteren Termine eingetragen.</p>';
+}
+// [Claude, 2026-10-17] Shortcut list (StartLab version, see inhalte.js).
+export function tastenkuerzelHTML() {
+ return `<p>${esc(tastenkuerzel.hinweis)}</p>${tastenkuerzel.gruppen.map(([titel, liste]) => `<h3>${esc(titel)}</h3><dl class="shortcuts">${liste.map(([k, t]) => `<dt><kbd>${esc(k)}</kbd></dt><dd>${esc(t)}</dd>`).join('')}</dl>`).join('')}<p>${esc(tastenkuerzel.tipp)}</p>`;
 }

@@ -8,7 +8,7 @@ Abmeldung nach Passwortwechsel). Barrierefreiheit: Dialognamen und Fokus,
 Seitentitel, Statusmeldungen, Kontraste, mobiles 4×4-Bingo, Druckansicht.
 Adminliste seitenweise (je 100 Konten); Browser-Prüfstand um Barrierefreiheit,
 Druck und simulierte Kontoabläufe erweitert.
-Mail-Links im bereits geöffneten Tab werden ausgewertet; abgelaufene Admin-Sitzung führt zur
+Tastenkürzel an die OneNote-Themen angeglichen und durchsuchbar. Mail-Links im bereits geöffneten Tab werden ausgewertet; abgelaufene Admin-Sitzung führt zur
 Anmeldung. Materialsuche durchsucht auch die Inhalte. Gestörten BK-2-Bildungsplanlink ersetzt, Ausbildungsberufe mit Dokumentstand, Linkprüfung.
 Kontosperre für Administratoren (Migration 0003). Startseite zeigt die nächsten drei Termine. Inhalte aus OneNote übernommen: Vorstellung, Vertrag/Regeln, Leistungsbewertung mit
 Notenschlüsseln, Praktikum BK1, GFS BG, Termine 2026/27, Bildungsplan-Links.

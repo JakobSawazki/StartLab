@@ -31,7 +31,7 @@ freigegeben (Antwort 6). Dateien werden nicht veröffentlicht, nur ihr Inhalt.
 | 1. Unternehmen | Persönliche Vorstellung, Vertrag, Seitenausdruck | Vorstellung, Vertrag/Regeln/NAGOLD/Jobs, Station 02 |
 | Kennenlern-Bingo | fehlt | StartLab-Neufassung bleibt |
 | 2. Leistungsbewertung | Informationsblatt, Kopfnoten, BG/BK/BS-Tabellen, IHK-Schlüssel | Gewichtung, Matrix, Kopfnoten, Schlüssel BG/BK/IHK; BS-Tabelle nicht (Rückfrage) |
-| 3. Tipps / 4. Hotkeys | fehlen | StartLab-Neufassung bleibt |
+| 3. Tipps / 4. Hotkeys | fehlen | Neufassung; Tastenkürzel an die Themen der Hotkey-Seite angeglichen (Claude) |
 | 5. Bildungspläne | Links, Rahmenlehrpläne (PDF) | Offizielle Links BK 1/BK 2; Berufe genannt, PDFs nicht veröffentlicht |
 | 6. Betriebspraktikum BK1 | Ablauf, Hinweise, Elternbrief, Bewertung 2026/27, Seitenausdruck | Ablauf, Termine, Bericht, Bewertung, Umsetzung in Jakobs Klassen (Stand 2025/26) |
 | 7. GFS BG | Informationsblatt § 16 BGVO, Seitenausdruck | Allgemeine Regeln und Anforderungen Informatik |

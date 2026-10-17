@@ -298,3 +298,9 @@ Tab mit bereits geöffnetem StartLab landen (nur Hash-Wechsel, kein Neuladen); d
 verschwindet sofort aus Adresszeile und Verlauf. Eine abgelaufene oder widerrufene
 Admin-Sitzung führt zur Anmeldung statt zu einer stehen gebliebenen Adminansicht.
 README auf den aktuellen Stand gebracht.
+
+### 8.15 Tastenkürzel [Claude, 2026-10-17]
+
+Die Liste steht jetzt als Daten in `inhalte.js` (`tastenkuerzel`) und deckt die Themen der
+OneNote-Seite „Hotkeys“ ab (Kopieren, Ausschneiden, Einfügen, Screenshot, Desktop, Zoom). Es
+bleibt eine StartLab-Neufassung mit Windows-Standardkürzeln, bis das Original vorliegt.

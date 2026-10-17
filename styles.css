@@ -24,3 +24,4 @@ td.num{white-space:nowrap}table.wide{min-width:640px}th[scope=row]{font-weight:6
 @media(max-width:850px){.next-panel{grid-template-columns:1fr}.next-dates{grid-template-columns:1fr}}
 .row-actions{display:flex;gap:8px;flex-wrap:wrap}.row-actions button{padding:8px 12px;font-size:13px}
 @media(max-width:560px){dialog td,dialog th{padding:8px 6px}}
+.shortcuts{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:0}.shortcuts dt{margin:0}.shortcuts dd{margin:0}kbd{font:inherit;font-size:13px;font-weight:600;background:#eef1e8;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:2px 8px;white-space:nowrap}@media(max-width:560px){.shortcuts{grid-template-columns:1fr;gap:2px}.shortcuts dd{margin-bottom:8px}}

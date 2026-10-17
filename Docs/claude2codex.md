@@ -32,7 +32,7 @@ Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock
 ## 3. Prüfbefehle
 
 ```sh
-npm test            # 42 Unit-Tests (Kürzel, Backend simuliert, Inhalte, Build-Schutz)
+npm test            # 43 Unit-Tests (Kürzel, Backend simuliert, Inhalte, Build-Schutz)
 npm run check       # Syntaxprüfung aller Website- und Werkzeugdateien
 node tools/build.mjs
 npm run serve       # http://127.0.0.1:4173

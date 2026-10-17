@@ -225,3 +225,16 @@ export const termine = {
   ['2027-07-21', 'BK1', 'Zeugnisausgabe BK1'], ['2027-07-28', 'Alle', 'Zeugnisausgabe; Schulgottesdienst 7:30 Uhr']
  ]
 };
+
+// [Claude, 2026-10-17] StartLab-Neufassung, an den Kategorien der OneNote-Seite „Hotkeys“ ausgerichtet
+// (Kopieren, Ausschneiden, Einfügen, Screenshot, Desktop, Zoom; laut ONENOTE_INVENTAR.md). Allgemeine
+// Windows-Standardkürzel; das Original selbst liegt noch nicht vor.
+export const tastenkuerzel = {
+ hinweis: 'Diese Auswahl ist neu für StartLab zusammengestellt und orientiert sich an den Themen deiner OneNote-Seite. Je nach Programm können Tastenkürzel abweichen.',
+ gruppen: [
+  ['Text und Dateien', [['Strg + C', 'Kopieren'], ['Strg + X', 'Ausschneiden'], ['Strg + V', 'Einfügen'], ['Strg + Z', 'Letzten Schritt rückgängig machen'], ['Strg + S', 'Speichern'], ['Strg + F', 'In einer Seite oder Datei suchen'], ['Strg + P', 'Drucken bzw. Druckansicht öffnen']]],
+  ['Bildschirm', [['Windows + Umschalt + S', 'Bildschirmausschnitt aufnehmen (Screenshot)'], ['Druck', 'Ganzen Bildschirm in die Zwischenablage kopieren'], ['Windows + D', 'Desktop anzeigen bzw. Fenster wiederherstellen'], ['Alt + Tab', 'Zwischen geöffneten Fenstern wechseln']]],
+  ['Zoom', [['Strg + Plus', 'Vergrößern'], ['Strg + Minus', 'Verkleinern'], ['Strg + 0', 'Zoom zurücksetzen (im Browser)'], ['Windows + Plus', 'Bildschirmlupe einschalten']]]
+ ],
+ tipp: 'Tipp: Gib Dateien verständliche Namen und speichere sie im passenden Fachordner.'
+};

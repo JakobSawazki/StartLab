@@ -209,5 +209,10 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Befund 2: Lief eine Admin-Sitzung ab, blieb die Adminansicht mit Fehlermeldung stehen. Jetzt
   Wechsel zur Anmeldung; im Prüfstand mit widerrufener Sitzung bestanden.
 
+### Tastenkürzel [Claude, 2026-10-17]
+
+- Liste an die laut Inventar gelesenen Themen der Hotkey-Seite angeglichen; 43 Tests bestanden
+  (neu: alle Themen enthalten). Browser-Prüfstand mit axe bestanden.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
