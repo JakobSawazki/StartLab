@@ -401,5 +401,7 @@ Einrichtungsschlüssel und Kontenlisten werden nicht mitgedruckt.
   `strictEqual`-Abweichung fehl; die Meldung wurde dabei nicht vollständig festgehalten. Danach
   14 Läufe bestanden, davon 4 mit frisch gestartetem Server. Nicht reproduzierbar, Test unverändert.
   Kandidaten für zeitabhängige Prüfungen: Überlaufprüfung direkt nach Anzeige des QR-Bildes und
-  `#admin` leer direkt nach dem Schließen. Bei erneutem Auftreten auf Warten per
-  `waitForFunction` umstellen.
+  `#admin` leer direkt nach dem Schließen.
+- Nachtrag: Beide Stellen warten jetzt bis zu 5 s per `waitForFunction` auf den erwarteten Zustand
+  und melden sonst eine sprechende Abweichung. 5/5 Läufe bestanden; Gegenprobe mit nie
+  eintretendem Zustand schlägt mit der neuen Meldung fehl.

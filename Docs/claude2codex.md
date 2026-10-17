@@ -11,7 +11,8 @@ Entscheidungen als [OFFEN]) und `tests/datenschutz.test.mjs`. Neue Tabellen oder
 Browserspeicher-Schlüssel erfordern eine Ergänzung des Entwurfs, sonst schlägt der Test fehl.
 
 Hinweis für Codex: `tools/mfa-browser.cjs` schlug bei Claude einmal fehl (1 von 15 Läufen, nicht
-reproduzierbar); Einzelheiten in VERIFICATION.md, Abschnitt „Codex-Browserprüfstände nachgeprüft“.
+reproduzierbar). Claude hat die zwei zeitabhängigen Prüfungen auf Warten umgestellt; Einzelheiten
+in VERIFICATION.md, Abschnitt „Codex-Browserprüfstände nachgeprüft“.
 
 ## 1. Arbeitsstand auf einen Blick
 

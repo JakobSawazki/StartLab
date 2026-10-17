@@ -25,13 +25,14 @@ const assert=require('node:assert/strict');const {readFileSync}=require('node:fs
   await page.getByRole('button',{name:'Authenticator einrichten',exact:true}).click();await page.getByLabel('Authenticator-Code').waitFor();await audit();
   assert.equal(await page.locator('#mfa-secret').textContent(),'SYNTHETIC-SETUP-ONLY');assert.equal(await page.locator('#admin svg').count(),0);assert.match(await page.locator('#mfa-qr').getAttribute('src'),/^data:image\/svg\+xml/);
   await page.emulateMedia({media:'print'});assert.equal(await page.locator('#auth').isVisible(),false,'Kontodialog und Einrichtungsschlüssel nicht drucken');await page.emulateMedia({media:'screen'});
-  assert.equal(await page.evaluate(()=>document.querySelector('#auth').scrollWidth<=document.querySelector('#auth').clientWidth+1),true);
+  // [Claude, 2026-10-17] Wait up to 5 s for layout to settle (QR image); a persistent overflow still fails. See VERIFICATION.md.
+  await page.waitForFunction(()=>document.querySelector('#auth').scrollWidth<=document.querySelector('#auth').clientWidth+1,null,{timeout:5000}).catch(()=>{throw new assert.AssertionError({message:'Kontodialog läuft seitlich über'});});
   await page.getByLabel('Authenticator-Code').fill('12345');await page.getByRole('button',{name:'Anmeldung bestätigen'}).click();assert.equal(calls.filter(x=>x==='mfa-verify').length,0);
   await page.getByLabel('Authenticator-Code').fill('000000');await page.getByRole('button',{name:'Anmeldung bestätigen'}).click();await page.locator('#auth-status').filter({hasText:'ungültig oder abgelaufen'}).waitFor();assert.equal(await page.locator('#load-users').count(),0);
   await page.getByLabel('Authenticator-Code').fill('123456');await page.getByRole('button',{name:'Anmeldung bestätigen'}).click();await page.locator('#load-users').waitFor();assert.equal(await page.locator('#mfa-secret').count(),0);assert.equal(await page.locator('#mfa-qr').count(),0);
   await page.locator('#load-users').click();await page.locator('#auth-status').filter({hasText:'0 Konten angezeigt.'}).waitFor();
   await page.getByRole('button',{name:'Abmelden',exact:true}).click();await login();await page.getByLabel('Authenticator-Code').waitFor();assert.equal(await page.locator('#enroll-mfa').count(),0);await audit();
-  await page.locator('#auth [data-close]').click();assert.equal(await page.locator('#admin').textContent(),'');
+  await page.locator('#auth [data-close]').click();await page.waitForFunction(()=>document.querySelector('#admin')?.textContent==='',null,{timeout:5000}).catch(()=>{throw new assert.AssertionError({message:'Admininhalt nach dem Schließen nicht entfernt'});});
   await page.locator('#account').click();await page.getByLabel('Authenticator-Code').waitFor();assert.equal(await page.locator('#load-users').count(),0);
   assert.deepEqual(await page.evaluate(()=>[localStorage.length,sessionStorage.length]),[0,0]);assert.deepEqual(errors,[]);
   console.log('MFA-Oberfläche bestanden: Einrichtung, sichere QR-Darstellung, lokale Validierung, falscher Code, Freigabe, erneute MFA nach Anmeldung, Entfernen des Schlüssels, Mobilansicht, kein Speicher-/CSP-/JS-Fehler'+(process.env.STARTLAB_AXE?', axe ohne Verstöße.':'.'));
