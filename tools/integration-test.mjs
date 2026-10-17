@@ -1,6 +1,7 @@
 // Real local Supabase/Auth/PostgREST/Mailpit integration. Keys and tokens stay
 // in memory; errors deliberately exclude response bodies and request data.
 import {randomUUID} from 'node:crypto';
+import {totp} from './integration-totp.mjs';
 
 export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
  for(const endpoint of [api,mail]){const u=new URL(endpoint);if(u.protocol!=='http:'||!['127.0.0.1','localhost','[::1]'].includes(u.hostname))throw Error('Integration darf nur Loopback-Systeme kontaktieren.');}
@@ -8,6 +9,7 @@ export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
  const password='StartLab-Test-'+randomUUID(),newPassword='StartLab-Neu-'+randomUUID();
  const email=suffix=>'startlab-'+randomUUID()+'-'+suffix+'@example.invalid';
  const a={email:email('a')},b={email:email('b')},admin={email:email('admin')};
+ let factorId,totpSecret,lastTotpStep=-1;
  function ensure(ok,message){if(!ok)throw Error(message);}
  async function http(path,{method='GET',body,token=anon,expected}={}){
   let r;try{r=await fetch(api+path,{method,headers:{apikey:token===service?service:anon,Authorization:'Bearer '+token,'Content-Type':'application/json',Origin:origin},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(25000)});}catch{throw Error('Lokaler Kontodienst nicht erreichbar.');}
@@ -18,6 +20,12 @@ export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
  const edge=(action,body={},token=anon,expected=200)=>http('/functions/v1/startlab',{method:'POST',body:{action,...body},token,expected});
  async function check(label,fn){await fn();checks.push(label);console.log('OK '+label);}
  async function login(person,pass=password,identifier=person.email){const {data}=await edge('login',{identifier,password:pass});ensure(data.access_token,'Login lieferte keine Sitzung.');person.token=data.access_token;}
+ async function upgradeAdmin(){
+  let step=Math.floor(Date.now()/30000);
+  if(step<=lastTotpStep){await new Promise(r=>setTimeout(r,(lastTotpStep+1)*30000-Date.now()+200));step=Math.floor(Date.now()/30000);}
+  const {data}=await edge('mfa-verify',{factor_id:factorId,code:totp(totpSecret)},admin.token);ensure(data.access_token,'Zweiter Faktor liefert keine Sitzung.');
+  admin.token=data.access_token;lastTotpStep=step;
+ }
  async function profile(person){const {data}=await edge('profile',{},person.token);person.username=data.username;const {data:own}=await http('/rest/v1/profiles?select=id,username',{token:person.token,expected:200});ensure(own.length===1,'RLS liefert nicht genau ein eigenes Profil.');person.id=own[0].id;created.add(person.id);return data;}
  async function messageLink(address,type){
   for(let attempt=0;attempt<60;attempt++){
@@ -66,6 +74,16 @@ export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
    const {data}=await http('/auth/v1/admin/users',{method:'POST',token:service,body:{email:admin.email,password,email_confirm:true,user_metadata:{first_name:'Test',last_name:'Admin'}},expected:200});
    admin.id=data.id;ensure(admin.id,'Admin-Testkonto konnte nicht angelegt werden.');created.add(admin.id);
    await http('/rest/v1/administrators',{method:'POST',token:service,body:{user_id:admin.id},expected:201});await login(admin);const p=await profile(admin);ensure(p.is_admin===true,'Adminrolle wird nicht erkannt.');
+   ensure(p.admin_mfa_required===true,'Administration verlangt keinen zweiten Faktor.');
+  });
+  await check('Admin-TOTP: Pflicht, Einrichtung, falscher Code und AAL2-Freigabe',async()=>{
+   for(const action of ['admin-list','admin-audit','admin-reset','admin-lock','admin-delete'])await edge(action,{id:b.id,confirm_username:b.username},admin.token,403);
+   await edge('mfa-enroll',{},a.token,403);
+   const {data:factor}=await edge('mfa-enroll',{},admin.token);factorId=factor.factor_id;totpSecret=factor.secret;ensure(factorId&&totpSecret&&factor.qr_code,'TOTP-Einrichtung unvollständig.');
+   const validCodes=[-30000,0,30000].map(offset=>totp(totpSecret,Date.now()+offset));let wrong='000000';if(validCodes.includes(wrong))wrong='000001';
+   await edge('mfa-verify',{factor_id:factorId,code:wrong},admin.token,400);
+   await upgradeAdmin();ensure((await edge('profile',{},admin.token)).data.admin_mfa_required===false,'AAL2 wurde nicht übernommen.');
+   await edge('mfa-enroll',{},admin.token,409);
    const {data:list}=await edge('admin-list',{},admin.token);ensure(list.users.length===3,'Kontenliste ist unvollständig.');
   });
   await check('Bestätigte Auth-Mailänderung, Profilabgleich und Kürzel-Anmeldung',async()=>{
@@ -84,6 +102,7 @@ export async function runIntegration({api,mail,anon,service,restoreSnapshot}){
    ensure((await edge('profile',{},admin.token)).data.is_admin===true,'Adminrolle nach Wiederherstellung fehlt.');
    ensure((await edge('profile',{},a.token)).data.username===a.username,'Schülersitzung nach Wiederherstellung nicht korrekt.');
    await login(a,password,a.username);await login(b,password,b.username);await login(admin);
+   await edge('admin-list',{},admin.token,403);await upgradeAdmin();
    const {data:other}=await http('/rest/v1/profiles?select=id&id=eq.'+b.id,{token:a.token,expected:200});ensure(other.length===0,'Profil-RLS nach Wiederherstellung verletzt.');
   });
   await check('Recovery-Mail, Passwortwechsel und alte Sitzungen',async()=>{

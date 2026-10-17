@@ -33,17 +33,17 @@ async function identity(req:Request){
  try{user=await request('/auth/v1/user','GET',undefined,token);}
  catch(error){if(error instanceof Failure&&error.status!==400)throw error;throw denied();}
  if(!user?.id||!user.email_confirmed_at)throw denied();
- let sessionId;
+ let sessionId,aal;
  try{
   const parts=token.split('.');if(parts.length!==3)throw Error();
   const encoded=parts[1].replace(/-/g,'+').replace(/_/g,'/');
-  sessionId=JSON.parse(atob(encoded.padEnd(Math.ceil(encoded.length/4)*4,'='))).session_id;
+  const claims=JSON.parse(atob(encoded.padEnd(Math.ceil(encoded.length/4)*4,'=')));sessionId=claims.session_id;aal=claims.aal;
   if(typeof sessionId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sessionId))throw Error();
  }catch{throw denied();}
  if(user.banned_until&&new Date(user.banned_until).getTime()>Date.now())throw denied();
  const active=await request('/rest/v1/rpc/startlab_session_active','POST',{account_id:user.id,session_id:sessionId});
  if(active!==true)throw denied();
- return {user,token};
+ return {user,token,aal};
 }
 Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Cache-Control':'no-store','Vary':'Origin'};const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers});try{
  if(!origin||!site||new URL(site).origin!==origin)throw new Failure(503,'Der Kontodienst wird noch eingerichtet.');
@@ -55,7 +55,7 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  let body;try{body=JSON.parse(raw);}catch{throw new Failure(400,'Ungültige Anfrage.');}
  if(!body||typeof body!=='object'||Array.isArray(body))throw new Failure(400,'Ungültige Anfrage.');
  const action=text(body.action,30);
- if(!['register','login','reset','profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock','admin-delete'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
+ if(!['register','login','reset','profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock','admin-delete','mfa-status','mfa-enroll','mfa-verify'].includes(action))throw new Failure(400,'Unbekannte Aktion.');
  await limit('global:'+action,action==='register'?100:1000);
  if(['register','login','reset'].includes(action)){
  const identifier=text(body.identifier,254).toLowerCase();await limit(action+':'+await digest(identifier),action==='reset'?3:10);
@@ -72,7 +72,7 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  if(!identifier.includes('@')){if(!/^[a-z]{2,6}[0-9]*$/.test(identifier))throw new Failure(401,'Kürzel/E-Mail oder Passwort nicht korrekt.');const profiles=await request('/rest/v1/profiles?select=id&username=eq.'+encodeURIComponent(identifier)+'&limit=1');loginEmail=profiles[0]?await authEmail(profiles[0].id).catch(()=>'invalid-account@invalid.invalid'):'invalid-account@invalid.invalid';}
  try{const data=await request('/auth/v1/token?grant_type=password','POST',{email:loginEmail,password:password(body.password)},anon);return reply({access_token:data.access_token,expires_in:data.expires_in});}catch(error){if(error instanceof Failure&&error.status!==400)throw error;throw new Failure(401,'Kürzel/E-Mail oder Passwort nicht korrekt oder E-Mail noch nicht bestätigt.');}
  }
- const {user,token}=await identity(req);
+ const {user,token,aal}=await identity(req);
  if(action==='logout'){await request('/auth/v1/logout','POST',{},token);return reply({message:'Abgemeldet.'});}
  // [Claude, 2026-10-17] After a password change all sessions are revoked (e.g. a login left open on a shared school PC).
  if(action==='password'){
@@ -82,8 +82,34 @@ Deno.serve(async req=>{const headers={'Content-Type':'application/json','Access-
  return reply({message:revoked?'Dein neues Passwort ist gespeichert. Aus Sicherheitsgründen wurdest du auf allen Geräten abgemeldet. Melde dich mit dem neuen Passwort an.':'Dein neues Passwort ist gespeichert und du wurdest hier abgemeldet. Die Abmeldung auf anderen Geräten konnte nicht bestätigt werden. Bitte wende dich an deine Lehrkraft.',signed_out:true,sessions_revoked:revoked});
  }
  const roles=await request('/rest/v1/administrators?select=user_id&user_id=eq.'+encodeURIComponent(user.id));const isAdmin=roles.length===1;
- if(action==='profile'){const profiles=await request('/rest/v1/profiles?select=username,first_name,last_name&id=eq.'+encodeURIComponent(user.id));if(!profiles.length)throw new Failure(404,'Kein Profil gefunden.');return reply({...profiles[0],is_admin:isAdmin});}
+ const factors=(Array.isArray(user.factors)?user.factors:[]).filter((f:{factor_type:string})=>f.factor_type==='totp');
+ const verified=factors.filter((f:{status:string})=>f.status==='verified');
+ const adminVerified=aal==='aal2'&&verified.length>0;
+ if(action==='profile'){const profiles=await request('/rest/v1/profiles?select=username,first_name,last_name&id=eq.'+encodeURIComponent(user.id));if(!profiles.length)throw new Failure(404,'Kein Profil gefunden.');return reply({...profiles[0],is_admin:isAdmin,admin_mfa_required:isAdmin&&!adminVerified});}
  if(!isAdmin)throw new Failure(403,'Nur für Administratoren.');
+ // Admin-only bootstrap/status precede the AAL2 gate; they expose no other accounts.
+ if(action==='mfa-status')return reply({verified:verified.map((f:{id:string,friendly_name?:string})=>({id:f.id,name:f.friendly_name||'Authenticator-App'}))});
+ if(action==='mfa-enroll'){
+  if(verified.length)throw new Failure(409,'Die Zwei-Faktor-Anmeldung ist bereits eingerichtet. Bitte bestätige deine Anmeldung mit dem vorhandenen Faktor.');
+  await limit('mfa-enroll:'+user.id,3);
+  for(const f of factors.filter((f:{status:string,friendly_name?:string})=>f.status==='unverified'&&f.friendly_name==='StartLab Verwaltung'))await request('/auth/v1/factors/'+encodeURIComponent(f.id),'DELETE',undefined,token);
+  const factor=await request('/auth/v1/factors','POST',{factor_type:'totp',friendly_name:'StartLab Verwaltung',issuer:'StartLab'},token);
+  if(!factor?.id||!factor.totp?.qr_code||!factor.totp?.secret)throw new Failure(502,'Die Einrichtung konnte nicht gestartet werden.');
+  return reply({factor_id:factor.id,qr_code:factor.totp.qr_code,secret:factor.totp.secret});
+ }
+ if(action==='mfa-verify'){
+  const factorId=text(body.factor_id,36),code=text(body.code,6);
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(factorId)||!/^\d{6}$/.test(code)||!factors.some((f:{id:string})=>f.id===factorId))throw new Failure(400,'Bitte gib einen gültigen sechsstelligen Code für deinen eigenen Faktor ein.');
+  await limit('mfa-verify:'+user.id,10);
+  try{
+   const challenge=await request('/auth/v1/factors/'+factorId+'/challenge','POST',{},token);
+   const result=await request('/auth/v1/factors/'+factorId+'/verify','POST',{challenge_id:challenge.id,code},token);
+   if(!result?.access_token)throw new Failure(502,'Die Bestätigung konnte nicht abgeschlossen werden.');
+   return reply({access_token:result.access_token,expires_in:result.expires_in});
+  }catch(error){if(error instanceof Failure&&error.status!==400)throw error;throw new Failure(400,'Der Code ist ungültig oder abgelaufen. Verwende einen aktuellen Code deiner Authenticator-App.');}
+ }
+ if(!adminVerified)throw new Failure(403,'Bitte bestätige die Anmeldung mit deiner Authenticator-App, bevor du Konten verwaltest.');
+
  // [Claude, 2026-10-17] Read-only audit view: last 100 entries, accounts shown by Kürzel only (no e-mail).
  if(action==='admin-audit'){const rows=await request('/rest/v1/admin_audit?select=created_at,action,actor,target&order=created_at.desc,id.desc&limit=100');const ids:string[]=[...new Set<string>(rows.flatMap((r:{actor:string|null,target:string|null})=>[r.actor,r.target]).filter((v:string|null):v is string=>!!v&&/^[0-9a-f-]{36}$/i.test(v)))];const names=new Map<string,string>();if(ids.length)for(const p of await request('/rest/v1/profiles?select=id,username&id=in.('+ids.map(encodeURIComponent).join(',')+')'))names.set(p.id,p.username);const label=(id:string|null)=>id?names.get(id)??'unbekannt':'gelöschtes Konto';return reply({entries:rows.map((r:{created_at:string,action:string,actor:string|null,target:string|null})=>({created_at:r.created_at,action:r.action,actor:label(r.actor),target:label(r.target)}))});}
  // [Claude, 2026-10-17] Pages of 100 with a stable order; one extra row tells whether more exist.

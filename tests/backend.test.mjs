@@ -1,15 +1,15 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import vm from 'node:vm';import {stripTypeScriptTypes} from 'node:module';
 const source=await readFile(new URL('../supabase/functions/startlab/index.ts',import.meta.url),'utf8');
 // [Claude, 2026-10-17] `respond` lets a test replace single simulated Supabase answers; `logs` captures console.error.
-async function setup(isAdmin=false,{registration='false',respond=()=>undefined}={}){let handler;const calls=[];const logs=[];const secrets={SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fake-service',SUPABASE_ANON_KEY:'fake-anon',SITE_ORIGIN:'https://school.example',SITE_URL:'https://school.example/StartLab/',REGISTRATION_ENABLED:registration};const context={Deno:{env:{get:k=>secrets[k]},serve:fn=>handler=fn},console:{error:m=>logs.push(String(m))},URL,Response,Request,TextEncoder,crypto,AbortSignal,atob,fetch:async(url,options)=>{calls.push({url,options});const custom=await respond(url,options);if(custom)return custom;let data=true;if(url.endsWith('/auth/v1/user'))data={id:'test-user',email_confirmed_at:'2026-10-17'};else if(url.includes('/auth/v1/admin/users/'))data={id:'11111111-1111-1111-1111-111111111111',email:'current@example.test'};else if(url.includes('/administrators?'))data=isAdmin?[{user_id:'test-user'}]:[];else if(url.includes('/profiles?'))data=[{id:'11111111-1111-1111-1111-111111111111',username:'jaksaw',first_name:'Jakob',last_name:'Sawazki',email:'private@example.test'}];else if(url.includes('/auth/v1/token'))data={access_token:'new-token',expires_in:3600};return new Response(JSON.stringify(data),{status:200});}};vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'}),context);return {handler,calls,logs};}
+async function setup(isAdmin=false,{registration='false',respond=()=>undefined}={}){let handler;const calls=[];const logs=[];const secrets={SUPABASE_URL:'https://test.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fake-service',SUPABASE_ANON_KEY:'fake-anon',SITE_ORIGIN:'https://school.example',SITE_URL:'https://school.example/StartLab/',REGISTRATION_ENABLED:registration};const context={Deno:{env:{get:k=>secrets[k]},serve:fn=>handler=fn},console:{error:m=>logs.push(String(m))},URL,Response,Request,TextEncoder,crypto,AbortSignal,atob,fetch:async(url,options)=>{calls.push({url,options});const custom=await respond(url,options);if(custom)return custom;let data=true;if(url.endsWith('/auth/v1/user'))data={id:'test-user',email_confirmed_at:'2026-10-17',factors:isAdmin?[{id:'44444444-4444-4444-4444-444444444444',factor_type:'totp',status:'verified'}]:[]};else if(url.includes('/auth/v1/admin/users/'))data={id:'11111111-1111-1111-1111-111111111111',email:'current@example.test'};else if(url.includes('/administrators?'))data=isAdmin?[{user_id:'test-user'}]:[];else if(url.includes('/profiles?'))data=[{id:'11111111-1111-1111-1111-111111111111',username:'jaksaw',first_name:'Jakob',last_name:'Sawazki',email:'private@example.test'}];else if(url.includes('/auth/v1/token'))data={access_token:'new-token',expires_in:3600};return new Response(JSON.stringify(data),{status:200});}};vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'}),context);return {handler,calls,logs};}
 const sessionId='33333333-3333-3333-3333-333333333333';
-const validToken='test.'+Buffer.from(JSON.stringify({session_id:sessionId})).toString('base64url')+'.signature';
+const validToken='test.'+Buffer.from(JSON.stringify({session_id:sessionId,aal:'aal2'})).toString('base64url')+'.signature';
 function req(body,auth=false,origin='https://school.example'){return new Request('https://test.supabase.co/functions/v1/startlab',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',...(auth?{Authorization:'Bearer '+validToken}:{})},body:typeof body==='string'?body:JSON.stringify(body)});}
 const fail=status=>new Response(JSON.stringify({msg:'upstream'}),{status});
 const sent=call=>JSON.parse(call.options.body);
 
 test('Widerrufene Sitzung verweigert alle geschützten Aktionen vor Rollen-/Datenzugriff [Codex]',async()=>{
- for(const action of ['profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock','admin-delete']){
+ for(const action of ['profile','password','logout','admin-list','admin-reset','admin-audit','admin-lock','admin-unlock','admin-delete','mfa-status','mfa-enroll','mfa-verify']){
   const {handler,calls}=await setup(true,{respond:url=>url.endsWith('/rpc/startlab_session_active')?new Response('false'):undefined});
   const r=await handler(req({action,password:'neues-passwort-lang',id:'22222222-2222-2222-2222-222222222222'},true));
   assert.equal(r.status,401,action);
@@ -69,7 +69,7 @@ test('Upstream-Aufrufe tragen ein Zeitlimit [Claude]',async()=>{const {handler,c
 test('Audit-Ansicht nur für Admins [Claude]',async()=>{const {handler,calls}=await setup();assert.equal((await handler(req({action:'admin-audit'},true))).status,403);assert.ok(!calls.some(c=>c.url.includes('/admin_audit')));});
 test('Audit-Ansicht zeigt Kürzel statt E-Mail und markiert gelöschte Konten [Claude]',async()=>{const audit=[{created_at:'2026-10-17T10:00:00Z',action:'password_reset_requested',actor:'11111111-1111-1111-1111-111111111111',target:null}];const {handler,calls}=await setup(true,{respond:url=>url.includes('/admin_audit?')?new Response(JSON.stringify(audit)):undefined});const r=await handler(req({action:'admin-audit'},true));const data=await r.json();assert.equal(r.status,200);assert.deepEqual(data.entries,[{created_at:'2026-10-17T10:00:00Z',action:'password_reset_requested',actor:'jaksaw',target:'gelöschtes Konto'}]);assert.ok(!JSON.stringify(data).includes('@'));assert.ok(calls.some(c=>c.url.includes('id=in.(11111111-1111-1111-1111-111111111111)')));});
 const target='22222222-2222-2222-2222-222222222222';
-test('Kontosperre: nur Admins, nicht das eigene Konto [Claude]',async()=>{const s=await setup();assert.equal((await s.handler(req({action:'admin-lock',id:target},true))).status,403);const a=await setup(true,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:target,email_confirmed_at:'2026-10-17'})):undefined});const r=await a.handler(req({action:'admin-lock',id:target},true));assert.equal(r.status,400);assert.match((await r.json()).message,/eigene Konto/);assert.ok(!a.calls.some(c=>c.url.includes('/auth/v1/admin/users/')&&c.options.method==='PUT'));});
+test('Kontosperre: nur Admins, nicht das eigene Konto [Claude]',async()=>{const s=await setup();assert.equal((await s.handler(req({action:'admin-lock',id:target},true))).status,403);const a=await setup(true,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:target,email_confirmed_at:'2026-10-17',factors:[{id:'44444444-4444-4444-4444-444444444444',factor_type:'totp',status:'verified'}]})):undefined});const r=await a.handler(req({action:'admin-lock',id:target},true));assert.equal(r.status,400);assert.match((await r.json()).message,/eigene Konto/);assert.ok(!a.calls.some(c=>c.url.includes('/auth/v1/admin/users/')&&c.options.method==='PUT'));});
 test('Kontosperre setzt Bann, locked_at und Audit; Entsperren hebt beides auf [Claude]',async()=>{for(const [action,ban,audit] of [['admin-lock','876000h','account_locked'],['admin-unlock','none','account_unlocked']]){const {handler,calls}=await setup(true);const r=await handler(req({action,id:target},true));assert.equal(r.status,200,action);const put=calls.find(c=>c.url.endsWith('/auth/v1/admin/users/'+target)&&c.options.method==='PUT');assert.equal(sent(put).ban_duration,ban);const patch=calls.find(c=>c.options.method==='PATCH');assert.ok(patch.url.includes('id=eq.'+target));assert.equal(sent(patch).locked_at===null,action==='admin-unlock');assert.equal(sent(calls.find(c=>c.url.endsWith('/admin_audit'))).action,audit);}});
 test('Gesperrtes Konto wird bei jeder geschützten Aktion abgewiesen [Claude]',async()=>{const {handler}=await setup(false,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:'test-user',email_confirmed_at:'2026-10-17',banned_until:'2126-01-01T00:00:00Z'})):undefined});assert.equal((await handler(req({action:'profile'},true))).status,401);});
 test('Abgelaufener Bann sperrt nicht mehr [Claude]',async()=>{const {handler}=await setup(false,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:'test-user',email_confirmed_at:'2026-10-17',banned_until:'2020-01-01T00:00:00Z'})):undefined});assert.equal((await handler(req({action:'profile'},true))).status,200);});
@@ -90,7 +90,7 @@ test('Kontolöschung schützt eigenes Konto, falsche UUID und fehlende Kürzelbe
  for(const body of [{...deleteBody,id:'falsch'},{...deleteBody,confirm_username:'anderes'},{action:'admin-delete',id:target}]){
   const {handler,calls}=await deleteSetup();assert.equal((await handler(req(body,true))).status,400);assert.equal(deletions(calls).length,0);
  }
- const {handler,calls}=await setup(true,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:target,email_confirmed_at:'2026-10-17'})):undefined});
+ const {handler,calls}=await setup(true,{respond:url=>url.endsWith('/auth/v1/user')?new Response(JSON.stringify({id:target,email_confirmed_at:'2026-10-17',factors:[{id:'44444444-4444-4444-4444-444444444444',factor_type:'totp',status:'verified'}]})):undefined});
  assert.equal((await handler(req(deleteBody,true))).status,400);assert.equal(deletions(calls).length,0);
 });
 test('Kontolöschung verweigert Administratorkonten und verschwundene Profile [Codex]',async()=>{
@@ -123,4 +123,50 @@ test('Unbestätigte Kontolöschung wird nicht als Erfolg ausgegeben oder automat
 test('Nach erfolgreicher Löschung meldet ausfallendes Abschlussprotokoll den tatsächlichen Zustand [Codex]',async()=>{
  let auditCount=0;const {handler,calls}=await deleteSetup(url=>url.endsWith('/admin_audit')&&++auditCount===2?fail(503):undefined);
  const r=await handler(req(deleteBody,true));assert.equal(r.status,200);const data=await r.json();assert.equal(data.deleted,true);assert.equal(data.audit_complete,false);assert.match(data.message,/Protokolleintrag konnte nicht bestätigt/);assert.equal(deletions(calls).length,1);
+});
+
+const factorId='44444444-4444-4444-4444-444444444444';
+function passwordOnly(body){const request=req(body,true);request.headers.set('Authorization','Bearer test.'+Buffer.from(JSON.stringify({session_id:sessionId,aal:'aal1'})).toString('base64url')+'.signature');return request;}
+const mfaUser=factors=>new Response(JSON.stringify({id:'test-user',email_confirmed_at:'2026-10-17',factors}));
+test('Adminaktionen verlangen AAL2 auch bei vorhandenem Faktor und gefälschtem Body-AAL [Codex]',async()=>{
+ for(const action of ['admin-list','admin-audit','admin-reset','admin-lock','admin-unlock','admin-delete']){
+  const {handler,calls}=await setup(true);const r=await handler(passwordOnly({action,id:target,aal:'aal2',confirm_username:'tesper'}));assert.equal(r.status,403,action);
+  assert.ok(!calls.some(c=>c.url.includes('/profiles?')||c.url.includes('/admin_audit')||c.options.method==='DELETE'),action);
+ }
+});
+test('Entfernter Faktor entzieht Adminzugriff selbst bei altem AAL2-Token [Codex]',async()=>{
+ const {handler}=await setup(true,{respond:url=>url.endsWith('/auth/v1/user')?mfaUser([]):undefined});
+ assert.equal((await handler(req({action:'admin-list'},true))).status,403);
+ const profile=await handler(req({action:'profile'},true));assert.equal((await profile.json()).admin_mfa_required,true);
+});
+test('Schüler können keine MFA-Adminaktionen aufrufen [Codex]',async()=>{
+ for(const action of ['mfa-status','mfa-enroll','mfa-verify']){const {handler,calls}=await setup();assert.equal((await handler(req({action,factor_id:factorId,code:'246810'},true))).status,403);assert.ok(!calls.some(c=>c.url.includes('/factors')));}
+});
+test('MFA-Status enthält nur bestätigte Faktor-IDs/Namen und keine Geheimnisse [Codex]',async()=>{
+ const {handler}=await setup(true);const r=await handler(passwordOnly({action:'mfa-status'}));assert.equal(r.status,200);
+ const body=await r.json();assert.deepEqual(body.verified,[{id:factorId,name:'Authenticator-App'}]);assert.ok(!JSON.stringify(body).includes('secret'));
+});
+test('MFA-Einrichtung ersetzt nur eigene unbestätigte StartLab-Faktoren [Codex]',async()=>{
+ const {handler,calls,logs}=await setup(true,{respond:(url,options)=>{
+  if(url.endsWith('/auth/v1/user'))return mfaUser([{id:factorId,factor_type:'totp',status:'unverified',friendly_name:'StartLab Verwaltung'}]);
+  if(url.endsWith('/factors')&&options.method==='POST')return new Response(JSON.stringify({id:factorId,totp:{secret:'ONLY-SYNTHETIC-TEST-FACTOR',qr_code:'<svg></svg>'}}));
+ }});
+ const r=await handler(passwordOnly({action:'mfa-enroll'}));assert.equal(r.status,200);const body=await r.json();assert.equal(body.factor_id,factorId);
+ assert.ok(calls.some(c=>c.url.endsWith('/factors/'+factorId)&&c.options.method==='DELETE'));
+ const enrollment=calls.find(c=>c.url.endsWith('/factors')&&c.options.method==='POST');assert.equal(sent(enrollment).factor_type,'totp');assert.ok(enrollment.options.headers.Authorization.startsWith('Bearer test.'));assert.ok(logs.every(l=>!l.includes('ONLY-SYNTHETIC')));
+});
+test('Bestätigter MFA-Faktor kann nicht mit Passwort allein ersetzt werden [Codex]',async()=>{
+ const {handler,calls}=await setup(true);assert.equal((await handler(passwordOnly({action:'mfa-enroll'}))).status,409);assert.ok(!calls.some(c=>c.url.includes('/factors')));
+});
+test('MFA-Code ist an einen eigenen Faktor gebunden und wird nicht protokolliert [Codex]',async()=>{
+ const {handler,calls,logs}=await setup(true,{respond:url=>url.endsWith('/challenge')?new Response(JSON.stringify({id:'challenge-test'})):url.endsWith('/verify')?new Response(JSON.stringify({access_token:'verified-token',expires_in:3600,refresh_token:'not-returned'})):undefined});
+ const r=await handler(passwordOnly({action:'mfa-verify',factor_id:factorId,code:'246810'}));assert.equal(r.status,200);assert.deepEqual(await r.json(),{access_token:'verified-token',expires_in:3600});
+ const verification=calls.find(c=>c.url.endsWith('/verify'));assert.deepEqual(sent(verification),{challenge_id:'challenge-test',code:'246810'});assert.ok(logs.every(l=>!l.includes('246810')));
+});
+test('Falsche MFA-Formate, fremde Faktoren und Rate-Limit stoppen vor der Challenge [Codex]',async()=>{
+ for(const body of [{factor_id:factorId,code:'12345'},{factor_id:factorId,code:'abcdef'},{factor_id:target,code:'246810'}]){const {handler,calls}=await setup(true);assert.equal((await handler(passwordOnly({action:'mfa-verify',...body}))).status,400);assert.ok(!calls.some(c=>c.url.endsWith('/challenge')));}
+ const {handler,calls}=await setup(true,{respond:(url,options)=>url.includes('/rpc/startlab_limit')&&sent({options}).key==='mfa-verify:test-user'?new Response('false'):undefined});assert.equal((await handler(passwordOnly({action:'mfa-verify',factor_id:factorId,code:'246810'}))).status,429);assert.ok(!calls.some(c=>c.url.endsWith('/challenge')));
+});
+test('Ungültiger Provider-MFA-Code bleibt Eingabefehler, Ausfall bleibt Dienstausfall [Codex]',async()=>{
+ for(const [upstream,expected] of [[400,400],[503,502]]){const {handler}=await setup(true,{respond:url=>url.endsWith('/challenge')?new Response(JSON.stringify({id:'challenge-test'})):url.endsWith('/verify')?fail(upstream):undefined});const r=await handler(passwordOnly({action:'mfa-verify',factor_id:factorId,code:'246810'}));assert.equal(r.status,expected);if(expected===400)assert.match((await r.json()).message,/ungültig oder abgelaufen/);}
 });

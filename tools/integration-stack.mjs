@@ -43,6 +43,11 @@ max_frequency = "1s"
 email_sent = 1000
 sign_in_sign_ups = 1000
 token_verifications = 1000
+[auth.mfa]
+max_enrolled_factors = 2
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
 [edge_runtime]
 enabled = true
 policy = "per_worker"
