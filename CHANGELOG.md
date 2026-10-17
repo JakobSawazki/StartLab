@@ -8,6 +8,8 @@ Abmeldung nach Passwortwechsel). Barrierefreiheit: Dialognamen und Fokus,
 Seitentitel, Statusmeldungen, Kontraste, mobiles 4×4-Bingo, Druckansicht.
 Adminliste seitenweise (je 100 Konten); Browser-Prüfstand um Barrierefreiheit,
 Druck und simulierte Kontoabläufe erweitert.
+Inhalte aus OneNote übernommen: Vorstellung, Vertrag/Regeln, Leistungsbewertung mit
+Notenschlüsseln, Praktikum BK1, GFS BG, Termine 2026/27, Bildungsplan-Links.
 Audit-Ansicht für Administratoren. Auth-Einstellungen in supabase/config.toml; Bingo-Reset. Schutztests für Build-Liste, Geheimnisse und apiUrl. Smoke-Test-Skript für die deployte Edge Function. Content-Security-Policy für die Website. Zeitlimits (Website 20 s, Edge 10 s je
 Supabase-Aufruf) und verständliche Meldungen bei fehlender Verbindung.
 Skiplink wechselt nicht mehr zur Übersicht; axe-Audit ohne Verstöße.

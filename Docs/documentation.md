@@ -250,3 +250,24 @@ Administratoren sehen im Kontodialog die letzten 100 Verwaltungsvorgänge
 (Zeitpunkt in Berliner Zeit, Vorgang, ausführendes und betroffenes Kürzel). E-Mail-
 Adressen werden nicht ausgegeben; Einträge zu inzwischen gelöschten Konten zeigen
 „gelöschtes Konto“, weil die Datenbank die Verweise beim Löschen leert.
+
+### 8.10 Übernahme der OneNote-Inhalte [Claude, 2026-10-17]
+
+Auf Jakobs Wunsch (Antwort 6) sind die Inhalte aus `resources/` in die Website übernommen,
+nicht die Dateien. Daten stehen in `inhalte.js`, die Darstellung in `ansicht.js`; `app.js`
+öffnet sie in den Materialdialogen (alle druckbar, zugeklappte Abschnitte öffnen sich beim Drucken).
+
+- Station 02 zeigt jetzt das Unternehmen Black-Forest-Industry mit NAGOLD, Eckdaten und den
+  zehn Regeln aus dem Vertrag. Die vier frei formulierten Gesprächsimpulse des ersten Entwurfs
+  sind entfallen; die Gesprächsvorlage bleibt als ergänzendes Material („StartLab-Entwurf“).
+- Anrede: Die Originale siezen, StartLab duzt durchgängig. Anleitungstexte sind angepasst;
+  Regeln, Kriterien, Prozentwerte und Fristen sind wörtlich übernommen.
+- Notenschlüssel BG und BK sind per Skript aus den Excel-Dateien erzeugt (Prozentbänder), der
+  IHK-Schlüssel aus dem PDF. Tests prüfen Lückenlosigkeit und Monotonie.
+- Termine: nur schülerrelevante Einträge aus Schulkalender, J1 und J2 (107), maschinell gegen
+  die Excel-Zellen abgeglichen. Interne Konferenzen, Deputats- und Lehrertermine fehlen bewusst.
+- Datenschutz: keine Namen von Kolleginnen und Kollegen (Funktionen statt Namen), keine
+  Formularfelder für persönliche Daten, keine Bilder/Logos. Ein Test erlaubt als namentliche
+  Anrede nur „Herr Sawazki“ und verbietet E-Mail-Adressen und Telefonnummern in den Inhalten.
+- Barrierefreiheit: Tabellenbereiche sind fokussierbar und eindeutig benannt (axe fand sonst
+  auf dem Handy nicht per Tastatur scrollbare Bereiche), Kalenderfilter mit Statusmeldung.

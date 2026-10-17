@@ -149,5 +149,20 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Browser-Prüfstand mit axe bestanden: Protokolltabelle mit Berliner Zeit und deutschen Vorgangsnamen.
 - Smoke-Test um „Audit ohne Anmeldung (401)“ ergänzt; lokal 12 von 12 ok.
 
+### Übernahme der OneNote-Inhalte [Claude, 2026-10-17]
+
+- `npm test`: 37 Tests bestanden; neu `tests/inhalte.test.mjs` (Schlüssel lückenlos und monoton,
+  Termine gültig und sortiert, Vollständigkeit von Vertrag/Vorstellung/Praktikum/GFS, keine
+  Fremdnamen oder Kontaktdaten). Der Build-Schutztest meldete die neue Datei, bevor sie in der
+  Build-Liste stand.
+- Einmaliger Abgleich mit den Originalen (Skripte nur lokal): BG/BK-Bänder aus den Excel-Zellen
+  erzeugt; alle J1/J2-Klausuren in beide Richtungen gegen die Kalenderzellen geprüft; allgemeine
+  und BK-Termine einzeln gegen den Schulkalender; keine Klausur am Wochenende.
+- Browser-Prüfstand mit axe bestanden: Station 02 mit zehn Regeln, Kalenderfilter J2,
+  Notenschlüssel BG mit 16 Zeilen, axe über zehn Materialdialoge in zwei Breiten (zuerst zwei
+  Befunde: nicht fokussierbare Scrollbereiche und doppelte Bereichsnamen, behoben).
+- Druck (Edge headless): Bewertungsdialog mit aufgeklappten Abschnitten; Spalten korrekt.
+- Repository-Suche: keine Namen von Kolleginnen und Kollegen außerhalb von `private/`/`resources/`.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

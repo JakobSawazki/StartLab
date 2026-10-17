@@ -21,17 +21,25 @@ Diese werden zunächst als Ideenbestand erfasst; StartLab führt noch keine
 NAGOLD-, Anwesenheits- oder Notenverwaltung ein. Personenbezogene Einträge oder
 ausgefüllte Tabellen werden nicht in ein öffentliches Material übernommen.
 
-## Exportstand [Claude, 2026-10-17]
+## Exportstand und Übernahme [Claude, 2026-10-17]
 
-| Original | Stand |
-| --- | --- |
-| Persönliche Vorstellung (Word) | Lokal in `resources/` vorhanden (Git-ignoriert), gelesen, nicht veröffentlicht |
-| Vertrag (Word) | Lokal in `resources/` vorhanden (Git-ignoriert), gelesen, nicht veröffentlicht; enthält Regeln mit Bewertungsbezug |
-| Kennenlern-Bingo | Noch nicht exportiert |
-| Leistungsbewertung inkl. Informationsblatt | Noch nicht exportiert; vom Vertrag referenziert |
+Jakob hat die Originale in `resources/` (Git-ignoriert) abgelegt und die inhaltliche Übernahme
+freigegeben (Antwort 6). Dateien werden nicht veröffentlicht, nur ihr Inhalt.
 
-Eine Übernahmeanalyse liegt nur lokal in `private/`. Veröffentlichung erst nach Antwort auf
-Frage 6 in tasks.md. StartLab-Inhalte und Statusanzeigen bleiben bis dahin unverändert.
+| Bereich | Original in resources/ | Auf der Website |
+| --- | --- | --- |
+| 1. Unternehmen | Persönliche Vorstellung, Vertrag, Seitenausdruck | Vorstellung, Vertrag/Regeln/NAGOLD/Jobs, Station 02 |
+| Kennenlern-Bingo | fehlt | StartLab-Neufassung bleibt |
+| 2. Leistungsbewertung | Informationsblatt, Kopfnoten, BG/BK/BS-Tabellen, IHK-Schlüssel | Gewichtung, Matrix, Kopfnoten, Schlüssel BG/BK/IHK; BS-Tabelle nicht (Rückfrage) |
+| 3. Tipps / 4. Hotkeys | fehlen | StartLab-Neufassung bleibt |
+| 5. Bildungspläne | Links, Rahmenlehrpläne (PDF) | Offizielle Links BK 1/BK 2; Berufe genannt, PDFs nicht veröffentlicht |
+| 6. Betriebspraktikum BK1 | Ablauf, Hinweise, Elternbrief, Bewertung 2026/27, Seitenausdruck | Ablauf, Termine, Bericht, Bewertung, Umsetzung in Jakobs Klassen (Stand 2025/26) |
+| 7. GFS BG | Informationsblatt § 16 BGVO, Seitenausdruck | Allgemeine Regeln und Anforderungen Informatik |
+| 8. Kalender | Schulkalender, J1, J2 | Schülerrelevante Termine 2026/27, filterbar; interne Konferenzen weggelassen |
+
+Nicht übernommen: Namen von Kolleginnen und Kollegen (nur Funktionen), leere Kontostand-/
+Namenslisten, Anmeldeformular mit persönlichen Feldern, Logos/Bilder, interne Termine,
+Archivdokumente, Projektkompetenz-Abstimmung, eingescannte E-Commerce-Information (unlesbar).
 
 Nächster Schritt: Originale in `private/` ablegen (Git-ignoriert), Inhalt und
 Rechte prüfen, erst dann bereinigte und freigegebene Materialien veröffentlichen.

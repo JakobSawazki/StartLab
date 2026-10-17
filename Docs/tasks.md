@@ -25,6 +25,9 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
 - **6.** Welche vorhandenen OneNote-Dokumente sollen in ihrer Originalfassung
   öffentlich zugänglich sein? Besonders benötigt: persönliche Vorstellung,
   Kennenlern-Bingo, Vertrag, Leistungsbewertung und zugeordnete Bildungspläne.
+  **Antwort 6 (Jakob im Chat, 17.10.2026, notiert von Claude):** Die Dokumente in `resources/`
+  sollen inhaltlich in die Website integriert werden – der Inhalt, nicht die Dateien selbst.
+  Umgesetzt: siehe documentation.md Abschnitt 8.10. Bingo-Original sowie Tipps/Hotkeys fehlen noch.
 - **7.** Wer übernimmt die schulische Verantwortung und welche E-Mail-Adresse
   wird für Kontomails verwendet? Welcher schulisch freigegebene SMTP-Dienst steht bereit?
 - **8.** Sollen Registrierungen später nur mit Klassen-Einladung oder nach
@@ -53,6 +56,8 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
   [Claude, 2026-10-17] „Persönliche Vorstellung“ und „Vertrag“ liegen in `resources/` (jetzt
   Git-ignoriert) und sind gesichtet; Analyse lokal in `private/`. Bingo und Leistungsbewertung fehlen.
 - [ ] 16. Bildungspläne zuordnen, bestehende Regeln und Bewertungsunterlagen übernehmen.
+  [Claude, 2026-10-17] Regeln (Vertrag), Leistungsbewertung, Notenschlüssel BG/BK/IHK, Praktikum,
+  GFS, Kalender 2026/27 und Bildungsplan-Links übernommen. Offen: Rückfragen in claude2codex.md.
 - [ ] 17. Bedienung an Schul-PCs, per Tastatur, mit Screenreader und auf echten Mobilgeräten prüfen.
   [Claude, 2026-10-17] Teilweise: Tastatur-/Fokuslogik, Kontraste, 375-px-Ansicht und Druck lokal
   geprüft; Screenreader, Schul-PC und echte Geräte stehen aus.
