@@ -22,7 +22,9 @@ QR-Code und Einrichtungsschlüssel sind Zugangsdaten. Sie werden ausschließlich
 während der Einrichtung im Kontodialog angezeigt, nicht im Browserspeicher
 gesichert oder in das Audit geschrieben. Beim Schließen bzw. erfolgreichen
 Bestätigen entfernt die Oberfläche sie aus dem Dialog. Für die Sicherung der
-Authenticator-App ein geschütztes Verfahren wählen.
+Authenticator-App ein geschütztes Verfahren wählen. Kontodialoge sind von der
+Druckausgabe ausgeschlossen, damit Einrichtungsschlüssel und Kontenlisten nicht
+versehentlich mitgedruckt werden.
 
 Eine unterbrochene Einrichtung kann neu gestartet werden. Dabei ersetzt die
 Anwendung ausschließlich eigene, noch unbestätigte Faktoren mit dem Namen

@@ -365,3 +365,7 @@ Aufbewahrungsfristen und produktive Wiederanlaufverfahren sind weiterhin offen.
 
 Offen bleiben das gehostete Projekt, dessen TOTP-/SMTP-Konfiguration, die Abnahme
 mit der tatsächlichen Authenticator-App sowie die schulischen Betriebsentscheidungen.
+
+Nachprüfung Druckausgabe [Codex, 2026-10-17]: Der Kontodialog ist im Druckmedium
+ausgeblendet. MFA-Browserprüfstand mit axe nach der Änderung bestanden;
+Einrichtungsschlüssel und Kontenlisten werden nicht mitgedruckt.
