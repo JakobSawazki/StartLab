@@ -24,6 +24,7 @@ const assert=require('node:assert/strict');const {readFileSync}=require('node:fs
   await page.goto('http://127.0.0.1:4173');await page.locator('#account').click();await login();await page.getByRole('button',{name:'Authenticator einrichten',exact:true}).waitFor();assert.equal(await page.locator('#load-users').count(),0);assert.ok(!calls.includes('admin-list'));
   await page.getByRole('button',{name:'Authenticator einrichten',exact:true}).click();await page.getByLabel('Authenticator-Code').waitFor();await audit();
   assert.equal(await page.locator('#mfa-secret').textContent(),'SYNTHETIC-SETUP-ONLY');assert.equal(await page.locator('#admin svg').count(),0);assert.match(await page.locator('#mfa-qr').getAttribute('src'),/^data:image\/svg\+xml/);
+  await page.emulateMedia({media:'print'});assert.equal(await page.locator('#auth').isVisible(),false,'Kontodialog und Einrichtungsschlüssel nicht drucken');await page.emulateMedia({media:'screen'});
   assert.equal(await page.evaluate(()=>document.querySelector('#auth').scrollWidth<=document.querySelector('#auth').clientWidth+1),true);
   await page.getByLabel('Authenticator-Code').fill('12345');await page.getByRole('button',{name:'Anmeldung bestätigen'}).click();assert.equal(calls.filter(x=>x==='mfa-verify').length,0);
   await page.getByLabel('Authenticator-Code').fill('000000');await page.getByRole('button',{name:'Anmeldung bestätigen'}).click();await page.locator('#auth-status').filter({hasText:'ungültig oder abgelaufen'}).waitFor();assert.equal(await page.locator('#load-users').count(),0);
