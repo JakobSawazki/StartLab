@@ -2,7 +2,8 @@
 
 ## Veröffentlicht ohne neue Versionsnummer · 2026-10-17 [Claude]
 
-Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob).
+Auf GitHub Pages seit Commit 7dfab4c (Freigabe durch Jakob). Pages-Workflow auf node24-Actions
+aktualisiert (0ed2947).
 
 Kontenvorbereitung nachgebessert (einheitliche Kürzeltabelle, Migration 0002 mit
 Mailabgleich, Auth-E-Mail als Quelle, Mail- und Tokenfehler sauber behandelt,

@@ -235,5 +235,15 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
   Node 24 umgestellt) und `ubuntu-latest` wechselt ab 19.10.2026 auf Ubuntu 26. Aktualisierung
   der Action-Versionen als Folgeaufgabe.
 
+### Pages-Workflow aktualisiert [Claude, 2026-10-17]
+
+- Actions auf die neuesten Releases angehoben (aus den offiziellen Repositories gelesen, alle
+  node24): checkout v7, setup-node v7, configure-pages v6, upload-pages-artifact v5,
+  deploy-pages v5. Release-Hinweise ohne relevante Inkompatibilitäten; `upload-pages-artifact`
+  lädt versteckte Dateien (`.nojekyll`) nicht mehr hoch, was bei Artefakt-Deployments unerheblich ist.
+- Lauf 39032051168 erfolgreich, Node-20-Warnung verschwunden; verbleibender Hinweis nur zum
+  Wechsel von `ubuntu-latest` auf Ubuntu 26 (für diesen Ablauf ohne Auswirkung).
+- Live-Seite danach geprüft: HTTP 200, Bewertungsdialog mit fünf Abschnitten, keine Konsolenfehler.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
