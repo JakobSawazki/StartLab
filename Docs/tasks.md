@@ -82,6 +82,8 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
   [Codex, 2026-10-17] Sicherung/Wiederherstellung der Auth- und Anwendungsdaten
   im lokalen Supabase-Teststack bestanden. Offen: geschützter betrieblicher
   Sicherungsort, Rhythmus/Aufbewahrung und Abnahme im gehosteten Projekt.
+  [Claude, 2026-10-17] Bestandsaufnahme der verarbeiteten Daten und Entwurfsgerüst in
+  `Docs/DATENSCHUTZ_ENTWURF.md`; offen sind die dort mit [OFFEN] markierten Entscheidungen.
 - [x] 22. [Claude, 2026-10-17] tools/browser-check.cjs um Dialognamen, Seitentitel, Bingo-Status,
   Druckmedium und simulierte Kontoabläufe erweitert; mit Edge bestanden.
 

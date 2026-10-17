@@ -425,3 +425,10 @@ lokale Supabase-Lauf 39035260660 (Code `e3408c2`) bestätigt die MFA-Pflicht,
 Einrichtung, Ablehnung falscher Codes, AAL2-Freigabe und erneute Bestätigung nach
 Login/Restore; insgesamt zwölf Integrationsgruppen. Einzelheiten: ADMIN_MFA.md.
 Die Freischaltung und App-Bedienung im gehosteten Projekt sind weiterhin offen.
+
+### 8.16 Datenschutz-Bestandsaufnahme [Claude, 2026-10-17]
+
+`Docs/DATENSCHUTZ_ENTWURF.md` beschreibt, welche Daten die Website ohne Konto und die
+vorbereiteten Konten verarbeiten (aus dem Code abgeleitet), welche Rechte technisch schon
+umsetzbar sind und welche Entscheidungen vor der Aktivierung fehlen. Keine Rechtsberatung;
+der Dialog „Datenschutz & Speicherung“ bleibt bis zur Klärung unverändert.

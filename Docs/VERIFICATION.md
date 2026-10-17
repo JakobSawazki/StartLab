@@ -386,3 +386,10 @@ Einrichtungsschlüssel und Kontenlisten werden nicht mitgedruckt.
   erzeugte `desktop.ini`-Metadateien aus `.git/refs` unter dem ignorierten
   `.local/git-metadata-backup/` gesichert, weil Git sie als ungültige Referenzen las.
   Die lokale, nicht versionierte `Docs/CLAUDE_HANDOFF.md` bleibt erhalten.
+
+### Wiederaufnahme nach Codex 0.2.0 und Datenschutz-Entwurf [Claude, 2026-10-17]
+
+- Stand `7e388c8` (Codex) übernommen: 71 Node-Tests, `npm run check`, Build, Browser-Prüfstand mit
+  axe, 11 PGlite-Prüfgruppen und Linkprüfung (5/5) lokal bestanden.
+- `tests/datenschutz.test.mjs`: Entwurf nennt alle Anwendungstabellen und Browserspeicher-Schlüssel;
+  Gegenprobe mit entfernter Tabelle schlägt fehl. 73 Node-Tests bestanden.

@@ -3,6 +3,13 @@
 [Claude, 2026-10-17] · Ergänzt `Docs/CLAUDE_HANDOFF.md`. Diese Datei ist so geschrieben, dass
 Codex ohne den Chatverlauf weiterarbeiten kann. Sie wird nach jedem Arbeitsblock aktualisiert.
 
+## 0. Wiederaufnahme nach Codex 0.2.0 [Claude, 2026-10-17]
+
+Codex-Stand bis `7e388c8` gelesen (`Docs/codex2claude.md`) und lokal vollständig geprüft. Neu von
+Claude seitdem: `Docs/DATENSCHUTZ_ENTWURF.md` (Bestandsaufnahme aus dem Code, offene
+Entscheidungen als [OFFEN]) und `tests/datenschutz.test.mjs`. Neue Tabellen oder
+Browserspeicher-Schlüssel erfordern eine Ergänzung des Entwurfs, sonst schlägt der Test fehl.
+
 ## 1. Arbeitsstand auf einen Blick
 
 - **Git:** Stand bis `0ed2947` (Inhalte seit `7dfab4c`) ist auf Jakobs Freigabe gepusht und live (17.10.2026, Workflow

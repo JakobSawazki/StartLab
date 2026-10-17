@@ -66,6 +66,7 @@ Quellcode, nicht zum Website-Paket. Keine Schülerdaten oder Schlüssel eincheck
 - [Integrationstest mit lokalem Supabase und Testpostfach](Docs/INTEGRATION_TEST.md)
 - [Datensicherung und Wiederherstellung](Docs/BACKUP_RESTORE.md)
 - [Zwei-Faktor-Anmeldung für Administratoren](Docs/ADMIN_MFA.md)
+- [Datenschutz: Bestandsaufnahme und Entwurf](Docs/DATENSCHUTZ_ENTWURF.md)
 - [OneNote-Inventar](Docs/ONENOTE_INVENTAR.md)
 - [Versionsverlauf](CHANGELOG.md)
 - [Übergabe an Codex](Docs/claude2codex.md)

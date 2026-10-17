@@ -1,5 +1,10 @@
 # Änderungen
 
+## Unveröffentlicht · 2026-10-17 [Claude]
+
+Datenschutz-Bestandsaufnahme aus dem Code mit Entwurfsgerüst (`Docs/DATENSCHUTZ_ENTWURF.md`)
+und Test, der den Entwurf mit Tabellen und Browserspeicher-Schlüsseln abgleicht.
+
 ## 0.2.0 · 2026-10-17 [Codex]
 
 Sitzungsprüfung nach Auth-Validierung: Migration 0004 verknüpft aktiven
