@@ -405,3 +405,23 @@ Einrichtungsschlüssel und Kontenlisten werden nicht mitgedruckt.
 - Nachtrag: Beide Stellen warten jetzt bis zu 5 s per `waitForFunction` auf den erwarteten Zustand
   und melden sonst eine sprechende Abweichung. 5/5 Läufe bestanden; Gegenprobe mit nie
   eintretendem Zustand schlägt mit der neuen Meldung fehl.
+
+### Sicherheitsdurchsicht des Codex-Kontocodes [Claude, 2026-10-17]
+
+Zweite, unabhängige Durchsicht von `index.ts` (Diff `3efc9cd..HEAD`), Migration 0004 und der
+MFA-/Lösch-Oberfläche in `auth.js`. Ergebnis: **kein Befund mit Änderungsbedarf.** Geprüft:
+
+- Identität: Token-Claims (`session_id`, `aal`) werden erst nach erfolgreicher Validierung durch
+  Supabase Auth gelesen; Sitzung, E-Mail-Bestätigung, Bann und Profilsperre gemeinsam über die
+  Datenbank geprüft; Auth-/Datenbankausfälle bleiben 502 statt „abgemeldet“.
+- Rechte: `startlab_session_active` nur für `service_role`, `startlab_current_session_active` nur für
+  angemeldete Nutzer; Profil-RLS verlangt aktive eigene Sitzung.
+- MFA: Adminprüfung steht vor `mfa-status`/`mfa-enroll`/`mfa-verify`; Verwaltung erst mit `aal2` und
+  bestätigtem TOTP; Faktor-ID per UUID-Muster geprüft und dem eigenen Konto zugeordnet; Limits pro
+  Benutzer; vorhandener bestätigter Faktor verhindert Neueinrichtung (409).
+- Löschung: keine Selbstlöschung, keine Adminkonten, Kürzelbestätigung gegen das Zielprofil, Limit pro
+  Ziel, Protokoll vor dem Löschaufruf, getrennte Behandlung von unbestätigter Löschung und Protokoll.
+- Oberfläche: QR-Code nur als `data:`-Bild (keine Skriptausführung, CSP erlaubt `data:` nur für
+  Bilder), Schlüssel per `textContent`, Kürzel im Löschdialog maskiert.
+
+Grenze: Durchsicht des Codes, keine Prüfung gegen ein gehostetes Supabase-Projekt.

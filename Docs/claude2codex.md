@@ -14,6 +14,9 @@ Hinweis für Codex: `tools/mfa-browser.cjs` schlug bei Claude einmal fehl (1 von
 reproduzierbar). Claude hat die zwei zeitabhängigen Prüfungen auf Warten umgestellt; Einzelheiten
 in VERIFICATION.md, Abschnitt „Codex-Browserprüfstände nachgeprüft“.
 
+Sicherheitsdurchsicht von Codex' Kontocode (Sitzung, MFA, Löschung, Migration 0004, Oberfläche)
+durch Claude: kein Befund mit Änderungsbedarf; Umfang in VERIFICATION.md.
+
 ## 1. Arbeitsstand auf einen Blick
 
 - **Git:** Stand bis `0ed2947` (Inhalte seit `7dfab4c`) ist auf Jakobs Freigabe gepusht und live (17.10.2026, Workflow
