@@ -78,9 +78,9 @@ Claude nutzte playwright-core 1.48.2 (Browser: installiertes Microsoft Edge), ax
 
 ## 6. Nächste sinnvolle Schritte
 
-1. Tipps, Hotkeys und Kennenlern-Bingo: Originale fehlen in `resources/`; Jakob hat erlaubt,
-   die geöffnete OneNote-Desktop-App lesend zu nutzen. Danach die Neufassungen ersetzen oder
-   ergänzen.
+1. Tipps, Hotkeys und Kennenlern-Bingo: Originale fehlen in `resources/`. Jakob bot die
+   OneNote-Desktop-App an, lehnte den Computerzugriff im Freigabedialog dann aber ab
+   (17.10.2026) – nicht erneut anfragen. Besser: Jakob legt Exporte in `resources/` ab.
 2. Nach Antworten auf Abschnitt 5 die betroffenen Daten in `inhalte.js` anpassen.
 3. Supabase-Einrichtung nach SUPABASE_SETUP.md, sobald Jakob Projekt und SMTP bereitstellt;
    danach Smoke-Test und Funktionsabnahme (Abschnitt 6 der Anleitung, Punkte 1–12).
