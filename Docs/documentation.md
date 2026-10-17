@@ -432,3 +432,15 @@ Die Freischaltung und App-Bedienung im gehosteten Projekt sind weiterhin offen.
 vorbereiteten Konten verarbeiten (aus dem Code abgeleitet), welche Rechte technisch schon
 umsetzbar sind und welche Entscheidungen vor der Aktivierung fehlen. Keine Rechtsberatung;
 der Dialog „Datenschutz & Speicherung“ bleibt bis zur Klärung unverändert.
+
+### 8.17 Neues Design und Dunkelmodus [Claude, 2026-10-17]
+
+Auf Jakobs Wunsch („edel, professionell“) wurde `styles.css` vollständig auf Design-Variablen
+umgestellt. Typografie: Überschriften in einer Systemserifenschrift (Iowan/Palatino/Georgia),
+Text in der Systemschrift; keine externen Schriften (CSP, Datenschutz). Farben: Elfenbein,
+Waldgrün, Messing; im Dunkelmodus warmes Anthrazit mit hellem Grün. Strichsymbole ersetzen die
+Emoji, die Startseite nutzt eine ruhige Karte statt gedrehter Elemente. `theme.js` (klassisches
+Skript, vor dem ersten Zeichnen) setzt das Theme: gespeicherte Wahl (`startlab.theme`) oder
+Systemeinstellung; Umschalter mit `aria-pressed` in der Kopfzeile. Wird `index.html` als lokale
+Datei geöffnet, erklärt die Seite, wie man sie ansieht, statt leer zu bleiben. Druck ist immer
+schwarz auf weiß.

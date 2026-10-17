@@ -425,3 +425,19 @@ MFA-/Lösch-Oberfläche in `auth.js`. Ergebnis: **kein Befund mit Änderungsbeda
   Bilder), Schlüssel per `textContent`, Kürzel im Löschdialog maskiert.
 
 Grenze: Durchsicht des Codes, keine Prüfung gegen ein gehostetes Supabase-Projekt.
+
+### Neues Design und Dunkelmodus [Claude, 2026-10-17]
+
+- Kontraste (WCAG-Formel) für 19 Farbpaare je Theme, alle erfüllt; kleinste Werte: hell
+  Messing auf Messing-Fläche 4,91:1, Eingaberand 3,57:1; dunkel Eingaberand 3,99:1.
+- Browser-Prüfstand bestanden, neu: Umschalter wechselt das Theme, meldet `aria-pressed`, die Wahl
+  übersteht ein Neuladen; axe ohne Verstöße in hell und dunkel, je Desktop und 375 px.
+- MFA- und Antwortreihenfolge-Prüfstand bestanden. Ursache des seltenen MFA-Fehlers gefunden: Das
+  `close`-Ereignis eines Dialogs kommt asynchron, und `page.waitForFunction` wird von der CSP der
+  Seite blockiert, sobald es wirklich warten muss. Beide Stellen fragen jetzt von Node aus ab;
+  10/10 Läufe bestanden, Gegenprobe schlägt mit sprechender Meldung fehl. Die Seite selbst leert den
+  Admininhalt korrekt (Diagnose: nach dem Schließen leer, Dialog zu).
+- Mobil: Navigation passt ab 360 px in eine Zeile, bei 320 px scrollt sie in sich; keine Seite läuft
+  bei 320 px seitlich über. Druck aus dem Dunkelmodus: weißer Hintergrund, schwarze Schrift.
+- Lokale Datei (`file://`): Hinweis mit Link zur Online-Version erscheint statt leerer Seite.
+- 73 Node-Tests, `npm run check` (jetzt mit `theme.js`) und Build bestanden.

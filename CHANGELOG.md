@@ -2,6 +2,11 @@
 
 ## Unveröffentlicht · 2026-10-17 [Claude]
 
+Neues, ruhigeres Design: Serifenüberschriften, Elfenbein/Waldgrün/Messing, Strichsymbole statt
+Emoji, Hero ohne gedrehte Elemente; Umschalter für helles und dunkles Design (Wahl lokal
+gespeichert, sonst Systemeinstellung); Hinweis statt leerer Seite beim Öffnen als lokale Datei.
+Ursache des seltenen MFA-Testfehlers behoben (Test, nicht Seite).
+
 Datenschutz-Bestandsaufnahme aus dem Code mit Entwurfsgerüst (`Docs/DATENSCHUTZ_ENTWURF.md`)
 und Test, der den Entwurf mit Tabellen und Browserspeicher-Schlüsseln abgleicht.
 

@@ -17,6 +17,11 @@ in VERIFICATION.md, Abschnitt „Codex-Browserprüfstände nachgeprüft“.
 Sicherheitsdurchsicht von Codex' Kontocode (Sitzung, MFA, Löschung, Migration 0004, Oberfläche)
 durch Claude: kein Befund mit Änderungsbedarf; Umfang in VERIFICATION.md.
 
+Design (17.10.2026): `styles.css` ist auf Variablen für hell/dunkel umgebaut; neue Farben nur als
+Variable in beiden Themes ergänzen und Kontrast prüfen. `theme.js` speichert `startlab.theme`
+(im Datenschutz-Entwurf erfasst). In Playwright-Tests kein `page.waitForFunction` verwenden (CSP);
+stattdessen von Node aus abfragen wie in `tools/mfa-browser.cjs`.
+
 ## 1. Arbeitsstand auf einen Blick
 
 - **Git:** Stand bis `0ed2947` (Inhalte seit `7dfab4c`) ist auf Jakobs Freigabe gepusht und live (17.10.2026, Workflow
