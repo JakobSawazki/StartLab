@@ -214,5 +214,10 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Liste an die laut Inventar gelesenen Themen der Hotkey-Seite angeglichen; 43 Tests bestanden
   (neu: alle Themen enthalten). Browser-Prüfstand mit axe bestanden.
 
+### Selbstprüfung app.js [Claude, 2026-10-17]
+
+- Nur Kleinigkeiten: Pfeil in den Buttons von Station 01 für Screenreader ausgeblendet; `showDetail`
+  öffnet den Dialog nur, wenn er noch nicht offen ist. Tests und Browser-Prüfstand mit axe bestanden.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.
