@@ -446,3 +446,16 @@ Grenze: Durchsicht des Codes, keine Prüfung gegen ein gehostetes Supabase-Proje
 ### Erstes gehostetes Projekt [Codex, 2026-10-17]
 
 Projekt StartLab in Frankfurt angelegt und alle vier vorhandenen Migrationen angewandt. Vier Anwendungstabellen mit RLS, null Auth-Konten. Edge Function Version 1 und Betriebswerte bereitgestellt; Registrierung sowohl in Auth als auch im Kontodienst geschlossen. Alle 13 Prüfungen des gehosteten `tools/smoke-check.mjs` bestanden. Dies ersetzt weder den echten SMTP-/Recovery-Test noch die Admin-/Schülerabnahme. Einzelheiten und Connector-Migrationsnummern in SUPABASE_SETUP.md.
+
+### Downloads [Claude, 2026-10-17]
+
+- Metadaten-Inventur aller Originale: sieben Namen von Kolleginnen und Kollegen in Autor-/Bearbeiter-
+  feldern gefunden; im Vertrag zwei Stockfotos mit Wasserzeichen. Entscheidungen siehe
+  ONENOTE_INVENTAR.md, Abschnitt „Downloads“.
+- Vier bereinigte Kopien; `tests/downloads.test.mjs` (3 Tests) prüft Dateiliste, Größen, leere
+  Metadaten, keine Bilder/Zusatzdaten, keine Änderungsverfolgung, Kommentarautoren und PDF-Autor.
+  Gegenprobe mit ungereinigtem Original schlägt fehl. 76 Node-Tests bestanden.
+- Browser-Prüfstand: Download-Bereich im Bewertungsdialog mit zwei Links, Dateien mit korrektem Typ
+  (HTTP 200), im Druck ausgeblendet; axe ohne Verstöße.
+- Lokaler Server: Dokumente nur unter `/downloads/`; `resources/`, `private/`, `Docs/`, `dist/`
+  liefern 404 (auch abweichende Groß-/Kleinschreibung). Auf GitHub Pages gelangt ohnehin nur `dist/`.

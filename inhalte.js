@@ -238,3 +238,15 @@ export const tastenkuerzel = {
  ],
  tipp: 'Tipp: Gib Dateien verständliche Namen und speichere sie im passenden Fachordner.'
 };
+
+// [Claude, 2026-10-17] Downloads: Jakob gab die Dokumente zum Herunterladen frei. Veröffentlicht werden nur
+// geprüfte Kopien in downloads/ (Metadaten entfernt, keine Bilder Dritter, keine Namen außer der Lehrkraft).
+// Zurückgehalten und begründet: Docs/ONENOTE_INVENTAR.md. tools/build.mjs kopiert genau diese Dateien.
+export const downloads = {
+ vorstellung: [{datei: 'downloads/persoenliche-vorstellung.docx', titel: 'Persönliche Vorstellung', format: 'Word', groesse: '22 KB'}],
+ bewertung: [
+  {datei: 'downloads/leistungsbewertung.docx', titel: 'Informationen zur Leistungsbewertung', format: 'Word', groesse: '30 KB'},
+  {datei: 'downloads/notenschluessel-bk.xlsx', titel: 'Notenschlüssel Berufskolleg', format: 'Excel', groesse: '11 KB'}
+ ],
+ gfs: [{datei: 'downloads/gfs-informatik.pdf', titel: 'GFS im Fach Informatik (OneNote-Seite)', format: 'PDF', groesse: '863 KB'}]
+};

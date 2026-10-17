@@ -6,6 +6,8 @@ Neues, ruhigeres Design: Serifenüberschriften, Elfenbein/Waldgrün/Messing, Str
 Emoji, Hero ohne gedrehte Elemente; Umschalter für helles und dunkles Design (Wahl lokal
 gespeichert, sonst Systemeinstellung); Hinweis statt leerer Seite beim Öffnen als lokale Datei.
 Ursache des seltenen MFA-Testfehlers behoben (Test, nicht Seite).
+Downloads: Persönliche Vorstellung, Leistungsbewertung, Notenschlüssel BK, GFS Informatik
+(bereinigte Kopien, Metadaten entfernt); weitere Dokumente begründet zurückgehalten.
 
 Datenschutz-Bestandsaufnahme aus dem Code mit Entwurfsgerüst (`Docs/DATENSCHUTZ_ENTWURF.md`)
 und Test, der den Entwurf mit Tabellen und Browserspeicher-Schlüsseln abgleicht.

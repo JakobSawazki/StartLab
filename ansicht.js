@@ -1,5 +1,5 @@
 // [Claude, 2026-10-17] HTML for the OneNote contents in inhalte.js. All text passes through esc().
-import {vorstellung, unternehmen, bewertung, schluessel, praktikum, gfs, bildungsplaene, termine, tastenkuerzel} from './inhalte.js';
+import {vorstellung, unternehmen, bewertung, schluessel, praktikum, gfs, bildungsplaene, termine, tastenkuerzel, downloads} from './inhalte.js';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const list = (items, tag = 'ul') => `<${tag}>${items.map(i => `<li>${esc(i)}</li>`).join('')}</${tag}>`;
 const quelle = q => `<p class="source">Quelle: ${esc(q)}</p>`;
@@ -99,4 +99,10 @@ export function naechsteTermineHTML(heute = heuteBerlin()) {
 // [Claude, 2026-10-17] Shortcut list (StartLab version, see inhalte.js).
 export function tastenkuerzelHTML() {
  return `<p>${esc(tastenkuerzel.hinweis)}</p>${tastenkuerzel.gruppen.map(([titel, liste]) => `<h3>${esc(titel)}</h3><dl class="shortcuts">${liste.map(([k, t]) => `<dt><kbd>${esc(k)}</kbd></dt><dd>${esc(t)}</dd>`).join('')}</dl>`).join('')}<p>${esc(tastenkuerzel.tipp)}</p>`;
+}
+// [Claude, 2026-10-17] Download list for a material dialog (empty string when there is nothing to download).
+const fileIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg>';
+export function downloadsHTML(id) {
+ const list = downloads[id]; if (!list) return '';
+ return `<section class="downloads" aria-labelledby="dl-${id}"><h3 id="dl-${id}">Zum Herunterladen</h3><ul>${list.map(d => `<li><a href="${esc(d.datei)}" download>${fileIcon}<span>${esc(d.titel)}<small>${esc(d.format)} · ${esc(d.groesse)}</small></span></a></li>`).join('')}</ul></section>`;
 }

@@ -1,7 +1,7 @@
 import {topics,materials,bingo} from './content.js';
 import {openAccount} from './auth.js';
 import {unternehmen} from './inhalte.js';
-import {vorstellungHTML,vertragHTML,bewertungHTML,praktikumHTML,gfsHTML,bildungsplaeneHTML,kalenderHTML,termineListe,naechsteTermineHTML,tastenkuerzelHTML} from './ansicht.js';
+import {vorstellungHTML,vertragHTML,bewertungHTML,praktikumHTML,gfsHTML,bildungsplaeneHTML,kalenderHTML,termineListe,naechsteTermineHTML,tastenkuerzelHTML,downloadsHTML} from './ansicht.js';
 const main=document.querySelector('main'), detail=document.querySelector('#detail');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let checks=[];let storageOK=true;
@@ -35,7 +35,7 @@ function openMaterial(id){const m=materials.find(x=>x.id===id);if(!m)return;let 
  else if(id==='bingo')body=`<p>Sprich mit anderen aus deiner Klasse. Finde zu jedem Feld jemanden, auf den die Aussage zutrifft. Markiere das Feld nach eurem Gespräch. Vier Felder in einer Reihe? Bingo!</p><div class="bingo-grid" role="group" aria-label="Bingo-Feld mit 4 mal 4 Feldern, zeilenweise">${bingo.map((s,i)=>`<button data-bingo="${i}" aria-pressed="false">${s}</button>`).join('')}</div><p id="bingo-status" role="status">0 von 16 Feldern markiert.</p><button type="button" class="subtle" data-bingo-reset>Markierungen zurücksetzen</button><p>Keine Namen eingeben. Die Markierungen werden beim Schließen oder Neuladen nicht dauerhaft gespeichert.</p>`;
  else if(id==='lernvereinbarung')body=`<p><strong>Ergänzende Vorlage für euer Klassengespräch.</strong> Verbindlich sind die Regeln im Vertrag von Black-Forest-Industry.</p>${['Damit wir gut lernen können, brauchen wir …','So gehen wir respektvoll miteinander um …','So verwenden wir Geräte und KI …','Wenn etwas nicht klappt, vereinbaren wir …'].map(t=>`<strong>${t}</strong><div class="sheet-line"></div>`).join('')}<p>Klasse / Datum: ____________________</p><p>Die endgültigen Regeln besprecht ihr gemeinsam mit der Lehrkraft.</p>`;
   else if(!body)body=`<p>${m.description}</p><p><strong>${m.status}.</strong> Für diesen Bereich liegt noch kein freigegebener Inhalt in StartLab vor. Die Originalmaterialien findest du vorerst bei deiner Lehrkraft.</p>`;
- showDetail(`<h2>${esc(m.title)}</h2><span class="badge">${esc(m.status)}</span>${body}<button data-print>Drucken / als PDF speichern</button>`);}
+ showDetail(`<h2>${esc(m.title)}</h2><span class="badge">${esc(m.status)}</span>${body}${downloadsHTML(id)}<button data-print>Drucken / als PDF speichern</button>`);}
 // Calendar filter inside the dialog; closed <details> are opened for printing.
 detail.addEventListener('click',e=>{const b=e.target.closest('[data-termine]');if(!b)return;detail.querySelectorAll('[data-termine]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));detail.querySelector('#termine-liste').innerHTML=termineListe(b.dataset.termine);const n=detail.querySelectorAll('#termine-liste tbody tr').length;detail.querySelector('#termine-status').textContent=`${n} Termine angezeigt.`;});
 window.addEventListener('beforeprint',()=>detail.querySelectorAll('details:not([open])').forEach(d=>{d.open=true;d.dataset.printOpened='1';}));

@@ -22,6 +22,10 @@ Variable in beiden Themes ergänzen und Kontrast prüfen. `theme.js` speichert `
 (im Datenschutz-Entwurf erfasst). In Playwright-Tests kein `page.waitForFunction` verwenden (CSP);
 stattdessen von Node aus abfragen wie in `tools/mfa-browser.cjs`.
 
+Downloads (17.10.2026): nur geprüfte, bereinigte Kopien in `downloads/` (Liste in `inhalte.js`,
+Build kopiert genau diese). Zurückgehaltene Dokumente und Gründe: ONENOTE_INVENTAR.md. Neue
+Downloads nur nach derselben Prüfung; `tests/downloads.test.mjs` muss bestehen.
+
 ## 1. Arbeitsstand auf einen Blick
 
 - **Git:** Stand bis `0ed2947` (Inhalte seit `7dfab4c`) ist auf Jakobs Freigabe gepusht und live (17.10.2026, Workflow

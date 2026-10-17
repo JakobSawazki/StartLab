@@ -46,3 +46,27 @@ Ordner `resources/`, lokale Auszüge in `private/`. Noch fehlende Originale und
 die Inhaltsrückfragen aus `claude2codex.md` ergänzen; erst nach inhaltlicher
 Prüfung weitere freigegebene Inhalte veröffentlichen. Keine Originaldateien
 automatisch verschieben oder in Git aufnehmen.
+
+## Downloads [Claude, 2026-10-17]
+
+Jakob hat die Dokumente auch zum Herunterladen freigegeben. Jede Datei wurde vorher auf Namen
+Dritter (Text und Metadaten), eingebettete Bilder, Änderungsverfolgung und Kommentare geprüft.
+
+| Datei | Entscheidung | Begründung |
+| --- | --- | --- |
+| Persönliche Vorstellung (Word) | veröffentlicht | Metadaten entfernt; keine Bilder, keine Namen |
+| Leistungsbewertung (Word) | veröffentlicht | Metadaten entfernt; keine Bilder, keine Namen |
+| Notenschlüssel BK (Excel) | veröffentlicht | von Jakob erstellt; Metadaten entfernt; Kommentar von Jakob |
+| GFS BG, OneNote-Seite (PDF) | veröffentlicht | Autor Jakob; keine Namen; nur zwei kleine Dateisymbole |
+| Vertrag (Word) | zurückgehalten | zwei Stockfotos mit Wasserzeichen (Can Stock Photo, depositphotos), OneNote- und Schullogo; Inhalt über Druckfunktion der Website |
+| BG-, BS-Notenschlüssel (Excel) | zurückgehalten | Datei von einem Kollegen erstellt; BS zusätzlich mit Auffälligkeit bei 17 Punkten |
+| IHK-Bewertungsschlüssel (PDF) | zurückgehalten | Dokument der IHK Hannover mit Logo |
+| Verhalten und Mitarbeit (Word) | zurückgehalten | von einer Kollegin verfasst |
+| Praktikumsunterlagen 2026/27 | zurückgehalten | schulweite Dokumente; Namen von Kolleginnen in Text und Metadaten |
+| GFS-Informationsblatt (PDF-Scan) | zurückgehalten | Namen von Abteilungsleitung und Oberstufenberatung |
+| Kalender (Excel) | zurückgehalten | interne Termine, Namen in den Metadaten |
+| Bildungspläne (PDF) | nicht kopiert | offizielle Dokumente, auf der Website verlinkt |
+| OneNote-Seiten Unternehmen/Praktikum (PDF) | nicht kopiert | Inhalt bereits auf der Website; Praktikumsseite mit Terminen 2025/26 |
+
+Die bereinigten Kopien liegen in `downloads/`; `tests/downloads.test.mjs` sichert Metadaten,
+Bilder, Kommentare und Dateiliste ab.

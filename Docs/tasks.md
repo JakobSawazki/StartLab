@@ -28,6 +28,10 @@ Nach dem Vorbild von Excel-Lab: nummerierte offene Fragen. Jakob kann hier mit
   **Antwort 6 (Jakob im Chat, 17.10.2026, notiert von Claude):** Die Dokumente in `resources/`
   sollen inhaltlich in die Website integriert werden – der Inhalt, nicht die Dateien selbst.
   Umgesetzt: siehe documentation.md Abschnitt 8.10. Bingo-Original sowie Tipps/Hotkeys fehlen noch.
+  **Ergänzung (Jakob im Chat, 17.10.2026, notiert von Claude):** Die Dokumente dürfen auch
+  heruntergeladen werden. Umgesetzt für vier geprüfte Dateien; zurückgehaltene Dokumente mit
+  Begründung in ONENOTE_INVENTAR.md („Downloads“). Rückfrage: Sollen Kolleginnen und Kollegen
+  bzw. die Rechteinhaber der Stockfotos gefragt werden, oder bleiben diese Dateien offline?
 - **7.** Wer übernimmt die schulische Verantwortung und welche E-Mail-Adresse
   wird für Kontomails verwendet? Welcher schulisch freigegebene SMTP-Dienst steht bereit?
 - **8.** Sollen Registrierungen später nur mit Klassen-Einladung oder nach
