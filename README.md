@@ -2,20 +2,25 @@
 
 Gemeinsam ankommen, kennenlernen und das Schuljahr gestalten.
 
-Version **0.1.0**, 17. Oktober 2026 · Jakob Sawazki / Codex.
+Version **0.1.0**, 17. Oktober 2026 · Jakob Sawazki / Codex · seither unveröffentlichte
+Weiterentwicklung durch Claude (siehe [CHANGELOG](CHANGELOG.md)).
 
 StartLab ergänzt Excel-Lab und WorkbenchLab um einen übersichtlichen Einstieg
 für die organisatorischen Themen zum Schuljahresbeginn.
 
-- Drei Stationen: Kennenlernen, Zusammenarbeit, Orientierung.
-- Materialsuche und Kategorien, Bingo, druckbare Vorlagen, lokale Checkliste.
-- Supabase-Vorbereitung für Registrierung, Kürzel-Anmeldung und Reset-Links.
-- Geschützte Adminübersicht im vorbereiteten Backend.
+- Drei Stationen: Kennenlernen, Zusammenarbeit (Unternehmen Black-Forest-Industry), Orientierung.
+- Inhalte aus Jakobs OneNote: Vorstellung, Vertrag und Regeln, Leistungsbewertung mit
+  Notenschlüsseln, Praktikum BK1, GFS BG, Termine 2026/27, Bildungspläne.
+- Materialsuche über Titel und Inhalte, Bingo, druckbare Dialoge, lokale Checkliste,
+  „Als Nächstes“ mit den kommenden Terminen.
+- Supabase-Vorbereitung: Registrierung, Kürzel-Anmeldung, Reset-Links, Adminliste,
+  Audit-Ansicht, Kontosperre.
 
 **Konten sind noch deaktiviert.** Ohne Supabase-Projekt und dessen Konfiguration
 werden keine Registrierungsangaben erfasst oder versendet. Die Website ist
-bereits ohne Konto nutzbar. OneNote-Originaldateien sind noch nicht importiert;
-Materialstatus unterscheidet Neufassungen, Entwürfe und offene Übernahmen.
+bereits ohne Konto nutzbar. Die OneNote-Originaldateien liegen nur lokal und
+Git-ignoriert in `resources/`; veröffentlicht wird ausschließlich ihr Inhalt.
+Tipps, Tastenkürzel und Bingo sind noch StartLab-Neufassungen.
 
 Repository: https://github.com/JakobSawazki/StartLab
 
@@ -60,6 +65,7 @@ Quellcode, nicht zum Website-Paket. Keine Schülerdaten oder Schlüssel eincheck
 - [Supabase einrichten](Docs/SUPABASE_SETUP.md)
 - [OneNote-Inventar](Docs/ONENOTE_INVENTAR.md)
 - [Versionsverlauf](CHANGELOG.md)
+- [Übergabe an Codex](Docs/claude2codex.md)
 
-Keine Lizenz für die Weiterverwendung vergeben. Originalmaterialien erst nach
-inhaltlicher Prüfung und Klärung der Veröffentlichungsrechte übernehmen.
+Keine Lizenz für die Weiterverwendung vergeben. Weitere Originalmaterialien nur
+nach Jakobs Freigabe und ohne personenbezogene Daten übernehmen.

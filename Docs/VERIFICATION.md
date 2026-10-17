@@ -200,5 +200,14 @@ keine Schülerkonten, Schlüssel oder OneNote-Anhänge.
 - Im Browser: „Laufzettel“ → GFS, „Calibri“ → Praktikum, „Abitur“ → GFS und Kalender, „NAGOLD“ →
   Vertrag und Bewertung, Unsinn → 0. Browser-Prüfstand um „Laufzettel“ ergänzt und bestanden.
 
+### Selbstprüfung auth.js [Claude, 2026-10-17]
+
+- Befund 1: Ein Mail-Link, der in einem Tab mit bereits geöffnetem StartLab landet, ändert nur den
+  Hash. Das Fragment wurde nicht ausgewertet und blieb mit Token in Adresszeile und Verlauf.
+  Behoben (Auswertung auch bei `hashchange`). Prüfstand: `#error=…` und Recovery-Fragment im selben
+  Dokument; Gegenprobe ohne Listener schlägt fehl.
+- Befund 2: Lief eine Admin-Sitzung ab, blieb die Adminansicht mit Fehlermeldung stehen. Jetzt
+  Wechsel zur Anmeldung; im Prüfstand mit widerrufener Sitzung bestanden.
+
 Weiterhin nicht geprüft: echte Supabase-Datenbank, echte Bestätigungs- und Recovery-Mails,
 Screenreader, Schul-PC, echte Mobilgeräte, Firefox/Safari.

@@ -290,3 +290,11 @@ sich der letzte Admin nicht aussperrt. Jeder Vorgang wird auditiert.
 
 Die Materialsuche durchsucht neben Titel und Beschreibung auch den Text der Dialoge (einmalig
 beim ersten Suchen aufgebaut). Treffer nur im Inhalt sind mit „Treffer im Inhalt“ markiert.
+
+### 8.14 Selbstprüfung der Kontooberfläche [Claude, 2026-10-17]
+
+Zwei Lücken behoben: Bestätigungs- und Reset-Links werden auch ausgewertet, wenn sie in einem
+Tab mit bereits geöffnetem StartLab landen (nur Hash-Wechsel, kein Neuladen); das Token
+verschwindet sofort aus Adresszeile und Verlauf. Eine abgelaufene oder widerrufene
+Admin-Sitzung führt zur Anmeldung statt zu einer stehen gebliebenen Adminansicht.
+README auf den aktuellen Stand gebracht.
