@@ -480,3 +480,16 @@ Auf Jakobs Wünsche („möglichst einfach und übersichtlich“):
   Nähte; Stahlverlauf und leichter Glanz). Bei eigenen Farben und im Druck ohne Struktur.
 - Navigationspunkt „Übersicht“ entfernt; das Logo führt zur Übersicht (Name „StartLab – zur Übersicht“).
 - „Designed by Sawazki Electronics“ verlinkt auf https://jakobsawazki.github.io/sawazki-electronics/.
+
+### 8.20 Logo- und Navigationseffekte, ruhigere Kopfzeile, flüssiges Scrollen [Claude, 2026-10-18]
+
+- Logo: beim Darüberfahren leicht größer und gekippt, Lichtschimmer über dem Icon, goldener
+  Schein, der Pfeil hebt ab; ohne Bewegung bei „Bewegung reduzieren“.
+- Navigationspunkte als gerahmte Metall-Pillen; beim Darüberfahren goldener Rahmen, Lichtschimmer,
+  leichtes Anheben. Der aktive Punkt behält einen goldenen Rahmen.
+- Icons oben rechts und „Anmelden“: statt heller Primärfläche ein ruhiger Metall-Hover mit goldenem
+  Rahmen und goldenem Symbol.
+- Flüssiges Scrollen (Jakob bemerkte Ruckeln auf #material): Die Bürststruktur liegt jetzt auf
+  einer einzigen fixierten Ebene (`body::before`), die nur einmal gezeichnet wird, statt
+  `background-attachment: fixed`; die Kopfzeile verzichtet auf den Unschärfefilter
+  (`backdrop-filter`) und hat einen deckenden Stahlverlauf. Gemessen: gleichmäßig 16,7 ms je Bild.

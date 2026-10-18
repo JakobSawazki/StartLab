@@ -489,3 +489,8 @@ Projekt StartLab in Frankfurt angelegt und alle vier vorhandenen Migrationen ang
 - Gehosteter Smoke-Test 13/13 bestanden (ohne Konto oder Mail). 73 Node-Tests, `npm run check`,
   Browser-Prüfstand mit axe, MFA- und Antwortreihenfolge-Prüfstand bestanden; die Browser-Prüfstände
   ersetzen `config.js` und rufen das echte Backend nicht auf.
+
+### Logo, Navigation, Scrollleistung [Claude, 2026-10-18]
+
+- Scrollen über #material (1440×900, hell/dunkel): Median 16,7 ms, 95 % ≤ 17,1 ms je Bild.
+- 375/320 px ohne seitlichen Überlauf; 73 Node-Tests, Browser-Prüfstand mit axe und MFA bestanden.

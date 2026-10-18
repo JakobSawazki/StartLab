@@ -2,6 +2,8 @@
 
 ## Unveröffentlicht · 2026-10-17 [Claude]
 
+2026-10-18: Logo- und Navigationseffekte, ruhiger Hover für Kopfzeilen-Icons, flüssiges Scrollen.
+
 2026-10-18: Website mit dem gehosteten Supabase-Backend verbunden (Anmelden, Passwort vergessen);
 Registrierung bleibt bis zur Freischaltung im Dashboard gesperrt.
 
