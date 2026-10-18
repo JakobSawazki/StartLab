@@ -16,7 +16,9 @@ Auf der Website sichtbar werden:
   Notenschlüsseln BG/BK/IHK, Betriebspraktikum BK1, GFS BG, Termine 2026/27, Bildungspläne.
 - Startseite „Als Nächstes“ (drei kommende Termine), Suche auch in den Inhalten.
 - Barrierefreiheit, Druckansicht, Kontraste, mobiles Bingo, Content-Security-Policy.
-- Kontofunktionen bleiben **aus** (`config.js` unverändert, `apiUrl: ''`).
+- Kontofunktionen: seit 18.10.2026 auf Jakobs Wunsch mit dem gehosteten Supabase-Backend verbunden
+  (`config.js` → `apiUrl` der Edge Function). Registrierung bleibt serverseitig gesperrt, bis Jakob
+  sie im Dashboard freischaltet (siehe SUPABASE_SETUP.md, Einrichtungsprotokoll).
 
 Nicht veröffentlicht werden `resources/`, `private/` (Git-ignoriert) und `Docs/CLAUDE_HANDOFF.md`
 (ungetrackt). Das Pages-Paket enthält nur die Dateien aus `tools/build.mjs`.

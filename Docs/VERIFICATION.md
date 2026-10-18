@@ -483,3 +483,9 @@ Projekt StartLab in Frankfurt angelegt und alle vier vorhandenen Migrationen ang
 - Einstellungsdialog ohne Scrollen bei 1920×1080, 1366×768, 1280×720 und 390×844 (hell/dunkel);
   Kreuz im Schließen-Knopf auf 0 px genau mittig. Hintergrund ohne Kachelnähte, bis zum unteren Rand.
 - 73 Node-Tests, Browser-Prüfstand mit axe und MFA-Prüfstand bestanden.
+
+### Website mit Supabase verbunden [Claude, 2026-10-18]
+
+- Gehosteter Smoke-Test 13/13 bestanden (ohne Konto oder Mail). 73 Node-Tests, `npm run check`,
+  Browser-Prüfstand mit axe, MFA- und Antwortreihenfolge-Prüfstand bestanden; die Browser-Prüfstände
+  ersetzen `config.js` und rufen das echte Backend nicht auf.

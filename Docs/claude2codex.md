@@ -35,7 +35,10 @@ Jakobs Wunsch entfernt – nicht wieder einführen. Anzeige-Einstellungen in `th
 - **Zusammenarbeit:** Jakob lässt derzeit nur Claude arbeiten, nicht parallel Codex. Wenn
   Codex übernimmt, ist der Arbeitsbaum sauber bis auf `Docs/CLAUDE_HANDOFF.md` (von Jakob,
   bewusst nicht committet – Jakob entscheidet, ob sie ins öffentliche Repository soll).
-- **Konten:** Weiterhin deaktiviert (`config.js` → `apiUrl: ''`). Kein Supabase-Projekt.
+- **Konten:** [Claude, 2026-10-18] Website mit dem gehosteten Projekt `hrkmnmrfffcqlzbpzifm` verbunden
+  (`config.js`). Registrierung serverseitig noch gesperrt (`REGISTRATION_ENABLED=false`, Dashboard-
+  Signup aus); SMTP und erstes Admin-Konto richtet Jakob ein. Browser-Prüfstände ersetzen
+  `config.js` per Route und berühren das echte Backend nicht.
 - **Originale:** `resources/` (Jakobs OneNote-Exporte) und `private/` sind Git-ignoriert.
   Dateien nie veröffentlichen; Inhalte nur so übernehmen, wie in Abschnitt 4 beschrieben.
 

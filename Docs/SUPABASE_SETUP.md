@@ -232,3 +232,19 @@ dadurch noch nicht erfolgt.
 - Jakob hat `sawazki.electronics@googlemail.com` als Absender gewählt. SMTP wird für Gmail vorbereitet (smtp.gmail.com, Port 587/STARTTLS, vollständige Adresse als Benutzername). Google verlangt hierfür gegebenenfalls ein App-Passwort bei aktiver Zwei-Schritt-Bestätigung; dieses muss Jakob selbst im Konto erstellen und direkt in Supabase eintragen. Kein Passwort in Chat, Code oder Git. Echte Mail-/Kontoabnahme weiterhin offen.
 - SMTP-Quellen: https://supabase.com/docs/guides/auth/auth-smtp und https://support.google.com/mail/answer/7104828 sowie https://support.google.com/accounts/answer/185833 .
 - Schulische Freigabe, Verantwortlichkeit, Löschfrist, Registrierungsfreigabe und Einrichtung des ersten Admin-Kontos bleiben offen. Keine echten Schülerdaten erfasst.
+
+## Website verbunden [Claude, 2026-10-18]
+
+- Auf Jakobs ausdrücklichen Wunsch: `config.js` enthält die öffentliche Funktionsadresse
+  `https://hrkmnmrfffcqlzbpzifm.supabase.co/functions/v1/startlab`. Vorher gehosteter Smoke-Test:
+  13/13 bestanden (Registrierung weiterhin 503).
+- Damit **Registrieren** klappt, muss Jakob im Supabase-Dashboard selbst:
+  1. Authentication → SMTP: Gmail-App-Passwort für sawazki.electronics@googlemail.com eintragen
+     (ohne eigenes SMTP stellt Supabase Bestätigungsmails nur an Mitglieder des Projektteams zu).
+  2. Authentication → Sign In / Providers: „Allow new users to sign up“ einschalten.
+  3. Edge Functions → Secrets: `REGISTRATION_ENABLED` auf `true` setzen.
+  4. Mit einer eigenen Testadresse registrieren, Mail bestätigen, anmelden, Kürzel im Profil prüfen.
+  5. Erstes Admin-Konto: nach eigener Registrierung per SQL-Editor die Adminrolle vergeben
+     (`public.administrators`, siehe Abschnitt 5) und TOTP einrichten.
+- Hinweis: Die Registrierung ist für jede E-Mail-Adresse offen (keine Domain- oder
+  Einladungsbeschränkung). Schulische Freigabe und Löschfrist bleiben Jakobs Entscheidung.
