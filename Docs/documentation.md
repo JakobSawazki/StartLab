@@ -468,3 +468,15 @@ Auf Jakobs Wünsche:
 - Downloads auf Wunsch wieder entfernt (ONENOTE_INVENTAR.md).
 - Überschriften auf Inhaltsseiten eine Ebene höher (h1 → h2 → h3); axe meldete sonst
   übersprungene Ebenen.
+
+### 8.19 Kompakter Einstellungsdialog, Stahlblau-Hintergrund, schlankere Navigation [Claude, 2026-10-18]
+
+Auf Jakobs Wünsche („möglichst einfach und übersichtlich“):
+- Einstellungsdialog als ein Fenster ohne Scrollleiste: fünf Farbschema-Kacheln in einer Reihe,
+  „Eigene Farben“ und „Schriftgröße“ nebeneinander; auf dem Handy drei Kacheln je Reihe.
+- Schließen-Kreuz als SVG, exakt mittig (das Textzeichen × saß durch die Schriftmetrik zu tief).
+- Hintergrund und Kopfzeile: dezent gebürsteter, kühl-bläulicher Stahl (SVG-feTurbulence, nur
+  waagerecht gestreckt, als data:-Bild – erlaubt durch img-src data:; 2560 px breite Kachel ohne
+  Nähte; Stahlverlauf und leichter Glanz). Bei eigenen Farben und im Druck ohne Struktur.
+- Navigationspunkt „Übersicht“ entfernt; das Logo führt zur Übersicht (Name „StartLab – zur Übersicht“).
+- „Designed by Sawazki Electronics“ verlinkt auf https://jakobsawazki.github.io/sawazki-electronics/.

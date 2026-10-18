@@ -477,3 +477,9 @@ Projekt StartLab in Frankfurt angelegt und alle vier vorhandenen Migrationen ang
 - Hover-Kontrast markierter Bingo-Felder und gewählter Filter jetzt 11–12:1 (vorher unlesbar).
 - Druck von Inhaltsseiten aus dem Dunkelmodus: weiß, ohne Kopfzeile, Pfad und Knöpfe; Bingo-Raster
   sichtbar. MFA- und Antwortreihenfolge-Prüfstand bestanden.
+
+### Einstellungsdialog, Hintergrund, Navigation [Claude, 2026-10-18]
+
+- Einstellungsdialog ohne Scrollen bei 1920×1080, 1366×768, 1280×720 und 390×844 (hell/dunkel);
+  Kreuz im Schließen-Knopf auf 0 px genau mittig. Hintergrund ohne Kachelnähte, bis zum unteren Rand.
+- 73 Node-Tests, Browser-Prüfstand mit axe und MFA-Prüfstand bestanden.

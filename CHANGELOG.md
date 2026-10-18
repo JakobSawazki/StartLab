@@ -2,6 +2,10 @@
 
 ## Unveröffentlicht · 2026-10-17 [Claude]
 
+2026-10-18: Einstellungsdialog ohne Scrollen, mittiges Schließen-Kreuz, dezent gebürsteter
+stahlblauer Hintergrund, Navigationspunkt „Übersicht“ entfernt (Logo führt zur Übersicht),
+Fußzeile verlinkt Sawazki Electronics.
+
 Eigene Seite mit eigener Adresse für jeden Inhalt; Kacheln als ganze Klickflächen mit
 Vergrößerung und Lichtschimmer beim Darüberfahren; edle Metalloptik für Knöpfe, Rahmen und
 Hintergrund; Anzeige-Einstellungen (Farbschemata, eigene Farben mit Kontrastanzeige,
